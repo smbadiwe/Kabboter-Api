@@ -56,13 +56,13 @@ A JSON object with the following keys. Use this data to customize client display
 
 NB: You can save the token on the browser's localStorage or sessionStorage.
 
-[Back to table of contents](#Contents)
+[Back to table of contents](#contents)
 
 ## Logout
 
 This should be handled on the client. No server interaction. Just delete the token you got from server when you logged in. In the future, you may be needed to call the server; but for now, no.
 
-[Back to table of contents](#Contents)
+[Back to table of contents](#contents)
 
 ## Register User
 
@@ -87,7 +87,7 @@ A JSON object with the following keys.
 
 No data. You'll just get an OK status.
 
-[Back to table of contents](#Contents)
+[Back to table of contents](#contents)
 
 ## Verify User
 
@@ -105,7 +105,7 @@ This endpoint will be called to verify email verification token.
 
 No data. You'll just get an OK status.
 
-[Back to table of contents](#Contents)
+[Back to table of contents](#contents)
 
 ## User's Quiz(zes)
 
@@ -149,4 +149,4 @@ The response data will be an array of objects whose keys are defined below.
 | **option4**        | string  | The 4th option                                                                                                                                     |
 | **correctOptions** | string  | The correct option, specified as 1,2,3,or 4. When there are more than one correct options, the numbers are separated by comma (,). E.g. "1", "2,3" |
 
-[Back to table of contents](#Contents)
+[Back to table of contents](#contents)
