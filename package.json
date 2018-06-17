@@ -1,0 +1,49 @@
+{
+  "name": "voteme",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "dependencies": {
+    "bcrypt": "^2.0.1",
+    "debug": "^3.1.0",
+    "dotenv": "^6.0.0",
+    "jsonwebtoken": "^8.2.2",
+    "knex": "^0.14.6",
+    "koa": "^2.5.1",
+    "koa-bodyparser": "^4.2.1",
+    "koa-combine-routers": "^3.0.1",
+    "koa-compose": "^4.1.0",
+    "koa-convert": "^1.2.0",
+    "koa-cors": "0.0.16",
+    "koa-generic-session": "^2.0.1",
+    "koa-helmet": "^4.0.0",
+    "koa-logger": "^3.2.0",
+    "koa-router": "^7.4.0",
+    "mustache": "^2.3.0",
+    "mysql": "^2.15.0",
+    "nodemailer": "^4.6.5",
+    "nodemon": "^1.17.5",
+    "upath": "^1.1.0",
+    "validator": "^10.2.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "chai": "^4.1.2",
+    "chai-http": "^4.0.0",
+    "mocha": "^5.2.0",
+    "supertest": "^3.1.0"
+  },
+  "scripts": {
+    "start": "set DEBUG=Kabboter:* && nodemon src/index.js --exec babel-node",
+    "start-debug": "set DEBUG=Kabboter:* && mpn start",
+    "build": "babel src -d dist",
+    "serve": "node dist/index.js",
+    "test": "mocha --require babel-register",
+    "migrate-db": "knex migrate:latest --knexfile ./src/db/knexfile.js",
+    "seed-db": "knex seed:run --knexfile ./src/db/knexfile.js",
+    "load-db": "npm run migrate-db && npm run seed-db"
+  },
+  "author": "Soma Mbadiwe",
+  "license": "ISC"
+}
