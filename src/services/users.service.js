@@ -1,5 +1,5 @@
 import { BaseEntityService } from "./baseentity.service";
-import { UserRoleService, PermissionService, UserPasswordService } from "./";
+import { UserRoleService, PermissionService, QuizService } from "./";
 import { RequestError, Required } from "../utils/ValidationErrors";
 import { sign, verify } from "jsonwebtoken";
 import { compare, hashSync, genSaltSync } from "bcrypt";
@@ -9,6 +9,44 @@ import log from "../utils/log";
 export default class UserService extends BaseEntityService {
   constructor() {
     super("users");
+  }
+
+  async getUserProfile(uid) {
+    const user = await this.getById(uid);
+    if (user) throw new RequestError("Invalid user id");
+    if (user.disabled)
+      throw new RequestError(
+        "User is currently not active. You need to get reactivated first. Contact admin."
+      );
+
+    const result = {
+      id: user.id,
+      email: user.email,
+      username: user.username,
+      lastname: user.lastname,
+      firstname: user.firstname,
+      organization: user.organization,
+      usertype: user.usertype
+    };
+    const quizCount = await new QuizService().getUserQuizCount(uid);
+    result.nQuizzes = quizCount;
+
+    return result;
+  }
+
+  async changePassword(uid, oldPwd, newPwd) {
+    const user = await this.getById(uid);
+    if (user) throw new RequestError("Invalid user id");
+    if (user.disabled)
+      throw new RequestError(
+        "User is currently not active. You need to get reactivated first. Contact admin."
+      );
+
+    const isPwdSame = await compare(oldPwd, user.passwordHash);
+    if (!isPwdSame) throw new RequestError("Wrong password specified for current password");
+
+    user.passwordHash = hashSync(newPwd, genSaltSync());
+    await this.update(user);
   }
 
   async processUserRegistration(userRegInfo) {
@@ -59,7 +97,9 @@ export default class UserService extends BaseEntityService {
       userId = savedUserId[0];
     }
     const userInfo = { u: userId, p: user.passwordHash };
-    const token = sign(userInfo, process.env.APP_SECRET, { expiresIn: "20m" });
+    const token = sign(userInfo, process.env.APP_SECRET, {
+      expiresIn: "20m"
+    });
 
     // Email the token
     const verifyUrl = `${userRegInfo.url}?token=${token}`;
@@ -143,7 +183,9 @@ export default class UserService extends BaseEntityService {
       //TODO: Figure out a way to expire tokens. For some ideas, visit
       // https://stackoverflow.com/questions/26739167/jwt-json-web-token-automatic-prolongation-of-expiration
       const userInfo = { u: user.email, l: Date.now(), p: userPermissions };
-      const token = sign(userInfo, process.env.APP_SECRET, { expiresIn: "12h" });
+      const token = sign(userInfo, process.env.APP_SECRET, {
+        expiresIn: "12h"
+      });
 
       return {
         token: token,

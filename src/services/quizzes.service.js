@@ -7,7 +7,23 @@ export default class QuizService extends BaseEntityService {
     log.setNamespace("QuizService");
   }
 
+  /**
+   * Returns the number of quizzes set up by the user with the given id
+   * @param {*} userId
+   */
+  async getUserQuizCount(userId) {
+    const quizCount = await this.connector
+      .table(this.tableName)
+      .where({ userId: userId })
+      .andWhereNot({ disabled: true })
+      .count({ total: ["*"] });
+
+    return quizCount[0].total;
+  }
+
   async getByUserId(userId) {
+    log.debug("count:");
+    log.debug(count);
     log.debug("Running quizservice.getByUserId with id = %d", userId);
     const quizzes = await this.connector
       .table(this.tableName)

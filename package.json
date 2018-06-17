@@ -35,8 +35,8 @@
     "supertest": "^3.1.0"
   },
   "scripts": {
-    "start": "set DEBUG=Kabboter:* && nodemon src/index.js --exec babel-node",
-    "start-debug": "set DEBUG=Kabboter:* && mpn start",
+    "start": "nodemon src/index.js --exec babel-node",
+    "start-debug": "set DEBUG=Kabboter:* && npm start",
     "build": "babel src -d dist",
     "serve": "node dist/index.js",
     "test": "mocha --require babel-register",

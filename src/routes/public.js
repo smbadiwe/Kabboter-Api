@@ -28,9 +28,7 @@ router.post("/login", async ctx => {
   try {
     const { username, password, rememberme } = ctx.request.body;
     const respBody = await new UserService().processLogin(username, password, rememberme);
-    ctx.body = respBody.user;
-    ctx.set("Access-Control-Expose-Headers", "x-sign");
-    ctx.set("x-sign", respBody.token);
+    ctx.body = respBody;
   } catch (e) {
     ctx.throw(e.status || 500, e);
   }

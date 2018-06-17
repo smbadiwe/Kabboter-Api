@@ -1,5 +1,6 @@
 import { getRoutesRequiringAuthorization } from "../src/routes";
 import Enums from "../src/services/enums";
+import { hashSync, genSaltSync } from "bcrypt";
 
 export async function seed(knex) {
   // Deletes ALL existing entries
@@ -44,6 +45,7 @@ export async function seed(knex) {
       username: "djt",
       email: "trump@gmail.com",
       organization: "",
+      passwordHash: hashSync("donald", genSaltSync()),
       roles: "1"
     },
     {
@@ -52,6 +54,7 @@ export async function seed(knex) {
       firstname: "Ted",
       username: "trc",
       email: "cruz@gmail.com",
+      passwordHash: hashSync("ted", genSaltSync()),
       organization: ""
     },
     {
@@ -60,6 +63,7 @@ export async function seed(knex) {
       firstname: "Marco",
       username: "mkr",
       email: "rubio@gmail.com",
+      passwordHash: hashSync("rubio", genSaltSync()),
       organization: ""
     }
   ]);
