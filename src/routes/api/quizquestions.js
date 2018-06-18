@@ -7,7 +7,7 @@ const router = new Router({ prefix: "/api/user" });
 router.get("/quizquestions/:id", async ctx => {
   try {
     const quizId = ctx.request.query.quizId;
-    const recordId = ctx.request.params.id;
+    const recordId = ctx.params.id;
     validateInteger(quizId);
     validateInteger(recordId);
     const res = await new QuizQuestionService().getBy({ id: recordId, quizId: quizId });
@@ -52,8 +52,8 @@ router.post("/quizquestions/update", async ctx => {
 
 router.post("/quizquestions/delete/:id", async ctx => {
   try {
-    validateInteger(ctx.request.params.id);
-    const res = await new QuizQuestionsService().daleteRecord(ctx.request.params.id);
+    validateInteger(ctx.params.id);
+    const res = await new QuizQuestionService().daleteRecord(ctx.params.id);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);

@@ -6,9 +6,9 @@ const router = new Router({ prefix: "/api/user" });
 
 router.get("/quizzes/my/:id", async ctx => {
   try {
-    validateInteger(ctx.request.params.id);
+    validateInteger(ctx.params.id);
     const userId = ctx.request.user.id;
-    const res = await new QuizService().getBy({ userId: userId, id: ctx.request.params.id });
+    const res = await new QuizService().getBy({ userId: userId, id: ctx.params.id });
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
@@ -26,8 +26,8 @@ router.get("/quizzes/my", async ctx => {
 
 router.get("/quizzes/:id", async ctx => {
   try {
-    validateInteger(ctx.request.params.id);
-    const res = await new QuizService().getById(ctx.request.params.id);
+    validateInteger(ctx.params.id);
+    const res = await new QuizService().getById(ctx.params.id);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
@@ -68,8 +68,8 @@ router.post("/quizzes/update", async ctx => {
 
 router.post("/quizzes/delete/:id", async ctx => {
   try {
-    validateInteger(ctx.request.params.id);
-    const res = await new QuizService().daleteRecord(ctx.request.params.id);
+    validateInteger(ctx.params.id);
+    const res = await new QuizService().daleteRecord(ctx.params.id);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);

@@ -152,12 +152,12 @@ export default class UserService extends BaseEntityService {
 
     const isValid = await compare(password, user.passwordHash);
     if (isValid) {
-      const roleIds = [];
+      let roleIds = [];
       if (user.roles) {
         roleIds = user.roles.split(",").map(p => +p);
       }
       const permissionIdsSet = new Set();
-      const roleNames = "";
+      let roleNames = "";
       const rolesObj = await new UserRoleService().getByIds(roleIds);
       if (rolesObj && rolesObj.length > 0) {
         rolesObj.forEach(r => {

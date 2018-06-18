@@ -6,9 +6,9 @@ const router = new Router({ prefix: "/api/user" });
 
 router.get("/surveys/my/:id", async ctx => {
   try {
-    validateInteger(ctx.request.params.id);
+    validateInteger(ctx.params.id);
     const userId = ctx.request.user.id;
-    const res = await new SurveyService().getBy({ userId: userId, id: ctx.request.params.id });
+    const res = await new SurveyService().getBy({ userId: userId, id: ctx.params.id });
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
@@ -26,7 +26,7 @@ router.get("/surveys/my", async ctx => {
 
 router.get("/surveys/:id", async ctx => {
   try {
-    validateInteger(ctx.request.params.id);
+    validateInteger(ctx.params.id);
     const userId = ctx.request.user.id;
     const res = await new SurveyService().getByUserId(userId);
     ctx.body = res;
@@ -69,8 +69,8 @@ router.post("/surveys/update", async ctx => {
 
 router.post("/surveys/delete/:id", async ctx => {
   try {
-    validateInteger(ctx.request.params.id);
-    const res = await new SurveyService().daleteRecord(ctx.request.params.id);
+    validateInteger(ctx.params.id);
+    const res = await new SurveyService().daleteRecord(ctx.params.id);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);

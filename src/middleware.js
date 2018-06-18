@@ -75,7 +75,7 @@ user model:
 };
  */
 async function authorizeRequest(ctx, next) {
-  if (ctx.request.url.startsWith("/api2/")) {
+  if (ctx.request.url.startsWith("/api/")) {
     let token = getTokenFromHeaderOrQuerystring(ctx.request);
     const decodedToken = verify(token, process.env.APP_SECRET);
     if (!decodedToken) {
