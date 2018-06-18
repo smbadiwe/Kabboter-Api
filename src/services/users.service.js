@@ -50,11 +50,9 @@ export default class UserService extends BaseEntityService {
   }
 
   async processUserRegistration(userRegInfo) {
-    const user = await this.getByEmailOrUsername(userRegInfo.email, userRegInfo.username);
+    const user = await this.getByUsername(userRegInfo.username);
     if (user && !user.disabled) {
-      throw new RequestError(
-        "Sorry, we already have someone with the email address and/or username specified."
-      );
+      throw new RequestError("Sorry, we already have someone with the username specified.");
     }
 
     let userId = 0;
@@ -88,10 +86,10 @@ export default class UserService extends BaseEntityService {
         organization: userRegInfo.organization,
         lastname: userRegInfo.lastname,
         email: userRegInfo.email,
+        phone: userRegInfo.phone,
         username: userRegInfo.username,
         passwordHash: hashSync(userRegInfo.password, genSaltSync()),
-        usertype: userRegInfo.usertype,
-        disabled: true
+        usertype: userRegInfo.usertype
       };
       const savedUserId = await this.save(newUser);
       userId = savedUserId[0];
@@ -109,19 +107,20 @@ export default class UserService extends BaseEntityService {
     log.debug("Email sender returned: %j", sent);
   }
 
-  async verifyUser(registrationToken) {
-    if (!registrationToken) throw new Required("registrationToken");
-    const userInfo = verify(registrationToken, process.env.APP_SECRET);
-    if (!userInfo) {
-      throw new RequestError("Invalid registration token", 401);
-    }
-    //{ u: pwd.userId, p: pwd.passwordHash }
-    const user = await this.getById(userInfo.u);
-    if (!user || !user.disabled) {
-      throw new RequestError("Fake registration token", 401);
-    }
-    user.disabled = false;
-    await this.update(user);
+  async getByEmail(email) {
+    if (!email) return null;
+    return await this.connector
+      .table(this.tableName)
+      .where({ email: email })
+      .first();
+  }
+
+  async getByUsername(username) {
+    if (!username) return null;
+    return await this.connector
+      .table(this.tableName)
+      .where({ username: username })
+      .first();
   }
 
   async getByEmailOrUsername(email, username) {
@@ -143,7 +142,7 @@ export default class UserService extends BaseEntityService {
   }
 
   async processLogin(username, password, rememberme) {
-    const user = await this.getByEmailOrUsername(username);
+    const user = await this.getByUsername(username);
     if (!user) {
       throw new RequestError("Username or password incorrect");
     }
@@ -182,7 +181,7 @@ export default class UserService extends BaseEntityService {
       // jwt sign
       //TODO: Figure out a way to expire tokens. For some ideas, visit
       // https://stackoverflow.com/questions/26739167/jwt-json-web-token-automatic-prolongation-of-expiration
-      const userInfo = { u: user.email, l: Date.now(), p: userPermissions };
+      const userInfo = { i: user.id, u: user.username, p: userPermissions };
       const token = sign(userInfo, process.env.APP_SECRET, {
         expiresIn: "12h"
       });
@@ -192,7 +191,6 @@ export default class UserService extends BaseEntityService {
         user: {
           i: user.id,
           u: user.username,
-          e: user.email,
           f: user.firstname,
           l: user.lastname,
           r: roleNames

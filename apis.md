@@ -41,7 +41,6 @@ A JSON object with the following keys. Use this data to customize client display
 | ----- | ------- | ----------------------------------------------- |
 | **i** | integer | User db id. You may need it for querying later. |
 | **u** | string  | The username.                                   |
-| **e** | string  | User's email.                                   |
 | **f** | string  | User's first name                               |
 | **l** | string  | User's last name.                               |
 | **r** | string  | User's roles.                                   |
@@ -64,34 +63,15 @@ This should be handled on the client. No server interaction. Just delete the tok
 
 A JSON object with the following keys.
 
-| Key              | Required? | Type    | Description                                      |
-| ---------------- | --------- | ------- | ------------------------------------------------ |
-| **username**     | Yes       | string  | Username.                                        |
-| **email**        | Yes       | string  | Email.                                           |
-| **password**     | Yes       | string  | The password.                                    |
-| **organization** |           | string  | The user's organization.                         |
-| **firstname**    |           | string  | The user's first name.                           |
-| **lastname**     |           | string  | The user's last name.                            |
-| **usertype**     |           | integer | User type.                                       |
-| **url**          | Yes       | string  | The 'verify email' url to send user in an email. |
-
-### Response Data
-
-No data. You'll just get an OK status.
-
-[Back to table of contents](#contents)
-
-## Verify User
-
-**GET to /verifyuser**
-
-This endpoint will be called to verify email verification token.
-
-### Request Data
-
-| Key       | Required? | Type   | Description                                        |
-| --------- | --------- | ------ | -------------------------------------------------- |
-| **token** | Yes       | string | The verification token sent to new user via email. |
+| Key              | Required?         | Type    | Description              |
+| ---------------- | ----------------- | ------- | ------------------------ |
+| **phone**        | Yes if no _email_ | string  | Phone number.            |
+| **email**        | Yes if no _phone_ | string  | Email.                   |
+| **password**     | Yes               | string  | The password.            |
+| **organization** |                   | string  | The user's organization. |
+| **firstname**    | Yes               | string  | The user's first name.   |
+| **lastname**     | Yes               | string  | The user's last name.    |
+| **usertype**     |                   | integer | User type.               |
 
 ### Response Data
 
@@ -151,11 +131,10 @@ The response data will be **an array** of objects whose keys are defined below.
 
 A JSON object with the following keys.
 
-| Key        | Required? | Type    | Description           |
-| ---------- | --------- | ------- | --------------------- |
-| **uid**    | Yes       | integer | The user's id.        |
-| **oldPwd** | Yes       | string  | The current password. |
-| **newPwd** | Yes       | string  | The new password.     |
+| Key        | Required? | Type   | Description           |
+| ---------- | --------- | ------ | --------------------- |
+| **oldPwd** | Yes       | string | The current password. |
+| **newPwd** | Yes       | string | The new password.     |
 
 ### Response Data
 
@@ -193,3 +172,166 @@ The response data will be an object whose keys are defined below.
 | **nQuizzesAnswered** | integer | Number of quizzes the user has answered |
 | **nVotes**           | integer | Number of votes the user has set up     |
 | **nVotesCast**       | integer | Number of votes the user has cast       |
+
+[Back to table of contents](#contents)
+
+## Create Quiz
+
+**POST to /api/user/quizzes/create**
+
+### Request Data
+
+A JSON object with the following keys.
+
+| Key                 | Required? | Type    | Description                                                  |
+| ------------------- | --------- | ------- | ------------------------------------------------------------ |
+| **title**           | Yes       | string  | Quiz title                                                   |
+| **audience**        |           | integer | Audience. Put 1 for Social, 2, for School.                   |
+| **introLink**       |           | url     | (Video) link introducing the quiz.                           |
+| **visibleTo**       |           | integer | Who may see the quiz? 1 for Everyone. 2 for only the creator |
+| **creditResources** |           | string  | Bibliography                                                 |
+
+### Response Data
+
+The response data will be an object whose keys are defined below.
+
+| Key    | Type    | Description       |
+| ------ | ------- | ----------------- |
+| **id** | integer | The new quiz'd id |
+
+[Back to table of contents](#contents)
+
+## Edit Quiz
+
+**POST to /api/user/quizzes/update**
+
+### Request Data
+
+A JSON object with the following keys.
+
+| Key                 | Required? | Type    | Description                                                  |
+| ------------------- | --------- | ------- | ------------------------------------------------------------ |
+| **id**              | Yes       | integer | The quiz'd id                                                |
+| **title**           | Yes       | string  | Quiz title                                                   |
+| **audience**        |           | integer | Audience. Put 1 for Social, 2, for School.                   |
+| **introLink**       |           | url     | (Video) link introducing the quiz.                           |
+| **visibleTo**       |           | integer | Who may see the quiz? 1 for Everyone. 2 for only the creator |
+| **creditResources** |           | string  | Bibliography                                                 |
+
+### Response Data
+
+No data. You'll just get an OK status.
+
+[Back to table of contents](#contents)
+
+## Delete Quiz given id
+
+**POST to /api/user/quizzes/delete/:id**
+
+Where `:id` is the quiz's id, an integer.
+
+### Request Data
+
+None.
+
+### Response Data
+
+No data. You'll just get an OK status.
+
+[Back to table of contents](#contents)
+
+## Get Quizzes
+
+**GET to /api/user/quizzes**
+
+### Request Data
+
+None
+
+### Response Data
+
+An array of JSON object with the following keys.
+
+| Key                 | Type    | Description                                                  |
+| ------------------- | ------- | ------------------------------------------------------------ |
+| **id**              | integer | The quiz'd id                                                |
+| **title**           | string  | Quiz title                                                   |
+| **audience**        | integer | Audience. Put 1 for Social, 2, for School.                   |
+| **introLink**       | url     | (Video) link introducing the quiz.                           |
+| **visibleTo**       | integer | Who may see the quiz? 1 for Everyone. 2 for only the creator |
+| **creditResources** | string  | Bibliography                                                 |
+
+[Back to table of contents](#contents)
+
+## Get Quiz given id
+
+**GET to /api/user/quizzes/:id**
+
+Where `:id` is the quiz's id, an integer.
+
+### Request Data
+
+None
+
+### Response Data
+
+A JSON object with the following keys.
+
+| Key                 | Type    | Description                                                  |
+| ------------------- | ------- | ------------------------------------------------------------ |
+| **id**              | integer | The quiz'd id                                                |
+| **title**           | string  | Quiz title                                                   |
+| **audience**        | integer | Audience. Put 1 for Social, 2, for School.                   |
+| **introLink**       | url     | (Video) link introducing the quiz.                           |
+| **visibleTo**       | integer | Who may see the quiz? 1 for Everyone. 2 for only the creator |
+| **creditResources** | string  | Bibliography                                                 |
+
+[Back to table of contents](#contents)
+
+## Get Quizzes created by logged-in user only
+
+**GET to /api/user/quizzes/my**
+
+### Request Data
+
+None
+
+### Response Data
+
+An array of JSON object with the following keys.
+
+| Key                 | Type    | Description                                                  |
+| ------------------- | ------- | ------------------------------------------------------------ |
+| **id**              | integer | The quiz'd id                                                |
+| **title**           | string  | Quiz title                                                   |
+| **audience**        | integer | Audience. Put 1 for Social, 2, for School.                   |
+| **introLink**       | url     | (Video) link introducing the quiz.                           |
+| **visibleTo**       | integer | Who may see the quiz? 1 for Everyone. 2 for only the creator |
+| **creditResources** | string  | Bibliography                                                 |
+
+[Back to table of contents](#contents)
+
+## Get Quiz of a given id created by logged-in user
+
+**GET to /api/user/quizzes/my/:id**
+
+Where `:id` is the quiz's id, an integer.
+
+### Request Data
+
+None
+
+### Response Data
+
+A JSON object with the following keys.
+
+| Key                 | Type    | Description                                                  |
+| ------------------- | ------- | ------------------------------------------------------------ |
+| **id**              | integer | The quiz'd id                                                |
+| **title**           | string  | Quiz title                                                   |
+| **audience**        | integer | Audience. Put 1 for Social, 2, for School.                   |
+| **introLink**       | url     | (Video) link introducing the quiz.                           |
+| **visibleTo**       | integer | Who may see the quiz? 1 for Everyone. 2 for only the creator |
+| **creditResources** | string  | Bibliography                                                 |
+
+[Back to table of contents](#contents)

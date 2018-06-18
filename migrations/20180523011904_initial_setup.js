@@ -51,7 +51,7 @@ export async function up(knex) {
       t.boolean("deleted").defaultTo(false);
       t.string("title").notNull();
       t.integer("audience");
-      t.integer("introLink");
+      t.string("introLink");
       t.integer("visibleTo");
       t.boolean("published").defaultTo(false);
       t.string("creditResources");
@@ -88,5 +88,7 @@ export async function down(knex) {
     .dropTable("users")
     .dropTable("userroles")
     .dropTable("permissions")
-    .dropTable("emailaccounts");
+    .dropTable("emailaccounts")
+    .dropTable("quizquestions")
+    .dropTable("quizzes");
 }

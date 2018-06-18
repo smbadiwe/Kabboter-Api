@@ -4,6 +4,9 @@ import QuizQuestionService from "./quizquestions.service";
 import EmailAccountService from "./emailaccounts.service";
 import PermissionService from "./permissions.service";
 import UserRoleService from "./userroles.service";
+import QuizRunService from "./quizruns.service";
+import QuizAnswerService from "./quizanswers.service";
+import SurveyService from "./surveys.service";
 
 export {
   QuizQuestionService,
@@ -11,5 +14,8 @@ export {
   QuizService,
   EmailAccountService,
   PermissionService,
-  UserRoleService
+  UserRoleService,
+  QuizRunService,
+  QuizAnswerService,
+  SurveyService
 };

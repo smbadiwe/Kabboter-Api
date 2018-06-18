@@ -19,15 +19,28 @@ export class BaseEntityService {
   }
 
   /**
+   * If no equality conditions is specified, we return null.
+   * Also, all fields must be within the table. No joins.
+   * @param {*} equalityConditions
+   */
+  async getBy(equalityConditions) {
+    if (equalityConditions)
+      return await this.connector.table(this.tableName).where(equalityConditions);
+
+    return null;
+  }
+
+  /**
    * Retrieve the first record that meet the specified equality condition(s).
    * If 'conditions' is falsy, we retrieve the first record in the DB.
-   * @param {*} conditions A JSON object specifying equality conditions the knex way
+   * Also, all fields must be within the table. No joins.
+   * @param {*} equalityConditions A JSON object specifying equality conditions the knex way
    */
-  async getFirst(conditions = null) {
-    if (conditions)
+  async getFirst(equalityConditions = null) {
+    if (equalityConditions)
       return await this.connector
         .table(this.tableName)
-        .where(conditions)
+        .where(equalityConditions)
         .first();
 
     return await this.connector.table(this.tableName).first();
@@ -73,5 +86,24 @@ export class BaseEntityService {
     } else {
       return await this.save(record);
     }
+  }
+
+  async deleteRecord(id) {
+    return await this.connector
+      .table(this.tableName)
+      .where({ id: id })
+      .del();
+  }
+
+  /**
+   * Delete all record that match the given equality conditions. E.g. {id: 4 }.
+   * All fields must be within the table. No joins.
+   */
+  async daletePermanently(equalityConditions) {
+    if (equalityConditions)
+      return await this.connector
+        .table(this.tableName)
+        .where(equalityConditions)
+        .del();
   }
 }

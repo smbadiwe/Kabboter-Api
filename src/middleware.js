@@ -62,7 +62,8 @@ async function handleError(ctx, next) {
 /*
  jwt token model:
  { 
-    u: user.email, 
+    i: user.id,
+    u: user.username, 
     p: [] // list of permission ids for this user
 };
 user model:
@@ -74,33 +75,23 @@ user model:
 };
  */
 async function authorizeRequest(ctx, next) {
-  let decodedToken;
-  try {
-    if (ctx.request.url.startsWith("/api2/")) {
-      let token = getTokenFromHeaderOrQuerystring(ctx.request);
-      decodedToken = verify(token, process.env.APP_SECRET);
-      if (!decodedToken) {
-        ctx.throw(401, "No jwt token");
-      }
-      const permissionName = `${ctx.request.method} ${ctx.request.url}`;
-      if (decodedToken.p.indexOf(permissionName) < 0) {
-        ctx.throw(401, "Unauthorized request");
-      }
-      //   const permission = await new PermissionService().getByName(permissionName);
-      //   if (permission) {
-      //     // decodedToken.perms.
-      //   }
+  if (ctx.request.url.startsWith("/api2/")) {
+    let token = getTokenFromHeaderOrQuerystring(ctx.request);
+    const decodedToken = verify(token, process.env.APP_SECRET);
+    if (!decodedToken) {
+      ctx.throw(401, "No jwt token");
     }
-    await next();
-  } finally {
-    if (decodedToken) {
-      //TODO: Maybe consider implementing sliding session. Like below
-      // ctx.set("Access-Control-Expose-Headers", "x-sign");
-      // decodedToken.l = Date.now();
-      // const newToken = sign(decodedToken, process.env.APP_SECRET, { expiresIn: "5m" });
-      // ctx.set("x-sign", newToken);
-    }
+
+    // const permissionName = `${ctx.request.method} ${ctx.request.url}`;
+    // if (decodedToken.p.indexOf(permissionName) < 0) {
+    //   ctx.throw(401, "Unauthorized request");
+    // }
+
+    //finally
+    ctx.request.user = decodedToken;
   }
+
+  await next();
 }
 
 export default function middleware() {

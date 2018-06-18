@@ -1,10 +1,53 @@
 import { BaseEntityService } from "./baseentity.service";
-import { QuizQuestionService } from "./";
+import { QuizQuestionService, QuizRunService } from "./";
+import Enums from "./enums";
 import log from "../utils/log";
+import { RequestError } from "../utils/ValidationErrors";
 export default class QuizService extends BaseEntityService {
   constructor() {
     super("quizzes");
     log.setNamespace("QuizService");
+  }
+
+  async daleteRecord(id) {
+    const hasRun = await new QuizRunService().hasQuizBeenRun(id);
+    if (hasRun)
+      throw new RequestError(
+        "The quiz you want to delete has been played and the scores exist. You can no longer delete it."
+      );
+
+    await new QuizQuestionService().daletePermanently({ quizId: id });
+    await super.deleteRecord(id);
+  }
+
+  /**
+   * Create quiz and return the id or the newly-created record.
+   * @param {*} userId
+   * @param {*} payload
+   */
+  async create(userId, payload) {
+    const quiz = {
+      title: payload.title,
+      audience: payload.audience || Enums.Audience.Social,
+      introLink: payload.introLink,
+      visibleTo: payload.visibleTo || Enums.VisibleTo.Everyone,
+      creditResources: payload.creditResources,
+      userId: userId
+    };
+    const res = await this.save(quiz);
+    return { id: res[0] }; // the id of the newly saved record
+  }
+
+  async edit(payload) {
+    const quiz = {
+      id: payload.id,
+      title: payload.title,
+      audience: payload.audience || Enums.Audience.Social,
+      introLink: payload.introLink,
+      visibleTo: payload.visibleTo || Enums.VisibleTo.Everyone,
+      creditResources: payload.creditResources
+    };
+    await this.update(quiz);
   }
 
   /**
@@ -22,12 +65,18 @@ export default class QuizService extends BaseEntityService {
   }
 
   async getByUserId(userId) {
-    log.debug("count:");
-    log.debug(count);
-    log.debug("Running quizservice.getByUserId with id = %d", userId);
+    if (!userId) return null;
+
+    return this.getBy({ userId: userId });
+  }
+
+  async getBy(equalityConditions) {
+    if (!equalityConditions) return null;
+
+    log.debug("Running quizservice.getBy with condition = %o", equalityConditions);
     const quizzes = await this.connector
       .table(this.tableName)
-      .where({ userId: userId })
+      .where(equalityConditions)
       .andWhereNot({ disabled: true });
     if (quizzes) {
       log.debug("quizzes from db");

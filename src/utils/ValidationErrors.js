@@ -47,3 +47,10 @@ export class NonExistentId extends ValidationError {
     super(`The value supplied as ${param} does not belong to any relevant record.`);
   }
 }
+
+export function validateInteger(integer, param = null) {
+  param = param || "Value";
+  if (integer === null || integer === undefined) throw new Required(param);
+
+  if (isNaN(integer)) throw new ValidationError(`${param} is not a number`);
+}

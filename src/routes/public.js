@@ -14,15 +14,6 @@ router.post("/register", async ctx => {
   }
 });
 
-router.get("/verifyuser", async ctx => {
-  try {
-    const respBody = await new UserService().verifyUser(ctx.request.query.token);
-    ctx.body = respBody;
-  } catch (e) {
-    ctx.throw(e.status || 500, e);
-  }
-});
-
 // POST /login
 router.post("/login", async ctx => {
   try {

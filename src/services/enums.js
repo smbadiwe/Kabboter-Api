@@ -1,6 +1,9 @@
 const userType = {
   Teacher: 1,
-  Student: 2
+  StudentOver16: 2,
+  StudentUnder16: 3,
+  InBusiness: 4,
+  SocialUser: 5
 };
 //Object.freeze(userType);
 const audience = {
