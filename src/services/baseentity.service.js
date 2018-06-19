@@ -64,6 +64,13 @@ export class BaseEntityService {
    * @param {*} records An object or array of objects to be inserted.
    */
   async save(records) {
+    if (isObject(records)) {
+      delete records.id;
+    } else if (isArray(records)) {
+      records.forEach(r => {
+        delete r.id;
+      });
+    }
     if (records) return await this.connector.table(this.tableName).insert(records, "id");
   }
 
@@ -72,7 +79,7 @@ export class BaseEntityService {
    * @param {*} record
    */
   async update(record) {
-    if (record && record.id > 0) {
+    if (isObject(record) && record.id > 0) {
       const id = record.id;
       delete record.id;
       try {
@@ -106,4 +113,12 @@ export class BaseEntityService {
         .where(equalityConditions)
         .del();
   }
+}
+
+function isArray(a) {
+  return !!a && a.constructor === Array;
+}
+
+function isObject(a) {
+  return !!a && a.constructor === Object;
 }

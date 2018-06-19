@@ -11,6 +11,10 @@ export function validateQuizQuestionProps(payload, updating = false) {
   if (updating) validateInteger(payload.id, "id");
 
   validateInteger(payload.quizId, "quizId");
+  if (!payload.points) payload.points = 0;
+  if (!payload.maxBonus) payload.maxBonus = 0;
+  validateInteger(payload.points, "points");
+  validateInteger(payload.maxBonus, "maxBonus");
   if (!payload.question) throw new Required("question");
   if (!payload.option1) throw new Required("option1");
   if (!payload.option2) throw new Required("option2");

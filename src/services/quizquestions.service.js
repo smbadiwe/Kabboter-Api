@@ -7,8 +7,12 @@ export default class QuizQuestionService extends BaseEntityService {
     super("quizquestions");
   }
 
-  async create(payload) {
-    const quiz = new QuizService().getById(payload.quizId);
+  /**
+   * Save quiz question
+   * @param {*} payload
+   */
+  async save(payload) {
+    const quiz = await new QuizService().getById(payload.quizId);
     if (!quiz) throw new RequestError("Invalid quiz id");
 
     const quizQn = {
@@ -20,11 +24,13 @@ export default class QuizQuestionService extends BaseEntityService {
       option3: payload.option3,
       option4: payload.option4,
       correctOptions: payload.correctOptions,
+      points: payload.points,
+      maxBonus: payload.maxBonus,
       introLink: payload.introLink,
       creditResources: payload.creditResources
     };
-    const res = await this.save(quizQn);
-    return { id: res[0] }; // the id of the newly saved record
+    const res = await super.save(quizQn);
+    return { id: res[0], points: payload.points, maxBonus: payload.maxBonus }; // the id of the newly saved record
   }
 
   async daleteRecord(id) {
@@ -37,24 +43,30 @@ export default class QuizQuestionService extends BaseEntityService {
     await super.deleteRecord(id);
   }
 
-  async edit(payload) {
-    const quiz = new QuizService().getById(payload.quizId);
+  /**
+   * Update quiz question
+   * @param {*} record
+   */
+  async update(record) {
+    const quiz = await new QuizService().getById(record.quizId);
     if (!quiz) throw new RequestError("Invalid quiz id");
 
     const quizQn = {
-      id: payload.id,
-      question: payload.question,
-      timeLimit: payload.timeLimit,
-      quizId: payload.quizId,
-      option1: payload.option1,
-      option2: payload.option2,
-      option3: payload.option3,
-      option4: payload.option4,
-      correctOptions: payload.correctOptions,
-      introLink: payload.introLink,
-      creditResources: payload.creditResources
+      id: record.id,
+      question: record.question,
+      timeLimit: record.timeLimit,
+      quizId: record.quizId,
+      option1: record.option1,
+      option2: record.option2,
+      option3: record.option3,
+      option4: record.option4,
+      correctOptions: record.correctOptions,
+      points: record.points,
+      maxBonus: record.maxBonus,
+      introLink: record.introLink,
+      creditResources: record.creditResources
     };
-    await this.update(quizQn);
+    await super.update(quizQn);
   }
 
   async getBy(equalityConditions) {
@@ -62,6 +74,7 @@ export default class QuizQuestionService extends BaseEntityService {
       return await this.connector
         .table(this.tableName)
         .where(equalityConditions)
+        .andWhereNot({ disabled: true })
         .select(
           "id",
           "question",
@@ -71,7 +84,11 @@ export default class QuizQuestionService extends BaseEntityService {
           "option1",
           "option2",
           "option3",
-          "option4"
+          "option4",
+          "maxBonus",
+          "points",
+          "introLink",
+          "creditResources"
         );
 
     return null;
@@ -93,7 +110,11 @@ export default class QuizQuestionService extends BaseEntityService {
         "option1",
         "option2",
         "option3",
-        "option4"
+        "option4",
+        "maxBonus",
+        "points",
+        "introLink",
+        "creditResources"
       );
   }
 }

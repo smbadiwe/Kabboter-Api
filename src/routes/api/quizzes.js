@@ -2,39 +2,45 @@ import Router from "koa-router";
 import { QuizService } from "../../services";
 import { validateQuizProps, validateInteger } from "./quizzes.validate";
 
-const router = new Router({ prefix: "/api/user" });
+const router = new Router({ prefix: "/api/user/quizzes" });
 
-router.get("/quizzes/my/:id", async ctx => {
+router.get("/my/:id", async ctx => {
   try {
     validateInteger(ctx.params.id);
+    const wq = ctx.request.query.wq;
+    const withQuestions = wq && wq === "y";
     const userId = ctx.request.user.id;
-    const res = await new QuizService().getBy({ userId: userId, id: ctx.params.id });
+    const res = await new QuizService().getBy({ userId: userId, id: ctx.params.id }, withQuestions);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
   }
 });
-router.get("/quizzes/my", async ctx => {
+router.get("/my", async ctx => {
   try {
     const userId = ctx.request.user.id;
-    const res = await new QuizService().getByUserId(userId);
+    const wq = ctx.request.query.wq;
+    const withQuestions = wq && wq === "y";
+    const res = await new QuizService().getByUserId(userId, withQuestions);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
   }
 });
 
-router.get("/quizzes/:id", async ctx => {
+router.get("/:id", async ctx => {
   try {
     validateInteger(ctx.params.id);
-    const res = await new QuizService().getById(ctx.params.id);
+    const wq = ctx.request.query.wq;
+    const withQuestions = wq && wq === "y";
+    const res = await new QuizService().getBy({ id: ctx.params.id }, withQuestions);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
   }
 });
 
-router.get("/quizzes", async ctx => {
+router.get("/", async ctx => {
   try {
     const res = await new QuizService().getAll();
     ctx.body = res;
@@ -43,7 +49,7 @@ router.get("/quizzes", async ctx => {
   }
 });
 
-router.post("/quizzes/create", async ctx => {
+router.post("/create", async ctx => {
   try {
     validateQuizProps(ctx.request.body);
 
@@ -55,7 +61,7 @@ router.post("/quizzes/create", async ctx => {
   }
 });
 
-router.post("/quizzes/update", async ctx => {
+router.post("/update", async ctx => {
   try {
     validateQuizProps(ctx.request.body, true);
 
@@ -66,7 +72,7 @@ router.post("/quizzes/update", async ctx => {
   }
 });
 
-router.post("/quizzes/delete/:id", async ctx => {
+router.post("/delete/:id", async ctx => {
   try {
     validateInteger(ctx.params.id);
     const res = await new QuizService().daleteRecord(ctx.params.id);

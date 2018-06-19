@@ -10,8 +10,6 @@
 
 - [Register User](#register-user)
 
-- [User's Quiz(zes)](#users-quizzes)
-
 - [Change Password](#change-password)
 
 - [User's Profile](#users-profile)
@@ -107,52 +105,6 @@ No data. You'll just get an OK status.
 
 [Back to table of contents](#contents)
 
-## User's Quiz(zes)
-
-**GET to /api/user/quizzes**
-
-This retrieves all the quizzes set up by a given user. For this query, we'll only give you the quizzes and their questions. When you query a particular quiz for a user, we can then package all other info: people who participated, scores, etc.
-
-### Request Data
-
-Query string with the following keys.
-
-| Key     | Required? | Type    | Description                                                       |
-| ------- | --------- | ------- | ----------------------------------------------------------------- |
-| **uid** | Yes       | integer | The quiz owner's id. This will usually be the logged-in user's id |
-
-### Response Data
-
-The response data will be **an array** of objects whose keys are defined below.
-
-| Key                 | Type       | Description                                         |
-| ------------------- | ---------- | --------------------------------------------------- |
-| **id**              | integer    | The quiz id                                         |
-| **title**           | string     | The quiz title                                      |
-| **published**       | boolean    | Whether or not the quiz has been published          |
-| **creditResources** | string     | Credits; bibliography                               |
-| **userId**          | string     | The quiz owner's id                                 |
-| **introLink**       | string     | Video or other link introducing the quiz            |
-| **visibleTo**       | Enum (int) | 1 for '_Everyone_'; 2 for '_Only Me_'.              |
-| **audience**        | Enum (int) | 1 for '_Social_'; 2 for '_School_'.                 |
-| **questions**       | Object     | The quiz's questions.. [See definition](#questions) |
-
-#### questions
-
-| Key                | Type    | Description                                                                                                                                        |
-| ------------------ | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **id**             | integer | The question id                                                                                                                                    |
-| **quizId**         | integer | The id of the quiz this this question belongs to                                                                                                   |
-| **question**       | string  | The question                                                                                                                                       |
-| **timeLimit**      | integer | Time limit **in seconds**                                                                                                                          |
-| **option1**        | string  | The 1st option                                                                                                                                     |
-| **option2**        | string  | The 2nd option                                                                                                                                     |
-| **option3**        | string  | The 3rd option                                                                                                                                     |
-| **option4**        | string  | The 4th option                                                                                                                                     |
-| **correctOptions** | string  | The correct option, specified as 1,2,3,or 4. When there are more than one correct options, the numbers are separated by comma (,). E.g. "1", "2,3" |
-
-[Back to table of contents](#contents)
-
 ## Change Password
 
 **POST to /api/user/changepassword**
@@ -180,11 +132,7 @@ This retrieves all the quizzes set up by a given user. For this query, we'll onl
 
 ### Request Data
 
-Query string with the following keys:
-
-| Key     | Required? | Type    | Description   |
-| ------- | --------- | ------- | ------------- |
-| **uid** | Yes       | integer | The user's id |
+None.
 
 ### Response Data
 
@@ -207,21 +155,42 @@ The response data will be an object whose keys are defined below.
 
 [Back to table of contents](#contents)
 
+# Quiz
+
+### Quiz Data Definition (**request**)
+
+A JSON object with the following keys.
+
+| Key                 | Required? | Type    | Description                                                  |
+| ------------------- | --------- | ------- | ------------------------------------------------------------ |
+| **id**              | Yes       | integer | The quiz'd id                                                |
+| **title**           | Yes       | string  | Quiz title                                                   |
+| **audience**        |           | integer | Audience. Put 1 for Social, 2, for School.                   |
+| **introLink**       |           | url     | (Video) link introducing the quiz.                           |
+| **visibleTo**       |           | integer | Who may see the quiz? 1 for Everyone. 2 for only the creator |
+| **creditResources** |           | string  | Bibliography                                                 |
+
+### Quiz Data Definition (**response**)
+
+| Key                 | Type       | Description                                         |
+| ------------------- | ---------- | --------------------------------------------------- |
+| **id**              | integer    | The quiz id                                         |
+| **title**           | string     | The quiz title                                      |
+| **published**       | boolean    | Whether or not the quiz has been published          |
+| **creditResources** | string     | Credits; bibliography                               |
+| **userId**          | string     | The quiz owner's id                                 |
+| **introLink**       | string     | Video or other link introducing the quiz            |
+| **visibleTo**       | Enum (int) | 1 for '_Everyone_'; 2 for '_Only Me_'.              |
+| **audience**        | Enum (int) | 1 for '_Social_'; 2 for '_School_'.                 |
+| **questions**       | Object     | The quiz's questions.. [See definition](#questions) |
+
 ## Create Quiz
 
 **POST to /api/user/quizzes/create**
 
 ### Request Data
 
-A JSON object with the following keys.
-
-| Key                 | Required? | Type    | Description                                                  |
-| ------------------- | --------- | ------- | ------------------------------------------------------------ |
-| **title**           | Yes       | string  | Quiz title                                                   |
-| **audience**        |           | integer | Audience. Put 1 for Social, 2, for School.                   |
-| **introLink**       |           | url     | (Video) link introducing the quiz.                           |
-| **visibleTo**       |           | integer | Who may see the quiz? 1 for Everyone. 2 for only the creator |
-| **creditResources** |           | string  | Bibliography                                                 |
+JSON Object. [Use Quiz Data Definition (request)](#quiz-data-definition-request) but don't include the `id` key.
 
 ### Response Data
 
@@ -239,16 +208,7 @@ The response data will be an object whose keys are defined below.
 
 ### Request Data
 
-A JSON object with the following keys.
-
-| Key                 | Required? | Type    | Description                                                  |
-| ------------------- | --------- | ------- | ------------------------------------------------------------ |
-| **id**              | Yes       | integer | The quiz'd id                                                |
-| **title**           | Yes       | string  | Quiz title                                                   |
-| **audience**        |           | integer | Audience. Put 1 for Social, 2, for School.                   |
-| **introLink**       |           | url     | (Video) link introducing the quiz.                           |
-| **visibleTo**       |           | integer | Who may see the quiz? 1 for Everyone. 2 for only the creator |
-| **creditResources** |           | string  | Bibliography                                                 |
+JSON object. [Use Quiz Data Definition (request)](#quiz-data-definition-request).
 
 ### Response Data
 
@@ -278,20 +238,15 @@ No data. You'll just get an OK status.
 
 ### Request Data
 
-None
+Query string the the following keys.
+
+| Key    | Required | Type | Description                                                                                                                                            |
+| ------ | -------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **wq** |          | char | Set `'y'` to retrieve quiz with the questions associated with it. Ignore or set value to `'n'` if you only need the quiz record without the questions. |
 
 ### Response Data
 
-An array of JSON object with the following keys.
-
-| Key                 | Type    | Description                                                  |
-| ------------------- | ------- | ------------------------------------------------------------ |
-| **id**              | integer | The quiz'd id                                                |
-| **title**           | string  | Quiz title                                                   |
-| **audience**        | integer | Audience. Put 1 for Social, 2, for School.                   |
-| **introLink**       | url     | (Video) link introducing the quiz.                           |
-| **visibleTo**       | integer | Who may see the quiz? 1 for Everyone. 2 for only the creator |
-| **creditResources** | string  | Bibliography                                                 |
+An array of JSON objects. [Use Quiz Data Definition (response)](#quiz-data-definition-response)
 
 [Back to table of contents](#contents)
 
@@ -303,20 +258,15 @@ Where `:id` is the quiz's id, an integer.
 
 ### Request Data
 
-None
+Query string the the following keys.
+
+| Key    | Required | Type | Description                                                                                                                                            |
+| ------ | -------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **wq** |          | char | Set `'y'` to retrieve quiz with the questions associated with it. Ignore or set value to `'n'` if you only need the quiz record without the questions. |
 
 ### Response Data
 
-A JSON object with the following keys.
-
-| Key                 | Type    | Description                                                  |
-| ------------------- | ------- | ------------------------------------------------------------ |
-| **id**              | integer | The quiz'd id                                                |
-| **title**           | string  | Quiz title                                                   |
-| **audience**        | integer | Audience. Put 1 for Social, 2, for School.                   |
-| **introLink**       | url     | (Video) link introducing the quiz.                           |
-| **visibleTo**       | integer | Who may see the quiz? 1 for Everyone. 2 for only the creator |
-| **creditResources** | string  | Bibliography                                                 |
+A JSON object. [Use Quiz Data Definition (response)](#quiz-data-definition-response)
 
 [Back to table of contents](#contents)
 
@@ -324,22 +274,33 @@ A JSON object with the following keys.
 
 **GET to /api/user/quizzes/my**
 
+This retrieves all the quizzes set up by a given user. For this query, we'll only give you the quizzes and their questions. When you query a particular quiz for a user, we can then package all other info: people who participated, scores, etc.
+
 ### Request Data
 
-None
+Query string the the following keys.
+
+| Key    | Required | Type | Description                                                                                                                                            |
+| ------ | -------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **wq** |          | char | Set `'y'` to retrieve quiz with the questions associated with it. Ignore or set value to `'n'` if you only need the quiz record without the questions. |
 
 ### Response Data
 
-An array of JSON object with the following keys.
+An array of JSON objects. [Use Quiz Data Definition (response)](#quiz-data-definition-response)
 
-| Key                 | Type    | Description                                                  |
-| ------------------- | ------- | ------------------------------------------------------------ |
-| **id**              | integer | The quiz'd id                                                |
-| **title**           | string  | Quiz title                                                   |
-| **audience**        | integer | Audience. Put 1 for Social, 2, for School.                   |
-| **introLink**       | url     | (Video) link introducing the quiz.                           |
-| **visibleTo**       | integer | Who may see the quiz? 1 for Everyone. 2 for only the creator |
-| **creditResources** | string  | Bibliography                                                 |
+#### questions
+
+| Key                | Type    | Description                                                                                                                                        |
+| ------------------ | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **id**             | integer | The question id                                                                                                                                    |
+| **quizId**         | integer | The id of the quiz this this question belongs to                                                                                                   |
+| **question**       | string  | The question                                                                                                                                       |
+| **timeLimit**      | integer | Time limit **in seconds**                                                                                                                          |
+| **option1**        | string  | The 1st option                                                                                                                                     |
+| **option2**        | string  | The 2nd option                                                                                                                                     |
+| **option3**        | string  | The 3rd option                                                                                                                                     |
+| **option4**        | string  | The 4th option                                                                                                                                     |
+| **correctOptions** | string  | The correct option, specified as 1,2,3,or 4. When there are more than one correct options, the numbers are separated by comma (,). E.g. "1", "2,3" |
 
 [Back to table of contents](#contents)
 
@@ -351,62 +312,21 @@ Where `:id` is the quiz's id, an integer.
 
 ### Request Data
 
-None
+Query string the the following keys.
+
+| Key    | Required | Type | Description                                                                                                                                            |
+| ------ | -------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **wq** |          | char | Set `'y'` to retrieve quiz with the questions associated with it. Ignore or set value to `'n'` if you only need the quiz record without the questions. |
 
 ### Response Data
 
-A JSON object with the following keys.
-
-| Key                 | Type    | Description                                                  |
-| ------------------- | ------- | ------------------------------------------------------------ |
-| **id**              | integer | The quiz'd id                                                |
-| **title**           | string  | Quiz title                                                   |
-| **audience**        | integer | Audience. Put 1 for Social, 2, for School.                   |
-| **introLink**       | url     | (Video) link introducing the quiz.                           |
-| **visibleTo**       | integer | Who may see the quiz? 1 for Everyone. 2 for only the creator |
-| **creditResources** | string  | Bibliography                                                 |
+A JSON object. [Use Quiz Data Definition (response)](#quiz-data-definition-response)
 
 [Back to table of contents](#contents)
 
-============================
+# Quiz Question
 
-## Create Quiz Question
-
-**POST to /api/user/quizquestions/create**
-
-### Request Data
-
-A JSON object with the following keys.
-
-| Key                 | Required? | Type    | Description                                                                                                                                        |
-| ------------------- | --------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **question**        | Yes       | string  | The question                                                                                                                                       |
-| **timeLimit**       | Yes       | integer | Time limit **in seconds**                                                                                                                          |
-| **quizId**          | Yes       | integer | Id of the quiz this question belong to                                                                                                             |
-| **option1**         | Yes       | string  | 1st answer option                                                                                                                                  |
-| **option2**         | Yes       | string  | 2nd answer option                                                                                                                                  |
-| **option3**         |           | string  | 3rd answer option                                                                                                                                  |
-| **option4**         |           | string  | 4th answer option                                                                                                                                  |
-| **correctOptions**  | Yes       | string  | The correct option, specified as 1,2,3,or 4. When there are more than one correct options, the numbers are separated by comma (,). E.g. "1", "2,3" |  |
-| **introLink**       |           | url     | (Video) link introducing the quiz.                                                                                                                 |
-| **visibleTo**       |           | integer | Who may see the quiz? 1 for Everyone. 2 for only the creator                                                                                       |
-| **creditResources** |           | string  | Bibliography                                                                                                                                       |
-
-### Response Data
-
-The response data will be an object whose keys are defined below.
-
-| Key    | Type    | Description                |
-| ------ | ------- | -------------------------- |
-| **id** | integer | The new quiz question's id |
-
-[Back to table of contents](#contents)
-
-## Update Quiz Question
-
-**POST to /api/user/quizquestions/update**
-
-### Request Data
+### Quiz Question Data Definition (**request**)
 
 A JSON object with the following keys.
 
@@ -420,10 +340,61 @@ A JSON object with the following keys.
 | **option2**         | Yes       | string  | 2nd answer option                                                                                                                                  |
 | **option3**         |           | string  | 3rd answer option                                                                                                                                  |
 | **option4**         |           | string  | 4th answer option                                                                                                                                  |
-| **correctOptions**  | Yes       | string  | The correct option, specified as 1,2,3,or 4. When there are more than one correct options, the numbers are separated by comma (,). E.g. "1", "2,3" |  |
+| **correctOptions**  | Yes       | string  | The correct option, specified as 1,2,3,or 4. When there are more than one correct options, the numbers are separated by comma (,). E.g. "1", "2,3" |
+| **points**          |           | integer | Points to be earned if answered correctly.                                                                                                         |
+| **maxBonus**        |           | integer | Max bonus point to be awarded.                                                                                                                     |
 | **introLink**       |           | url     | (Video) link introducing the quiz.                                                                                                                 |
 | **visibleTo**       |           | integer | Who may see the quiz? 1 for Everyone. 2 for only the creator                                                                                       |
 | **creditResources** |           | string  | Bibliography                                                                                                                                       |
+
+### Quiz Question Data Definition (**response**)
+
+A JSON object with the following keys.
+
+| Key                 | Type    | Description                                                                                                                                        |
+| ------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **id**              | integer | The id of the record to update                                                                                                                     |
+| **question**        | string  | The question                                                                                                                                       |
+| **timeLimit**       | integer | Time limit **in seconds**                                                                                                                          |
+| **quizId**          | integer | Id of the quiz this question belong to                                                                                                             |
+| **option1**         | string  | 1st answer option                                                                                                                                  |
+| **option2**         | string  | 2nd answer option                                                                                                                                  |
+| **option3**         | string  | 3rd answer option                                                                                                                                  |
+| **option4**         | string  | 4th answer option                                                                                                                                  |
+| **correctOptions**  | string  | The correct option, specified as 1,2,3,or 4. When there are more than one correct options, the numbers are separated by comma (,). E.g. "1", "2,3" |  |
+| **points**          | integer | Points to be earned if answered correctly.                                                                                                         |
+| **maxBonus**        | integer | Max bonus point to be awarded.                                                                                                                     |
+| **introLink**       | url     | (Video) link introducing the quiz.                                                                                                                 |
+| **visibleTo**       | integer | Who may see the quiz? 1 for Everyone. 2 for only the creator                                                                                       |
+| **creditResources** | string  | Bibliography                                                                                                                                       |
+
+## Create Quiz Question
+
+**POST to /api/user/quizquestions/create**
+
+### Request Data
+
+JSON Object. [Use Quiz Question Data Definition (request)](#quiz-question-data-definition-request) but don't include the `id` key.
+
+### Response Data
+
+The response data will be an object whose keys are defined below. _points_ and _maxBonus_ are provided for convenience - for instance, when you want to use those values to pre-fill the next question setup for your users.
+
+| Key          | Type    | Description                                |
+| ------------ | ------- | ------------------------------------------ |
+| **id**       | integer | The new quiz question's id                 |
+| **points**   | integer | Points to be earned if answered correctly. |
+| **maxBonus** | integer | Max bonus point to be awarded.             |
+
+[Back to table of contents](#contents)
+
+## Update Quiz Question
+
+**POST to /api/user/quizquestions/update**
+
+### Request Data
+
+JSON Object. [Use Quiz Question Data Definition (request)](#quiz-question-data-definition-request).
 
 ### Response Data
 
@@ -461,22 +432,7 @@ Query string with the following keys.
 
 ### Response Data
 
-An array of JSON object with the following keys.
-
-| Key                 | Type    | Description                                                                                                                                        |
-| ------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **id**              | integer | The id of the record to update                                                                                                                     |
-| **question**        | string  | The question                                                                                                                                       |
-| **timeLimit**       | integer | Time limit **in seconds**                                                                                                                          |
-| **quizId**          | integer | Id of the quiz this question belong to                                                                                                             |
-| **option1**         | string  | 1st answer option                                                                                                                                  |
-| **option2**         | string  | 2nd answer option                                                                                                                                  |
-| **option3**         | string  | 3rd answer option                                                                                                                                  |
-| **option4**         | string  | 4th answer option                                                                                                                                  |
-| **correctOptions**  | string  | The correct option, specified as 1,2,3,or 4. When there are more than one correct options, the numbers are separated by comma (,). E.g. "1", "2,3" |  |
-| **introLink**       | url     | (Video) link introducing the quiz.                                                                                                                 |
-| **visibleTo**       | integer | Who may see the quiz? 1 for Everyone. 2 for only the creator                                                                                       |
-| **creditResources** | string  | Bibliography                                                                                                                                       |
+An array of JSON objects. [Use Quiz Question Data Definition (response)](#quiz-question-data-definition-response)
 
 [Back to table of contents](#contents)
 
@@ -496,21 +452,6 @@ Query string with the following keys.
 
 ### Response Data
 
-A JSON object with the following keys.
-
-| Key                 | Type    | Description                                                                                                                                        |
-| ------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **id**              | integer | The id of the record to update                                                                                                                     |
-| **question**        | string  | The question                                                                                                                                       |
-| **timeLimit**       | integer | Time limit **in seconds**                                                                                                                          |
-| **quizId**          | integer | Id of the quiz this question belong to                                                                                                             |
-| **option1**         | string  | 1st answer option                                                                                                                                  |
-| **option2**         | string  | 2nd answer option                                                                                                                                  |
-| **option3**         | string  | 3rd answer option                                                                                                                                  |
-| **option4**         | string  | 4th answer option                                                                                                                                  |
-| **correctOptions**  | string  | The correct option, specified as 1,2,3,or 4. When there are more than one correct options, the numbers are separated by comma (,). E.g. "1", "2,3" |  |
-| **introLink**       | url     | (Video) link introducing the quiz.                                                                                                                 |
-| **visibleTo**       | integer | Who may see the quiz? 1 for Everyone. 2 for only the creator                                                                                       |
-| **creditResources** | string  | Bibliography                                                                                                                                       |
+JSON object. [Use Quiz Question Data Definition (response)](#quiz-question-data-definition-response)
 
 [Back to table of contents](#contents)

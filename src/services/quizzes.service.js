@@ -64,13 +64,13 @@ export default class QuizService extends BaseEntityService {
     return quizCount[0].total;
   }
 
-  async getByUserId(userId) {
+  async getByUserId(userId, doNotGetQuestions = false) {
     if (!userId) return null;
 
-    return this.getBy({ userId: userId });
+    return await this.getBy({ userId: userId }, doNotGetQuestions);
   }
 
-  async getBy(equalityConditions) {
+  async getBy(equalityConditions, doNotGetQuestions = false) {
     if (!equalityConditions) return null;
 
     log.debug("Running quizservice.getBy with condition = %o", equalityConditions);
@@ -82,30 +82,42 @@ export default class QuizService extends BaseEntityService {
       log.debug("quizzes from db");
       log.debug(quizzes);
 
+      if (doNotGetQuestions) {
+        return quizzes;
+      }
+
+      // Now we're getting questions
       const qIds = quizzes.map(q => q.id);
       const questions = await new QuizQuestionService().getByQuizIds(qIds);
+      if (!questions) {
+        return quizzes;
+      }
 
+      // Now there are questions
       const quizzesDict = {};
       quizzes.forEach(q => {
         quizzesDict[q.id] = q;
       });
-      if (questions) {
-        // const questionsByQuizId = questions.reduce(
-        //   (entryMap, e) => entryMap.set(e.quizId, [...(entryMap.get(e.quizId) || []), e]),
-        //   new Map()
-        // );
-        const questionsByQuizId = questions.reduce((entryMap, e) => {
-          entryMap[e.quizId] = entryMap[e.quizId] || [];
-          entryMap[e.quizId].push(e);
-          return entryMap;
-        }, Object.create(null));
-        for (const qn in questionsByQuizId) {
-          quizzesDict[qn].questions = questionsByQuizId[qn];
-        }
+      // const questionsByQuizId = questions.reduce(
+      //   (entryMap, e) => entryMap.set(e.quizId, [...(entryMap.get(e.quizId) || []), e]),
+      //   new Map()
+      // );
+      const questionsByQuizId = questions.reduce((entryMap, e) => {
+        entryMap[e.quizId] = entryMap[e.quizId] || [];
+        entryMap[e.quizId].push(e);
+        return entryMap;
+      }, Object.create(null));
+      for (const qn in questionsByQuizId) {
+        quizzesDict[qn].questions = questionsByQuizId[qn];
+      }
+
+      quizzes.length = 0; // clear the array
+      for (const qn in quizzesDict) {
+        quizzes.push(quizzesDict[qn]);
       }
       log.debug("quizzes with their questions");
-      log.debug(quizzesDict);
-      return quizzesDict;
+      log.debug(quizzes);
+      return quizzes;
     }
 
     return null;

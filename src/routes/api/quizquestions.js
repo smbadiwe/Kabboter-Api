@@ -1,10 +1,10 @@
 import Router from "koa-router";
-import { QuizService, QuizQuestionService } from "../../services";
+import { QuizQuestionService } from "../../services";
 import { validateQuizQuestionProps, validateInteger } from "./quizquestions.validate";
 
-const router = new Router({ prefix: "/api/user" });
+const router = new Router({ prefix: "/api/user/quizquestions" });
 
-router.get("/quizquestions/:id", async ctx => {
+router.get("/:id", async ctx => {
   try {
     const quizId = ctx.request.query.quizId;
     const recordId = ctx.params.id;
@@ -17,7 +17,7 @@ router.get("/quizquestions/:id", async ctx => {
   }
 });
 
-router.get("/quizquestions", async ctx => {
+router.get("/", async ctx => {
   try {
     const quizId = ctx.request.query.quizId;
     validateInteger(quizId);
@@ -28,29 +28,29 @@ router.get("/quizquestions", async ctx => {
   }
 });
 
-router.post("/quizquestions/create", async ctx => {
+router.post("/create", async ctx => {
   try {
     validateQuizQuestionProps(ctx.request.body);
 
-    const res = await new QuizQuestionService().create(ctx.request.body);
+    const res = await new QuizQuestionService().save(ctx.request.body);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
   }
 });
 
-router.post("/quizquestions/update", async ctx => {
+router.post("/update", async ctx => {
   try {
     validateQuizQuestionProps(ctx.request.body, true);
 
-    const res = await new QuizQuestionService().edit(ctx.request.body);
+    const res = await new QuizQuestionService().update(ctx.request.body);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
   }
 });
 
-router.post("/quizquestions/delete/:id", async ctx => {
+router.post("/delete/:id", async ctx => {
   try {
     validateInteger(ctx.params.id);
     const res = await new QuizQuestionService().daleteRecord(ctx.params.id);

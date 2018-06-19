@@ -2,6 +2,12 @@ import { readdirSync, statSync } from "fs";
 import { join, relative } from "path";
 import upath from "upath";
 
+/**
+ * Generate a 7-digit number as PIN
+ */
+export function generatePin() {
+  return Math.floor(Math.random() * 9000000) + 1000000;
+}
 export function listFilesInFolderRecursively(dir, filesToExclude = [], filelist = []) {
   const files = readdirSync(dir);
   files.forEach(function(file) {
