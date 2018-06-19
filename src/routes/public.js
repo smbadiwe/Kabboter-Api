@@ -38,7 +38,7 @@ router.get("/initdb", async ctx => {
     const path = require("path");
     console.log("from /initdb: __dirname;");
     console.log(BASE_PATH);
-    let config = knexfile.development;
+    let config = knexfile[process.env.NODE_ENV || "development"];
     config.knexfile = path.join(BASE_PATH, "../db/knexfile.js");
     console.log(config);
     await knex.migrate.latest(config);

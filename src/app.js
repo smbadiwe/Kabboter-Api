@@ -12,7 +12,7 @@ app.keys = new KeyGrip(keys, "sha256");
 app.use(middleware());
 app.use(routes());
 // Finally
-app.use(ctx => (ctx.status = 404));
+// app.use(ctx => (ctx.status = 404));
 app.on("error", (err, ctx) => {
   log.error(`Error processing request: ${ctx.request.method} ${ctx.request.url}...`);
   log.error(err);
