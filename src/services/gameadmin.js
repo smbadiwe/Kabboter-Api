@@ -6,15 +6,18 @@ socket.on("get-next-question", question => {
   // Render fields as you would like it.
 });
 
-socket.on("someone-just-joined", player => {
+socket.on("someone-just-joined", latestPlayer => {
   playerIO.in(roomNo).clients((err, clients) => {
-    console.log(clients); // an array containing socket ids in 'room3'
+    const nPlayers = clients.length;
+
+    console.log("Number of players currently: " + nPlayers);
   });
 });
 
 socket.on("someone-just-left", player => {
   playerIO.in(roomNo).clients((err, clients) => {
-    console.log(clients); // an array containing socket ids in 'room3'
+    const nPlayers = clients.length;
+    console.log("Number of players currently: " + nPlayers);
   });
 });
 
@@ -35,11 +38,29 @@ socket.on("disconnect", reason => {
  * Call this function as soon as you can on page load
  */
 function authenticateAdmin() {
+  // Server sends this info on successful login, as a JSON: { token: ..., user: {...} }
+  // I'm assuming you saved it somewhere in local storage, with key: userInfo.
   const userInfo = localStorage.getItem("userInfo");
-  const auth = { userInfo: userInfo };
+  const pin = getQueryStringParams().pin;
+  const auth = { pin: pin, userInfo: userInfo };
   socket.emit("authenticate", auth, error => {
     alert(error);
   });
 }
 
-authenticateAdmin();
+function getQueryStringParams(queryString) {
+  if (!queryString) {
+    queryString = window.location.search;
+  }
+  if (!queryString) {
+    return {};
+  }
+
+  return (/^[?#]/.test(queryString) ? queryString.slice(1) : queryString)
+    .split("&")
+    .reduce((params, param) => {
+      let [key, value] = param.split("=");
+      params[key] = value ? decodeURIComponent(value.replace(/\+/g, " ")) : "";
+      return params;
+    }, {});
+}

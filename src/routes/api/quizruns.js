@@ -29,7 +29,8 @@ function launchSocketIO(quizRunInfo) {
   const playerIO = io.of(`/quizplayer`);
   adminIO.on("connection", function(socket) {
     socket.authenticated = false;
-    // On connect, the client should get a token and run socket.emit('authenticate', {token: token})
+
+    //  data = { pin: pin, userInfo: userInfo }; // userInfo as provided during login
     socket.on("authenticate", data => {
       //const token = data.token
 
