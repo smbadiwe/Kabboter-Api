@@ -1,9 +1,9 @@
 // changing this to ES6 style is problematic.
 require("babel-register");
 const path = require("path");
-const BASE_PATH = "../../"; // process.cwd();
+const BASE_PATH = __dirname;
 const dotenv = require("dotenv");
-dotenv.load({ path: "../../.env" });
+dotenv.load({ path: path.join(BASE_PATH, "/.env") });
 module.exports = {
   test: {
     client: "sqlite3",

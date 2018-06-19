@@ -1,5 +1,6 @@
 import compose from "koa-compose";
 import { listFilesInFolderRecursively } from "../utils";
+import log from "../utils/log";
 
 export default function routes() {
   const allRoutes = getExportedRoutes(getRouterMiddlewares);
@@ -13,11 +14,15 @@ export function getRoutesRequiringAuthorization() {
 
 function getExportedRoutes(postProcess) {
   const allRoutes = [];
+  log.debug("__dirname: " + __dirname);
+  log.debug("__filename: " + __filename);
   const files = listFilesInFolderRecursively(__dirname, [__filename]);
+  const path = require("path");
   files.forEach(item => {
     if (item && !item.endsWith(".validate.js") && item.endsWith(".js")) {
-      item = item.replace("src/routes", ".").replace(".js", "");
-      const router = require(item);
+      const relPath = "./" + path.relative(__dirname, item).replace(".js", "");
+      log.debug("route file path being required: " + relPath);
+      const router = require(relPath);
       postProcess(router, allRoutes);
     }
   });

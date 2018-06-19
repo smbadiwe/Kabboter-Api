@@ -1,9 +1,11 @@
-import { getRoutesRequiringAuthorization } from "../src/routes";
-import Enums from "../src/services/enums";
+import { getRoutesRequiringAuthorization } from "../../routes";
+import Enums from "../../services/enums";
 import { hashSync, genSaltSync } from "bcrypt";
 
 export async function seed(knex) {
   // Deletes ALL existing entries
+  await knex("quizquestions").del();
+  await knex("quizzes").del();
   await knex("users").del();
   await knex("emailaccounts").del();
   await knex("permissions").del();

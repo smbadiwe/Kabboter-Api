@@ -1,8 +1,9 @@
 import config from "knex";
 import * as knexfile from "./knexfile";
+import log from "../utils/log";
 
 const environment = process.env.NODE_ENV || "development";
-console.log("NODE_ENV: " + environment);
+log.debug("NODE_ENV: " + environment);
 let knexConfiguration;
 switch (environment) {
   case "production":
@@ -20,6 +21,7 @@ switch (environment) {
     break;
 }
 
+log.debug("Knex configurations: %O", knexConfiguration);
 const knex = config(knexConfiguration);
 
 export default knex;
