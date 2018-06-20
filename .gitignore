@@ -6,9 +6,15 @@ dist
 
 # config file
 .env
+web.config
+app.yaml
 
 # test db
 dev.sqlite3
 
 #VS Code folder
 .vscode
+
+# zip files
+*.zip
+*.rar
