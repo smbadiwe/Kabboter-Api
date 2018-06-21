@@ -50,61 +50,27 @@ export default class UserService extends BaseEntityService {
   }
 
   async processUserRegistration(userRegInfo) {
-    const user = await this.getByUsername(userRegInfo.username);
-    if (user && !user.disabled) {
-      throw new RequestError("Sorry, we already have someone with the username specified.");
-    }
-
-    let userId = 0;
+    let user = await this.getByUsername(userRegInfo.username);
     if (user) {
-      // => it's disabled, so it has not been used
-      userId = user.id;
-      let callUpdate = false;
-      if (user.firstname !== userRegInfo.firstname) {
-        user.firstname = userRegInfo.firstname;
-        callUpdate = true;
-      }
-      const isPwdSame = await compare(userRegInfo.password, user.passwordHash);
-      if (!isPwdSame) {
-        user.passwordHash = hashSync(userRegInfo.password, genSaltSync());
-        callUpdate = true;
-      }
-      if (user.lastname !== userRegInfo.lastname) {
-        user.lastname = userRegInfo.lastname;
-        callUpdate = true;
-      }
-      if (user.usertype !== userRegInfo.usertype) {
-        user.usertype = userRegInfo.usertype;
-        callUpdate = true;
-      }
-      if (callUpdate) {
-        await this.update(user);
-      }
-    } else {
-      user = {
-        firstname: userRegInfo.firstname,
-        organization: userRegInfo.organization,
-        lastname: userRegInfo.lastname,
-        email: userRegInfo.email,
-        phone: userRegInfo.phone,
-        username: userRegInfo.username,
-        passwordHash: hashSync(userRegInfo.password, genSaltSync()),
-        usertype: userRegInfo.usertype
-      };
-      const savedUserId = await this.save(newUser);
-      userId = savedUserId[0];
+      throw new RequestError(
+        "Sorry, we already have someone with the username specified. Use the 'Forgot Password' link if you forgot your password."
+      );
     }
-    const userInfo = { u: userId, p: user.passwordHash };
-    const token = sign(userInfo, process.env.APP_SECRET, {
-      expiresIn: "20m"
-    });
 
-    // Email the token
-    const verifyUrl = `${userRegInfo.url}?token=${token}`;
-    const viewData = { title: "Verify Email Address", url: verifyUrl };
-    const options = { to: userRegInfo.email, subject: viewData.title };
-    const sent = await new Emailer().sendEmail(options, "verifyemail.html", viewData);
-    log.debug("Email sender returned: %j", sent);
+    user = {
+      firstname: userRegInfo.firstname,
+      organization: userRegInfo.organization,
+      lastname: userRegInfo.lastname,
+      email: userRegInfo.email,
+      phone: userRegInfo.phone,
+      username: userRegInfo.username,
+      passwordHash: hashSync(userRegInfo.password, genSaltSync()),
+      usertype: userRegInfo.usertype
+    };
+    await this.save(user);
+
+    // log the user in
+    return await this.processLogin(userRegInfo.username, userRegInfo.password, true);
   }
 
   async getByEmail(email) {

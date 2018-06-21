@@ -4,14 +4,13 @@ import logger from "koa-logger";
 import cors from "koa-cors";
 import convert from "koa-convert";
 import bodyParser from "koa-bodyparser";
-import session from "koa-generic-session";
-import { sign, verify } from "jsonwebtoken";
-// import { PermissionService } from "./services";
+//import session from "koa-session";
+import { verify } from "jsonwebtoken";
 
 function corsConfig() {
   const accessControlMaxAge = "1200";
 
-  const allowedOrigins = ["http://localhost:8080", "http://localhost:2001"];
+  const allowedOrigins = "*";
 
   const accessControlAllowMethods = ["OPTIONS", "GET", "POST", "PUT", "DELETE", "HEAD"];
 
@@ -55,7 +54,7 @@ async function handleError(ctx, next) {
     await next();
   } catch (err) {
     ctx.status = err.status || 500;
-    ctx.body = err.message;
+    ctx.message = err.message;
     ctx.app.emit("error", err, ctx);
   }
 }
@@ -98,7 +97,7 @@ export default function middleware() {
   return compose([
     helmet(),
     bodyParser(),
-    convert(session()),
+    //convert(session()),
     logger(),
     handleError,
     convert(cors(corsConfig())),

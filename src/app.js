@@ -16,7 +16,7 @@ app.use(routes());
 app.on("error", (err, ctx) => {
   log.error(`Error processing request: ${ctx.request.method} ${ctx.request.url}...`);
   log.error(err);
-  /* centralized error handling:
+  /* TODO: centralized error handling:
    *   console.log error
    *   write error to log file
    *   save error and request information to database if ctx.request match condition
