@@ -274,7 +274,7 @@ A JSON object. [Use Quiz Data Definition (response)](#quiz-data-definition-respo
 
 **GET to /api/user/quizzes/my**
 
-This retrieves all the quizzes set up by a given user. For this query, we'll only give you the quizzes and their questions. When you query a particular quiz for a user, we can then package all other info: people who participated, scores, etc.
+This retrieves all the quizzes set up by a given user. For this query, we'll only give you the quizzes and their questions, at best. If you want the questions, set `wq=y` in query string. In the future, when you query a particular quiz for a user, we can then package all other info: people who participated, scores, etc.
 
 ### Request Data
 

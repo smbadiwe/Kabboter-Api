@@ -51,10 +51,9 @@ router.get("/", async ctx => {
 
 router.post("/create", async ctx => {
   try {
-    const userId = ctx.request.user.id;
-    validateInteger(userId);
     validateQuizProps(ctx.request.body);
 
+    const userId = ctx.request.user.id;
     const res = await new QuizService().create(userId, ctx.request.body);
     ctx.body = res;
   } catch (e) {

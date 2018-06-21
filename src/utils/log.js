@@ -12,15 +12,15 @@ error_.log = console.error.bind(console);
 const log = {
   error: function(formatter, ...args) {
     error_(formatter, ...args);
-    console.error(this.debug.namespace + "| " + util.format(formatter, ...args));
+    // console.error(error_.namespace + "| " + util.format(formatter, ...args));
   },
   debug: function(formatter, ...args) {
     debug_(formatter, ...args);
-    console.log(this.debug.namespace + "| " + util.format(formatter, ...args));
+    // console.log(debug_.namespace + "| " + util.format(formatter, ...args));
   },
   setNamespace: function(nameSpace) {
-    this.debug.namespace = `${this.debug.namespace}:${nameSpace}`;
-    this.error.namespace = `${this.error.namespace}:${nameSpace}`;
+    debug_.namespace = `${debug_.namespace}:${nameSpace}`;
+    error_.namespace = `${error_.namespace}:${nameSpace}`;
   }
 };
 
