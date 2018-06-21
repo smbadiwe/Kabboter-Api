@@ -5,7 +5,8 @@ const socket = io("/quizplayer");
 
 socket.on("get-next-question", async question => {
   // This is a question object as defined in the API doc.
-  // Render fields as you would like it.
+  // Render fields as you would like it.Depending, you may,
+  // want to only render the answers. Whatever!
 });
 
 socket.on("submit-answer", data => {
@@ -14,7 +15,7 @@ socket.on("submit-answer", data => {
 });
 
 socket.on("get-quiz-pin", pin => {
-  // Server sends this info on successful login, as a JSON: { token: ..., user: {...} }
+  // Server sent you this info on successful login, as a JSON: { token: ..., user: {...} }
   // I'm assuming you saved it somewhere in local storage, with key: userInfo.
   const userInfo = localStorage.getItem("userInfo");
   const auth = { pin: pin, userInfo: userInfo };
@@ -30,6 +31,8 @@ socket.on("error", error => {
 });
 
 socket.on("disconnect", reason => {
+  // Tell admin that someone just disconnected
+  io.of("/quizadmin").emit("someone-just-left", socket.id, onError);
   if (reason === "io server disconnect") {
     // the disconnection was initiated by the server, you need to reconnect manually
     socket.connect();

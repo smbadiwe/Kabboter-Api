@@ -6,21 +6,21 @@ const socket = io("/quizadmin");
 socket.on("get-next-question", question => {
   // This is a question object as defined in the API doc.
   // Render fields as you would like it.
+  console.log(question);
 });
 
-socket.on("someone-just-joined", latestPlayer => {
-  playerIO.in(roomNo).clients((err, clients) => {
-    const nPlayers = clients.length;
-
-    console.log("Number of players currently: " + nPlayers);
-  });
+socket.on("someone-just-joined", payload => {
+  // payload = { nPlayers: nPlayers, topFive: topFive };
+  // You get the total number of players still connecting
+  // and a list of the top 5 to display on page.
+  console.log(payload);
 });
 
-socket.on("someone-just-left", player => {
-  playerIO.in(roomNo).clients((err, clients) => {
-    const nPlayers = clients.length;
-    console.log("Number of players currently: " + nPlayers);
-  });
+socket.on("someone-just-left", payload => {
+  // payload = { nPlayers: nPlayers, topFive: topFive };
+  // You get the total number of players still connecting
+  // and a list of the top 5 to display on page.
+  console.log(payload);
 });
 
 socket.on("error", error => {

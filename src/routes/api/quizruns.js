@@ -56,13 +56,21 @@ function launchSocketIO(quizRunInfo) {
 
     socket.on("someone-just-joined", player => {
       playerIO.in(roomNo).clients((err, clients) => {
-        console.log(clients); // an array containing socket ids in 'room3'
+        const nPlayers = clients.length;
+        const topFive = clients.slice(0, 5);
+        // Inform admin so she can display on UI
+        const payload = { nPlayers: nPlayers, topFive: topFive };
+        adminIO.in(roomNo).emit("someone-just-joined", payload);
       });
     });
 
-    socket.on("someone-just-left", player => {
+    socket.on("someone-just-left", (socketId, onError) => {
       playerIO.in(roomNo).clients((err, clients) => {
-        console.log(clients); // an array containing socket ids in 'room3'
+        const nPlayers = clients.length;
+        const topFive = clients.slice(0, 5);
+        // Inform admin so she can display on UI
+        const payload = { nPlayers: nPlayers, topFive: topFive };
+        adminIO.in(roomNo).emit("someone-just-left", payload);
       });
     });
 
