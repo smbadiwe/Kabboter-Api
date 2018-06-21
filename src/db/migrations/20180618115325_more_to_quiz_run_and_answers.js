@@ -12,6 +12,12 @@ export async function up(knex) {
       t.integer("points").defaultTo(0);
       t.integer("bonus").defaultTo(0);
     })
+    .table("quizzes", t => {
+      t.string("description");
+    })
+    .table("surveys", t => {
+      t.string("description");
+    })
     .table("users", t => {
       t.string("phone");
     });
@@ -21,6 +27,12 @@ export async function down(knex) {
   return await knex.schema
     .table("users", t => {
       t.dropColumn("phone");
+    })
+    .table("quizzes", t => {
+      t.dropColumn("description");
+    })
+    .table("surveys", t => {
+      t.dropColumn("description");
     })
     .table("quizruns", t => {
       t.dropColumn("awardPoints");

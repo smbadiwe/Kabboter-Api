@@ -1,41 +1,49 @@
 import Router from "koa-router";
 import { SurveyService } from "../../services";
-import { validateQuizProps, validateInteger } from "./surveys.validate";
+import { validateSurveyProps, validateInteger } from "./surveys.validate";
 
-const router = new Router({ prefix: "/api/user" });
+const router = new Router({ prefix: "/api/user/surveys" });
 
-router.get("/surveys/my/:id", async ctx => {
+router.get("/my/:id", async ctx => {
   try {
     validateInteger(ctx.params.id);
+    const wq = ctx.request.query.wq;
+    const withoutQuestions = !wq || wq !== "y";
     const userId = ctx.request.user.id;
-    const res = await new SurveyService().getBy({ userId: userId, id: ctx.params.id });
+    const res = await new SurveyService().getBy(
+      { userId: userId, id: ctx.params.id },
+      withoutQuestions
+    );
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
   }
 });
-router.get("/surveys/my", async ctx => {
+router.get("/my", async ctx => {
   try {
     const userId = ctx.request.user.id;
-    const res = await new SurveyService().getByUserId(userId);
+    const wq = ctx.request.query.wq;
+    const withoutQuestions = !wq || wq !== "y";
+    const res = await new SurveyService().getByUserId(userId, withoutQuestions);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
   }
 });
 
-router.get("/surveys/:id", async ctx => {
+router.get("/:id", async ctx => {
   try {
     validateInteger(ctx.params.id);
-    const userId = ctx.request.user.id;
-    const res = await new SurveyService().getByUserId(userId);
+    const wq = ctx.request.query.wq;
+    const withoutQuestions = !wq || wq !== "y";
+    const res = await new SurveyService().getBy({ id: ctx.params.id }, withoutQuestions);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
   }
 });
 
-router.get("/surveys", async ctx => {
+router.get("/", async ctx => {
   try {
     const res = await new SurveyService().getAll();
     ctx.body = res;
@@ -44,9 +52,9 @@ router.get("/surveys", async ctx => {
   }
 });
 
-router.post("/surveys/create", async ctx => {
+router.post("/create", async ctx => {
   try {
-    validateQuizProps(ctx.request.body);
+    validateSurveyProps(ctx.request.body);
 
     const userId = ctx.request.user.id;
     const res = await new SurveyService().create(userId, ctx.request.body);
@@ -56,21 +64,21 @@ router.post("/surveys/create", async ctx => {
   }
 });
 
-router.post("/surveys/update", async ctx => {
+router.post("/update", async ctx => {
   try {
-    validateQuizProps(ctx.request.body, true);
+    validateSurveyProps(ctx.request.body, true);
 
-    const res = await new SurveyService().edit(ctx.request.body);
+    const res = await new SurveyService().update(ctx.request.body);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
   }
 });
 
-router.post("/surveys/delete/:id", async ctx => {
+router.post("/delete/:id", async ctx => {
   try {
     validateInteger(ctx.params.id);
-    const res = await new SurveyService().daleteRecord(ctx.params.id);
+    const res = await new SurveyService().deleteRecord(ctx.params.id);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);

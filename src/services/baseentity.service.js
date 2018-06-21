@@ -106,7 +106,7 @@ export class BaseEntityService {
    * Delete all record that match the given equality conditions. E.g. {id: 4 }.
    * All fields must be within the table. No joins.
    */
-  async daletePermanently(equalityConditions) {
+  async deletePermanently(equalityConditions) {
     if (equalityConditions)
       return await this.connector
         .table(this.tableName)

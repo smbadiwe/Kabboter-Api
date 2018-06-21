@@ -8,9 +8,12 @@ router.get("/my/:id", async ctx => {
   try {
     validateInteger(ctx.params.id);
     const wq = ctx.request.query.wq;
-    const withQuestions = wq && wq === "y";
+    const withoutQuestions = !wq || wq !== "y";
     const userId = ctx.request.user.id;
-    const res = await new QuizService().getBy({ userId: userId, id: ctx.params.id }, withQuestions);
+    const res = await new QuizService().getBy(
+      { userId: userId, id: ctx.params.id },
+      withoutQuestions
+    );
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
@@ -20,8 +23,8 @@ router.get("/my", async ctx => {
   try {
     const userId = ctx.request.user.id;
     const wq = ctx.request.query.wq;
-    const withQuestions = wq && wq === "y";
-    const res = await new QuizService().getByUserId(userId, withQuestions);
+    const withoutQuestions = !wq || wq !== "y";
+    const res = await new QuizService().getByUserId(userId, withoutQuestions);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
@@ -32,8 +35,8 @@ router.get("/:id", async ctx => {
   try {
     validateInteger(ctx.params.id);
     const wq = ctx.request.query.wq;
-    const withQuestions = wq && wq === "y";
-    const res = await new QuizService().getBy({ id: ctx.params.id }, withQuestions);
+    const withoutQuestions = !wq || wq !== "y";
+    const res = await new QuizService().getBy({ id: ctx.params.id }, withoutQuestions);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
@@ -65,7 +68,7 @@ router.post("/update", async ctx => {
   try {
     validateQuizProps(ctx.request.body, true);
 
-    const res = await new QuizService().edit(ctx.request.body);
+    const res = await new QuizService().update(ctx.request.body);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
@@ -75,7 +78,7 @@ router.post("/update", async ctx => {
 router.post("/delete/:id", async ctx => {
   try {
     validateInteger(ctx.params.id);
-    const res = await new QuizService().daleteRecord(ctx.params.id);
+    const res = await new QuizService().deleteRecord(ctx.params.id);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);

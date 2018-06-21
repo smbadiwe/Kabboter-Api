@@ -19,8 +19,8 @@ const log = {
     // console.log(debug_.namespace + "| " + util.format(formatter, ...args));
   },
   setNamespace: function(nameSpace) {
-    debug_.namespace = `${debug_.namespace}:${nameSpace}`;
-    error_.namespace = `${error_.namespace}:${nameSpace}`;
+    debug_.namespace = `${process.env.APP_NAME}:debug:${nameSpace}`;
+    error_.namespace = `${process.env.APP_NAME}:error:${nameSpace}`;
   }
 };
 

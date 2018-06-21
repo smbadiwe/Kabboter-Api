@@ -9,14 +9,14 @@ export default class QuizService extends BaseEntityService {
     log.setNamespace("QuizService");
   }
 
-  async daleteRecord(id) {
+  async deleteRecord(id) {
     const hasRun = await new QuizRunService().hasQuizBeenRun(id);
     if (hasRun)
       throw new RequestError(
         "The quiz you want to delete has been played and the scores exist. You can no longer delete it."
       );
 
-    await new QuizQuestionService().daletePermanently({ quizId: id });
+    await new QuizQuestionService().deletePermanently({ quizId: id });
     await super.deleteRecord(id);
   }
 
@@ -28,6 +28,7 @@ export default class QuizService extends BaseEntityService {
   async create(userId, payload) {
     const quiz = {
       title: payload.title,
+      description: payload.description,
       audience: payload.audience || Enums.Audience.Social,
       introLink: payload.introLink,
       visibleTo: payload.visibleTo || Enums.VisibleTo.Everyone,
@@ -38,16 +39,17 @@ export default class QuizService extends BaseEntityService {
     return { id: res[0] }; // the id of the newly saved record
   }
 
-  async edit(payload) {
+  async update(payload) {
     const quiz = {
       id: payload.id,
       title: payload.title,
+      description: payload.description,
       audience: payload.audience || Enums.Audience.Social,
       introLink: payload.introLink,
       visibleTo: payload.visibleTo || Enums.VisibleTo.Everyone,
       creditResources: payload.creditResources
     };
-    await this.update(quiz);
+    await super.update(quiz);
   }
 
   /**
