@@ -37,7 +37,8 @@ socket.on("disconnect", reason => {
 });
 
 /**
- * Call this function as soon as you can on page load
+ * Call this function as soon as you can on page load.
+ * The URL loading the page MUST pass pin via querystring, with key: 'pin'
  */
 export function authenticateAdmin() {
   // Server sends this info on successful login, as a JSON: { token: ..., user: {...} }
