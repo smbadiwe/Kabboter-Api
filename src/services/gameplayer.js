@@ -1,4 +1,6 @@
 // Sample client code for game player
+import io from "socket.io-client";
+
 const socket = io("/quizplayer");
 
 socket.on("get-next-question", async question => {
@@ -36,13 +38,13 @@ socket.on("disconnect", reason => {
 });
 
 /**
- * Submit answer to a quiz question.
- *
+ * Submit answer to a quiz question via socket.
+ * TODO: package the answerInfo object and pass it to this method.
  * answerInfo should be a JSON with these keys:
  * { pin: 'w323', userId: 3, quizQuestionId: 2, choice: 1, correct: true,  bonus: 4, points: 12 }
  * @param {*} answerInfo
  */
-function submitAnswer(answerInfo) {
+export function submitAnswer(answerInfo) {
   socket.emit("submit-answer", answerInfo, onError);
 }
 
@@ -64,7 +66,7 @@ function onError(errorMessage) {
  * @param {*} timeCount Time count when player submitted an answer. We assume count goes from 0mto maxTimeCount.
  * @param {*} answeredCorrectly True if player answered correctly. False otherwise.
  */
-function getBonus(maxBonus, maxTimeCount, timeCount, answeredCorrectly = true) {
+export function getBonus(maxBonus, maxTimeCount, timeCount, answeredCorrectly = true) {
   if (!answeredCorrectly) return 0;
   /*
     Let max bonus be B, with values, b, going from 0 to B.

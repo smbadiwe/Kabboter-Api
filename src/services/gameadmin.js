@@ -1,4 +1,6 @@
 // Sample client code for game admin
+import io from "socket.io-client";
+
 const socket = io("/quizadmin");
 
 socket.on("get-next-question", question => {
@@ -37,7 +39,7 @@ socket.on("disconnect", reason => {
 /**
  * Call this function as soon as you can on page load
  */
-function authenticateAdmin() {
+export function authenticateAdmin() {
   // Server sends this info on successful login, as a JSON: { token: ..., user: {...} }
   // I'm assuming you saved it somewhere in local storage, with key: userInfo.
   const userInfo = localStorage.getItem("userInfo");
