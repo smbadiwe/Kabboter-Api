@@ -4,7 +4,7 @@ import logger from "koa-logger";
 import cors from "koa-cors";
 import convert from "koa-convert";
 import bodyParser from "koa-bodyparser";
-//import session from "koa-session";
+import log from "./utils/log";
 import { verify } from "jsonwebtoken";
 
 function corsConfig() {
@@ -76,6 +76,7 @@ user model:
 async function authorizeRequest(ctx, next) {
   if (ctx.request.url.startsWith("/api/")) {
     let token = getTokenFromHeaderOrQuerystring(ctx.request);
+    // log.debug("%s - token: %s", ctx.request.url, token);
     const decodedToken = verify(token, process.env.APP_SECRET);
     if (!decodedToken) {
       ctx.throw(401, "No jwt token");
@@ -87,7 +88,12 @@ async function authorizeRequest(ctx, next) {
     // }
 
     //finally
-    ctx.request.user = decodedToken;
+    // log.debug("%s - decoded token: %O", ctx.request.url, decodedToken);
+    ctx.request.user = {
+      id: decodedToken.i,
+      username: decodedToken.u,
+      permissions: decodedToken.p
+    };
   }
 
   await next();

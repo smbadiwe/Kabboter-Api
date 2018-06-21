@@ -11,11 +11,17 @@ export async function up(knex) {
     .table("quizanswers", t => {
       t.integer("points").defaultTo(0);
       t.integer("bonus").defaultTo(0);
+    })
+    .table("users", t => {
+      t.string("phone");
     });
 }
 
 export async function down(knex) {
   return await knex.schema
+    .table("users", t => {
+      t.dropColumn("phone");
+    })
     .table("quizruns", t => {
       t.dropColumn("awardPoints");
       t.dropColumn("awardBonus");

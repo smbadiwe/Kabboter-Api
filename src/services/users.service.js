@@ -3,7 +3,7 @@ import { UserRoleService, PermissionService, QuizService } from "./";
 import { RequestError, Required } from "../utils/ValidationErrors";
 import { sign, verify } from "jsonwebtoken";
 import { compare, hashSync, genSaltSync } from "bcrypt";
-import Emailer from "../utils/Emailer";
+import { generatePin } from "../utils";
 import log from "../utils/log";
 
 export default class UserService extends BaseEntityService {
@@ -50,20 +50,28 @@ export default class UserService extends BaseEntityService {
   }
 
   async processUserRegistration(userRegInfo) {
-    let user = await this.getByUsername(userRegInfo.username);
+    let user = await this.getByEmailOrPhone(userRegInfo.email, userRegInfo.phone);
     if (user) {
       throw new RequestError(
         "Sorry, we already have someone with the username specified. Use the 'Forgot Password' link if you forgot your password."
       );
     }
+    let username;
+    do {
+      username =
+        userRegInfo.lastname.substring(0, 2) +
+        userRegInfo.firstname.substring(0, 2) +
+        generatePin();
 
+      user = await this.getByUsername(username);
+    } while (!user);
     user = {
       firstname: userRegInfo.firstname,
       organization: userRegInfo.organization,
       lastname: userRegInfo.lastname,
       email: userRegInfo.email,
       phone: userRegInfo.phone,
-      username: userRegInfo.username,
+      username: username,
       passwordHash: hashSync(userRegInfo.password, genSaltSync()),
       usertype: userRegInfo.usertype
     };
@@ -89,6 +97,28 @@ export default class UserService extends BaseEntityService {
       .first();
   }
 
+  async getByEmailOrPhone(email, phone) {
+    if (!email && !username) return null;
+    if (email && !phone) {
+      return await this.connector
+        .table(this.tableName)
+        .where({ email: email })
+        .first();
+    }
+    if (phone && !email) {
+      return await this.connector
+        .table(this.tableName)
+        .where({ phone: phone })
+        .first();
+    }
+
+    return await this.connector
+      .table(this.tableName)
+      .where({ email: email })
+      .orWhere({ phone: phone })
+      .first();
+  }
+
   async getByEmailOrUsername(email, username) {
     if (!email && !username) return null;
     if (!email && username) {
@@ -108,7 +138,13 @@ export default class UserService extends BaseEntityService {
   }
 
   async processLogin(username, password, rememberme) {
-    const user = await this.getByUsername(username);
+    const user = await this.connector
+      .table(this.tableName)
+      .where({ username: username })
+      .orWhere({ phone: username })
+      .orWhere({ email: username })
+      .first();
+
     if (!user) {
       throw new RequestError("Username or password incorrect");
     }
