@@ -6,24 +6,25 @@
 const socket = io("/quizplayer");
 
 function onReceiveNextQuestion(question) {
-  // This is a question object as defined in the API doc.
-  // Render fields as you would like it. Depending, you may,
+  //TODO: This is a question object as defined in the API doc.
+  // Render fields on a page as you would like it. Depending, you may,
   // want to only render the answers. Whatever!
+  localStorage.setItem("quizquestion", JSON.stringify(question));
 }
 
 function onAnswerSubmitted(feedback) {
   // If all went well, 'feedback' will just be a string saying "Submitted".
   //TODO: You decide. You can clear input fields or reset data used for the just-submitted question.
+  localStorage.removeItem("quizquestion");
   console.log(feedback);
 }
 
 function onGetQuizPin(pin) {
-  // Server sent you the user info when you logged in, as a JSON: { token: ..., user: {...} }
-  // I'm assuming you saved it somewhere in local storage, with key: userInfo.
-  const userInfo = localStorage.getItem("userInfo"); // or geet from wherever you kept it.
+  const userInfo = getUserInfo();
   const auth = { pin: pin, userInfo: userInfo };
 
-  //TODO: Set the PIN somewhere the player can see it.
+  // Set the PIN somewhere the player can see it.
+  localStorage.setItem("quizpin", pin);
 
   socket.emit("authenticate", auth, error => {
     alert(error);
@@ -33,6 +34,7 @@ function onGetQuizPin(pin) {
 function onDisconnect(reason) {
   // Tell admin that someone just disconnected
   io.of("/quizadmin").emit("someone-just-left", socket.id, onError);
+  localStorage.removeItem("quizpin");
   if (reason === "io server disconnect") {
     // the disconnection was initiated by the server, you need to reconnect manually
     socket.connect();
@@ -44,11 +46,31 @@ function onDisconnect(reason) {
  * Submit answer to a quiz question via socket.
  * TODO: package the answerInfo object and pass it to this method. Do this when client clicks on an answer button.
  * answerInfo should be a JSON with these keys:
- * { pin: 'w323', userId: 3, quizQuestionId: 2, choice: 1, correct: true,  bonus: 4, points: 12 }
+ * { timeCount: 2, choice: 1 }
  * @param {*} answerInfo
  */
 function submitAnswer(answerInfo) {
-  socket.emit("submit-answer", answerInfo, onError);
+  const pin = localStorage.getItem("quizpin");
+  const quizquestion = JSON.parse(localStorage.getItem("quizquestion"));
+  const isCorrect = quizquestion.correctOptions.indexOf(answerInfo.choice);
+  //TODO: get the user info server sent you at login wherever you kept it.
+  //const userInfo = localStorage.getItem("userInfo");
+  const userId = userInfo.i;
+  const answerToSubmit = {
+    pin: pin,
+    quizId: quizQuestionId.quizId,
+    quizQuestionId: quizquestion.id,
+    points: quizquestion.points,
+    userId: userId,
+    correct: isCorrect
+  };
+  answerToSubmit.bonus = getBonus(
+    quizquestion.maxBonus,
+    quizquestion.timeLimit,
+    answerInfo.timeCount,
+    isCorrect
+  );
+  socket.emit("submit-answer", answerToSubmit, onError);
 }
 
 /**

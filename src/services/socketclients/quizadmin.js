@@ -1,13 +1,16 @@
 // Sample client code for quiz admin
-// Add this:
+// Add these:
 // <script src="/socket.io/socket.io.js"></script>
+// <script src="./general.js"></script>
 // to the page BEFORE importing this js file. That's where io is defined.
 
 const socket = io("/quizadmin");
 
 function onReceiveNextQuestion(question) {
   // This is a question object as defined in the API doc.
-  // Render fields as you would like it.
+  //TODO: Render fields as you would like it.
+
+  localStorage.setItem("quizquestion", JSON.stringify(question));
   console.log(question);
 }
 
@@ -45,7 +48,7 @@ function onError(errorMessage) {
 function authenticateAdmin() {
   // Server sends this info on successful login, as a JSON: { token: ..., user: {...} }
   // I'm assuming you saved it somewhere in local storage, with key: userInfo.
-  const userInfo = localStorage.getItem("userInfo");
+  const userInfo = getUserInfo();
   const pin = getQueryStringParams().pin;
   const auth = { pin: pin, userInfo: userInfo };
   socket.emit("authenticate", auth, error => {
