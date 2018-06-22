@@ -39,12 +39,20 @@
 </head>
 
 <body>
+    <div>
+        <span id="questions"></span>
+        <button onclick="loadNextQuestion();">Next question</button>
+    </div>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="./general.js"></script>
     <script src="./quizadmin.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
+        function loadNextQuestion() {
+            getNextQuestion();
+        }
         $(function () {
-
+            authenticateAdmin();
         });
     </script>
 </body>

@@ -33,7 +33,7 @@ function onGetQuizPin(pin) {
 
 function onDisconnect(reason) {
   // Tell admin that someone just disconnected
-  io.of("/quizadmin").emit("someone-just-left", socket.id, onError);
+  io.of("/quizadmin").emit("someone-just-left", socket.id, callbackOnQuizPlayerError);
   localStorage.removeItem("quizpin");
   if (reason === "io server disconnect") {
     // the disconnection was initiated by the server, you need to reconnect manually
@@ -70,18 +70,7 @@ function submitAnswer(answerInfo) {
     answerInfo.timeCount,
     isCorrect
   );
-  socket.emit("submit-answer", answerToSubmit, onError);
-}
-
-/**
- * Sample callback function to pass to socket. Socket will call it if anything goes wrong with our .emit request.
- * @param {*} errorMessage A string describing the error
- */
-function onError(errorMessage) {
-  console.log("From /gameplayer callback fn: An error occurred.");
-  console.log(errorMessage);
-
-  // Or do whatever you like with the message
+  socket.emit("submit-answer", answerToSubmit, callbackOnQuizPlayerError);
 }
 
 /**
@@ -119,6 +108,6 @@ socket.on("answer-submitted", onAnswerSubmitted);
 
 socket.on("get-quiz-pin", onGetQuizPin);
 
-socket.on("error", onError);
+socket.on("error", callbackOnQuizPlayerError);
 
 socket.on("disconnect", onDisconnect);

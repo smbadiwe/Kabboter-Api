@@ -6,18 +6,13 @@
 const socket = io("/surveyplayer");
 
 function onReceiveNextQuestion(question) {
-  //TODO: This is a question object as defined in the API doc.
-  // Render fields on a page as you would like it. Depending, you may,
-  // want to only render the answers. Whatever!
-
+  setSurveyQuestionsOnPage(question);
   localStorage.setItem("surveyquestion", JSON.stringify(question));
 }
 
 function onAnswerSubmitted(feedback) {
-  // If all went well, 'feedback' will just be a string saying "Submitted".
-  //TODO: You decide. You can clear input fields or reset data used for the just-submitted question.
+  feedbackOnSurveyAnswerSubmitted(feedback);
   localStorage.removeItem("surveyquestion");
-  console.log(feedback);
 }
 
 function onGetSurveyPin(pin) {
@@ -34,7 +29,7 @@ function onGetSurveyPin(pin) {
 
 function onDisconnect(reason) {
   // Tell admin that someone just disconnected
-  io.of("/surveyadmin").emit("someone-just-left", socket.id, onError);
+  io.of("/surveyadmin").emit("someone-just-left", socket.id, callbackOnSurveyError);
   localStorage.removeItem("surveypin");
   if (reason === "io server disconnect") {
     // the disconnection was initiated by the server, you need to reconnect manually
@@ -47,14 +42,13 @@ function onDisconnect(reason) {
  * Submit answer to a quiz question via socket.
  * TODO: package the answerInfo object and pass it to this method. Do this when client clicks on an answer button.
  * answerInfo should be a JSON with these keys:
- * { timeCount: 2, choice: 1 }
- * @param {*} answerInfo
+ *
+ * @param {*} answerInfo { timeCount: <integer>, choice: <integer> }
  */
 function submitAnswer(answerInfo) {
   const pin = localStorage.getItem("surveypin");
   const quizquestion = JSON.parse(localStorage.getItem("surveyquestion"));
-  //TODO: get the user info server sent you at login wherever you kept it.
-  //const userInfo = localStorage.getItem("userInfo");
+  const userInfo = getUserInfo();
   const userId = userInfo.i;
   const answerToSubmit = {
     pin: pin,
@@ -70,18 +64,7 @@ function submitAnswer(answerInfo) {
     answerInfo.timeCount,
     isCorrect
   );
-  socket.emit("submit-answer", answerToSubmit, onError);
-}
-
-/**
- * Sample callback function to pass to socket. Socket will call it if anything goes wrong with our .emit request.
- * @param {*} errorMessage A string describing the error
- */
-function onError(errorMessage) {
-  console.log("From /surveyplayer callback fn: An error occurred.");
-  console.log(errorMessage);
-
-  // Or do whatever you like with the message
+  socket.emit("submit-answer", answerToSubmit, callbackOnSurveyError);
 }
 
 /**
@@ -119,6 +102,6 @@ socket.on("answer-submitted", onAnswerSubmitted);
 
 socket.on("get-survey-pin", onGetSurveyPin);
 
-socket.on("error", onError);
+socket.on("error", callbackOnSurveyError);
 
 socket.on("disconnect", onDisconnect);

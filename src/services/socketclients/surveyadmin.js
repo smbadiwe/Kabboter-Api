@@ -48,11 +48,6 @@ function onPlayerSubmittedAnswer(data) {
   // chart of the different options and how many players chose each.
 }
 
-function onError(errorMessage) {
-  console.log("From /surveyadmin callback fn: An error occurred.");
-  console.log(errorMessage);
-}
-
 /**
  * Call this function as soon as you can on page load.
  * The URL loading the page MUST pass pin via querystring, with key: 'pin'
@@ -76,7 +71,7 @@ socket.on("when-someone-just-joined", onWhenSomeoneJustJoined);
 
 socket.on("when-someone-just-left", onWhenSomeoneJustLeft);
 
-socket.on("error", onError);
+socket.on("error", callbackOnSurveyError);
 
 socket.on("disconnect", onDisconnect);
 

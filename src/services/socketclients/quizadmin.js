@@ -9,7 +9,7 @@ const socket = io("/quizadmin");
 function onReceiveNextQuestion(question) {
   // This is a question object as defined in the API doc.
   //TODO: Render fields as you would like it.
-
+  setQuizQuestionsOnPage(question);
   localStorage.setItem("quizquestion", JSON.stringify(question));
 }
 
@@ -30,7 +30,8 @@ function onWhenSomeoneJustLeft(payload) {
   // payload = { nPlayers: nPlayers, topFive: topFive };
   // You get the total number of players still connecting
   // and a list of the top 5 to display on page.
-  console.log(payload);
+  updateQuizAdminPageOnWhenSomeoneJustJoined;
+  payload;
 }
 
 function onDisconnect(reason) {
@@ -42,14 +43,7 @@ function onDisconnect(reason) {
 }
 
 function onPlayerSubmittedAnswer(data) {
-  // data = { quizQuestionId: quizQuestionId<integer>, choice: <1,2,3,or 4> }
-  //TODO: Use this info to update dashboard. That dashboard where you show
-  // chart of the different options and how many players chose each.
-}
-
-function onError(errorMessage) {
-  console.log("From /quizadmin callback fn: An error occurred.");
-  console.log(errorMessage);
+  updateQuizDashboardOnPlayerSubmittedAnswer(data);
 }
 
 /**
@@ -73,7 +67,7 @@ function authenticateAdmin() {
 function getNextQuestion() {
   const quizRunInfo = JSON.parse(localStorage.setItem("quizruninfo"));
   var data = { quizRunId: quizRunInfo.Id, quizId: quizRunInfo.quizId };
-  socket.emit("get-next-question", data, onError);
+  socket.emit("get-next-question", data, callbackOnQuizAdminError);
 }
 
 socket.on("get-quizrun-info", onGetQuizRunInfo);
@@ -84,7 +78,7 @@ socket.on("when-someone-just-joined", onWhenSomeoneJustJoined);
 
 socket.on("when-someone-just-left", onWhenSomeoneJustLeft);
 
-socket.on("error", onError);
+socket.on("error", callbackOnQuizAdminError);
 
 socket.on("disconnect", onDisconnect);
 
