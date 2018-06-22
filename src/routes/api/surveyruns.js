@@ -180,6 +180,10 @@ function launchSocketIO(surveyRunInfo) {
       try {
         validateSurveyAnswerProps(data);
         await new SurveyAnswerService().save(data);
+        adminIO.emit("player-sumbitted-answer", {
+          surveyQuestionId: data.surveyQuestionId,
+          choice: data.choice
+        });
         socket.emit("answer-submitted", "Submitted");
       } catch (e) {
         log.error(

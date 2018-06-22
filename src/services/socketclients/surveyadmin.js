@@ -15,7 +15,7 @@ function onReceiveNextQuestion(question) {
 }
 
 function onGetSurveyRunInfo(info) {
-  // data = { id: <the surveyRun id>, surveyId: surveyId, pin: pin };
+  // info = { id: <the surveyRun id>, surveyId: surveyId, pin: pin };
 
   localStorage.setItem("surveyruninfo", JSON.stringify(info));
 }
@@ -40,6 +40,12 @@ function onDisconnect(reason) {
     socket.connect();
   }
   // else the socket will automatically try to reconnect
+}
+
+function onPlayerSubmittedAnswer(data) {
+  // data = { surveyQuestionId: surveyQuestionId<integer>, choice: <1,2,3,or 4> }
+  //TODO: Use this info to update dashboard. That dashboard where you show
+  // chart of the different options and how many players chose each.
 }
 
 function onError(errorMessage) {
@@ -73,3 +79,5 @@ socket.on("when-someone-just-left", onWhenSomeoneJustLeft);
 socket.on("error", onError);
 
 socket.on("disconnect", onDisconnect);
+
+adminIO.on("player-sumbitted-answer", onPlayerSubmittedAnswer);

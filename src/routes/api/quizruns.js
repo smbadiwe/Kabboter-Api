@@ -185,7 +185,10 @@ function launchSocketIO(quizRunInfo) {
       try {
         validateQuizAnswerProps(data);
         await new QuizAnswerService().save(data);
-        adminIO.emit("", {});
+        adminIO.emit("player-sumbitted-answer", {
+          quizQuestionId: data.quizQuestionId,
+          choice: data.choice
+        });
         socket.emit("answer-submitted", "Submitted");
       } catch (e) {
         log.error(
