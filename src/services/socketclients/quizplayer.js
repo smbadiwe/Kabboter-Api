@@ -7,7 +7,7 @@ const socket = io("/quizplayer");
 
 function onReceiveNextQuestion(question) {
   // This is a question object as defined in the API doc.
-  // Render fields as you would like it.Depending, you may,
+  // Render fields as you would like it. Depending, you may,
   // want to only render the answers. Whatever!
 }
 

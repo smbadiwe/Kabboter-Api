@@ -1,27 +1,27 @@
 import { BaseEntityService } from "./baseentity.service";
-import { QuizService, QuizQuestionService, QuizAnswerService } from "./";
+import { SurveyService, SurveyQuestionService, SurveyAnswerService } from "./";
 import { generatePin } from "../utils";
 
-export default class QuizRunService extends BaseEntityService {
+export default class SurveyRunService extends BaseEntityService {
   constructor() {
-    super("quizruns");
+    super("surveyruns");
   }
 
-  async getNextQuestionToBeAnswered(quizRunId, quizId) {
-    const quizQns = await new QuizQuestionService().getBy({ quizId: quizId });
-    if (!quizQns) throw new RequestError("No questions under the given quiz.");
+  async getNextQuestionToBeAnswered(surveyRunId, surveyId) {
+    const surveyQns = await new SurveyQuestionService().getBy({ surveyId: surveyId });
+    if (!surveyQns) throw new RequestError("No questions under the given survey.");
 
-    const question = await new QuizAnswerService().getOneUnansweredQuestionInQuiz(
-      quizRunId,
-      quizId,
-      quizQns.map(q => q.id)
+    const question = await new SurveyAnswerService().getOneUnansweredQuestionInSurvey(
+      surveyRunId,
+      surveyId,
+      surveyQns.map(q => q.id)
     );
     return question;
   }
 
   async save(record) {
-    const quiz = await new QuizService().getById(record.quizId);
-    if (!quiz) throw new RequestError("Invalid quiz id");
+    const survey = await new SurveyService().getById(record.surveyId);
+    if (!survey) throw new RequestError("Invalid survey id");
 
     let pin;
     let exist;
@@ -30,8 +30,8 @@ export default class QuizRunService extends BaseEntityService {
       exist = await this.getBy({ pin: pin });
     } while (exist);
 
-    const quizRun = {
-      quizId: record.quizId,
+    const surveyRun = {
+      surveyId: record.surveyId,
       pin: pin,
       randomizeQuestions: record.randomizeQuestions,
       randomizeAnswers: record.randomizeAnswers,
@@ -40,14 +40,14 @@ export default class QuizRunService extends BaseEntityService {
       awardBonus: record.awardBonus
     };
 
-    const res = await super.save(quizRun);
+    const res = await super.save(surveyRun);
     return { id: res[0], pin: pin }; // the id of the newly saved record
   }
 
-  async hasQuizBeenRun(quizId) {
+  async hasSurveyBeenRun(surveyId) {
     const run = await this.connector
       .table(this.tableName)
-      .where({ quizId: quizId })
+      .where({ surveyId: surveyId })
       .first();
 
     if (run) return true;

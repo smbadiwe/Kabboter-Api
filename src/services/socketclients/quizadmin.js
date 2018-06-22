@@ -1,4 +1,4 @@
-// Sample client code for game admin
+// Sample client code for quiz admin
 // Add this:
 // <script src="/socket.io/socket.io.js"></script>
 // to the page BEFORE importing this js file. That's where io is defined.

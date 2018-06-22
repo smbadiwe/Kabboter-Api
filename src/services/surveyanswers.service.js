@@ -10,7 +10,7 @@ export default class SurveyAnswerService extends BaseEntityService {
   async getOneUnansweredQuestionInSurvey(surveyRunId, surveyId, surveyQuestionIds) {
     const answeredQuestions = await this.connector
       .table(this.tableName)
-      .select("surveyQuestionId", "count(userId) as tally")
+      .select("surveyQuestionId")
       .where({ surveyId: surveyId, surveyRunId: surveyRunId })
       .groupBy("surveyQuestionId")
       .havingIn("surveyQuestionId", surveyQuestionIds);
