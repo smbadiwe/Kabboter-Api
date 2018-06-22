@@ -39,12 +39,33 @@
 </head>
 
 <body>
+    <section>
+        <span id="question"></span>
+    </section>
+    <section>
+        <button id="option1" onclick="submitMyQuizAnswer(event);">
+            Option 1</button>
+        <button id="option2" onclick="submitMyQuizAnswer(event);">
+            Option 2</button>
+        <button id="option3" onclick="submitMyQuizAnswer(event);">
+            Option 3</button>
+        <button id="option4" onclick="submitMyQuizAnswer(event);">
+            Option 4</button>
+    </section>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="./quizplayer.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="./general.js"></script>
+    <script src="./quizplayer.js"></script>
+    <script src="./quizplayer.ui.js"></script>
     <script>
-        $(function () {
+        function submitMyQuizAnswer(e) {
+            const id = e.target.id;
 
+            const answerInfo = { timeCount: Math.floor((5 + (Math.random() * 10))), choice: id.substr(id.length - 1) }
+            submitAnswer(answerInfo);
+        }
+        $(function () {
+            authenticateQuizPlayer();
         });
     </script>
 </body>

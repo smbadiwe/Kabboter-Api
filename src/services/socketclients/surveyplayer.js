@@ -68,6 +68,21 @@ function submitAnswer(answerInfo) {
 }
 
 /**
+ * Call this function as soon as you can on page load.
+ * The URL loading the page MUST pass pin via querystring, with key: 'pin'
+ */
+function authenticateSurveyPlayer() {
+  // Server sends this info on successful login, as a JSON: { token: ..., user: {...} }
+  // I'm assuming you saved it somewhere in local storage, with key: userInfo.
+  const userInfo = getUserInfo();
+  const pin = getQueryStringParams().pin;
+  const auth = { pin: pin, userInfo: userInfo };
+  socket.emit("authenticate", auth, error => {
+    alert(error);
+  });
+}
+
+/**
  * Calculate the bonus score to award player when answer is correct.
  * @param {*} maxBonus Max bonus to be awarded a player for answering correctly.
  * @param {*} maxTimeCount Max time count alloted to question. It's usually in seconds.

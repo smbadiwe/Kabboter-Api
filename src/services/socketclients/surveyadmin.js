@@ -2,6 +2,7 @@
 // Add these:
 // <script src="/socket.io/socket.io.js"></script>
 // <script src="./general.js"></script>
+// <script src="./surveyadmin.ui.js"></script>
 // to the page BEFORE importing this js file. That's where io is defined.
 
 const socket = io("/surveyadmin");
@@ -9,13 +10,12 @@ const socket = io("/surveyadmin");
 function onReceiveNextQuestion(question) {
   //This is a question object as defined in the API doc.
   //TODO:  Render fields as you would like it.
-
+  setSurveyQuestionsOnPage(question);
   localStorage.setItem("surveyquestion", JSON.stringify(question));
-  console.log(question);
 }
 
 function onGetSurveyRunInfo(info) {
-  // info = { id: <the surveyRun id>, surveyId: surveyId, pin: pin };
+  // info = { id: <the surveyRun id>, surveyId: surveyId, pin: pin, totalQuestions: totalQuestions };
 
   localStorage.setItem("surveyruninfo", JSON.stringify(info));
 }
@@ -52,7 +52,7 @@ function onPlayerSubmittedAnswer(data) {
  * Call this function as soon as you can on page load.
  * The URL loading the page MUST pass pin via querystring, with key: 'pin'
  */
-function authenticateAdmin() {
+function authenticateSurveyAdmin() {
   // Server sends this info on successful login, as a JSON: { token: ..., user: {...} }
   // I'm assuming you saved it somewhere in local storage, with key: userInfo.
   const userInfo = getUserInfo();

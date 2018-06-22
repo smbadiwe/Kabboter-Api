@@ -7,6 +7,15 @@ export default class QuizQuestionService extends BaseEntityService {
     super("quizquestions");
   }
 
+  async getTotalQuizQuestions(quizId) {
+    const totalQuestions = await this.connector
+      .table(this.tableName)
+      .where({ quizId: quizId })
+      .count("*");
+
+    return totalQuestions;
+  }
+
   /**
    * Save quiz question
    * @param {*} payload

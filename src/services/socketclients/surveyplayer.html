@@ -43,26 +43,29 @@
         <span id="question"></span>
     </section>
     <section>
-        <button id="option1" onclick="submitMyAnswer(event);">
+        <button id="option1" onclick="submitMySurveyAnswer(event);">
             Option 1</button>
-        <button id="option2" onclick="submitMyAnswer(event);">
+        <button id="option2" onclick="submitMySurveyAnswer(event);">
             Option 2</button>
-        <button id="option3" onclick="submitMyAnswer(event);">
+        <button id="option3" onclick="submitMySurveyAnswer(event);">
             Option 3</button>
-        <button id="option4" onclick="submitMyAnswer(event);">
+        <button id="option4" onclick="submitMySurveyAnswer(event);">
             Option 4</button>
     </section>
-    <!-- <script src="/socket.io/socket.io.js"></script> -->
-    <script src="./surveyplayer.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="./general.js"></script>
+    <script src="./surveyplayer.js"></script>
+    <script src="./surveyplayer.ui.js"></script>
     <script>
-        function submitMyAnswer(e) {
+        function submitMySurveyAnswer(e) {
             const id = e.target.id;
-            const answerInfo = { pin: 'w323', userId: 3, surveyQuestionId: 2, choice: 1, correct: true, bonus: 4, points: 12 }
+
+            const answerInfo = { timeCount: Math.floor((5 + (Math.random() * 10))), choice: id.substr(id.length - 1) }
             submitAnswer(answerInfo);
         }
         $(function () {
-
+            authenticateSurveyPlayer();
         });
     </script>
 </body>

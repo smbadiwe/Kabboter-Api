@@ -40,19 +40,48 @@
 
 <body>
     <div>
-        <span id="questions"></span>
-        <button onclick="loadNextQuestion();">Next question</button>
+        <section>
+            <hi>Error</hi>
+            <span id="error" style="color: red;"></span>
+        </section>
+        <section>
+            <hi>Feedback</hi>
+            <span id="feedback"></span>
+        </section>
+        <section>
+            <hi>Question</hi>
+            <span id="questions"></span>
+        </section>
+        <section>
+            <hi>Stats</hi>
+            <span id="stats"></span>
+        </section>
+        <section>
+            <hi>Dashboard</hi>
+            <span id="dashboard"></span>
+        </section>
+    </div>
+    <div>
+        <button onclick="loadNextQuestion(event);">
+            Next question</button>
     </div>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="./general.js"></script>
     <script src="./quizadmin.js"></script>
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="./quizadmin.ui.js"></script>
     <script>
-        function loadNextQuestion() {
+        function loadNextQuestion(e) {
+            e.preventDefault();
+            $("#questions").html("");
             getNextQuestion();
+            $("#error").html("");
+            $("#feedback").html("");
+            $("#stats").html("");
+            $("#dashboard").html("");
         }
         $(function () {
-            authenticateAdmin();
+            authenticateQuizAdmin();
         });
     </script>
 </body>

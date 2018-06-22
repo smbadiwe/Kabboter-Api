@@ -5,6 +5,15 @@ export default class SurveyQuestionService extends BaseEntityService {
     super("surveyquestions");
   }
 
+  async getTotalSurveyQuestions(surveyId) {
+    const totalQuestions = await this.connector
+      .table(this.tableName)
+      .where({ surveyId: surveyId })
+      .count("*");
+
+    return totalQuestions;
+  }
+
   async getBySurveyIds(surveyIds) {
     if (!surveyIds || surveyIds.length == 0) return null;
 

@@ -22,7 +22,7 @@ export default class QuizRunService extends BaseEntityService {
   }
 
   /**
-   * Returns { id: <the quizRun id>, quizId: quizId, pin: pin };
+   * Returns { id: <the quizRun id>, quizId: quizId, pin: pin, totalQuestions: totalQuestions };
    * @param {*} record
    */
   async save(record) {
@@ -47,7 +47,9 @@ export default class QuizRunService extends BaseEntityService {
     };
 
     const res = await super.save(quizRun);
-    return { id: res[0], quizId: quizId, pin: pin }; // the id of the newly saved record
+
+    const totalQuestions = await new QuizQuestionService().getTotalQuizQuestions(record.quizId);
+    return { id: res[0], quizId: record.quizId, pin: pin, totalQuestions: totalQuestions }; // the id of the newly saved record
   }
 
   async hasQuizBeenRun(quizId) {

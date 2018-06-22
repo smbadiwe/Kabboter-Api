@@ -2,6 +2,7 @@
 // Add these:
 // <script src="/socket.io/socket.io.js"></script>
 // <script src="./general.js"></script>
+// <script src="./quizadmin.ui.js"></script>
 // to the page BEFORE importing this js file. That's where io is defined.
 
 const socket = io("/quizadmin");
@@ -14,7 +15,7 @@ function onReceiveNextQuestion(question) {
 }
 
 function onGetQuizRunInfo(info) {
-  // info = { id: <the quizRun id>, quizId: quizId, pin: pin };
+  // info = { id: <the quizRun id>, quizId: quizId, pin: pin, totalQuestions: totalQuestions };
 
   localStorage.setItem("quizruninfo", JSON.stringify(info));
 }
@@ -50,7 +51,7 @@ function onPlayerSubmittedAnswer(data) {
  * Call this function as soon as you can on page load.
  * The URL loading the page MUST pass pin via querystring, with key: 'pin'
  */
-function authenticateAdmin() {
+function authenticateQuizAdmin() {
   // Server sends this info on successful login, as a JSON: { token: ..., user: {...} }
   // I'm assuming you saved it somewhere in local storage, with key: userInfo.
   const userInfo = getUserInfo();

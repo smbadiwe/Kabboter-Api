@@ -8,7 +8,9 @@ export default class SurveyRunService extends BaseEntityService {
   }
 
   async getNextQuestionToBeAnswered(surveyRunId, surveyId) {
-    const surveyQns = await new SurveyQuestionService().getBy({ surveyId: surveyId });
+    const surveyQns = await new SurveyQuestionService().getBy({
+      surveyId: surveyId
+    });
     if (!surveyQns) throw new RequestError("No questions under the given survey.");
 
     const question = await new SurveyAnswerService().getOneUnansweredQuestionInSurvey(
@@ -19,6 +21,10 @@ export default class SurveyRunService extends BaseEntityService {
     return question;
   }
 
+  /**
+   * Returns { id: <the quizRun id>, surveyId: surveyId, pin: pin, totalQuestions: totalQuestions };
+   * @param {*} record
+   */
   async save(record) {
     const survey = await new SurveyService().getById(record.surveyId);
     if (!survey) throw new RequestError("Invalid survey id");
@@ -41,7 +47,12 @@ export default class SurveyRunService extends BaseEntityService {
     };
 
     const res = await super.save(surveyRun);
-    return { id: res[0], pin: pin }; // the id of the newly saved record
+
+    const totalQuestions = await new SurveyQuestionService().getTotalSurveyQuestions(
+      record.surveyId
+    );
+
+    return { id: res[0], surveyId: record.surveyId, pin: pin, totalQuestions: totalQuestions };
   }
 
   async hasSurveyBeenRun(surveyId) {
