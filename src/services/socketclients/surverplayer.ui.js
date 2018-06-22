@@ -4,8 +4,10 @@ function setSurveyQuestionsOnPage(question) {
 }
 
 function submitSurveyAmswerChoice(event) {
-  const timeCount = 0; //TODO: Get it where where you have it. We assume value counts from 0 - as in, count up, not count down.
-  const choice = 0; //::TODO: Get it from the event target or however you want.
+  const id = event.target.id;
+
+  const timeCount = Math.floor(5 + Math.random() * 10); //TODO: Get it where where you have it. We assume value counts from 0 - as in, count up, not count down.
+  const choice = id.substr(id.length - 1); //TODO: Get it from the event target or however you want.
   const answerInfo = {
     timeCount: timeCount,
     choice: choice
