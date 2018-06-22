@@ -49,7 +49,7 @@ export async function up(knex) {
       t.boolean("deleted").defaultTo(false);
       t.string("title").notNull();
       t.integer("audience");
-      t.integer("introLink");
+      t.string("introLink");
       t.integer("visibleTo");
       t.boolean("published").defaultTo(false);
       t.string("creditResources");
@@ -75,7 +75,7 @@ export async function up(knex) {
       t.string("option2");
       t.string("option3");
       t.string("option4");
-      t.integer("introLink");
+      t.string("introLink");
       t.string("creditResources");
     })
     .createTable("surveyruns", t => {

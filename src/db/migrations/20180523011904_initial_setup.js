@@ -51,9 +51,9 @@ export async function up(knex) {
       t.boolean("deleted").defaultTo(false);
       t.string("title").notNull();
       t.integer("audience");
-      t.string("introLink");
       t.integer("visibleTo");
       t.boolean("published").defaultTo(false);
+      t.string("introLink");
       t.string("creditResources");
       t.integer("userId")
         .unsigned()
@@ -78,7 +78,7 @@ export async function up(knex) {
       t.string("option3");
       t.string("option4");
       t.string("correctOptions", 10);
-      t.integer("introLink");
+      t.string("introLink");
       t.string("creditResources");
     });
 }

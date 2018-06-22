@@ -79,7 +79,18 @@ export default class SurveyService extends BaseEntityService {
     const surveys = await this.connector
       .table(this.tableName)
       .where(equalityConditions)
-      .andWhereNot({ disabled: true });
+      .andWhereNot({ disabled: true })
+      .select(
+        "id",
+        "title",
+        "description",
+        "audience",
+        "visibleTo",
+        "published",
+        "userId",
+        "introLink",
+        "creditResources"
+      );
     if (surveys) {
       log.debug("surveys from db");
       log.debug(surveys);

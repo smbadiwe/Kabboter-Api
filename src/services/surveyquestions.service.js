@@ -17,11 +17,12 @@ export default class SurveyQuestionService extends BaseEntityService {
         "question",
         "timeLimit",
         "surveyId",
-        "correctOptions",
         "option1",
         "option2",
         "option3",
-        "option4"
+        "option4",
+        "introLink",
+        "creditResources"
       );
   }
 }

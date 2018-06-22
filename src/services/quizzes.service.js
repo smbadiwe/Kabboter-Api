@@ -79,7 +79,18 @@ export default class QuizService extends BaseEntityService {
     const quizzes = await this.connector
       .table(this.tableName)
       .where(equalityConditions)
-      .andWhereNot({ disabled: true });
+      .andWhereNot({ disabled: true })
+      .select(
+        "id",
+        "title",
+        "description",
+        "audience",
+        "visibleTo",
+        "published",
+        "userId",
+        "introLink",
+        "creditResources"
+      );
     if (quizzes) {
       log.debug("quizzes from db");
       log.debug(quizzes);

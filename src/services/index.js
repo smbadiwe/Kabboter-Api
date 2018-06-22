@@ -1,21 +1,27 @@
 import UserService from "./users.service";
 import QuizService from "./quizzes.service";
 import QuizQuestionService from "./quizquestions.service";
+import QuizAnswerService from "./quizanswers.service";
+import QuizRunService from "./quizruns.service";
 import EmailAccountService from "./emailaccounts.service";
 import PermissionService from "./permissions.service";
 import UserRoleService from "./userroles.service";
-import QuizRunService from "./quizruns.service";
-import QuizAnswerService from "./quizanswers.service";
 import SurveyService from "./surveys.service";
+import SurveyQuestionService from "./surveyquestions.service";
+import SurveyAnswerService from "./surveyanswers.service";
+import SurveyRunService from "./surveyruns.service";
 
 export {
-  QuizQuestionService,
   UserService,
   QuizService,
+  QuizQuestionService,
+  QuizAnswerService,
+  QuizRunService,
   EmailAccountService,
   PermissionService,
   UserRoleService,
-  QuizRunService,
-  QuizAnswerService,
-  SurveyService
+  SurveyService,
+  SurveyQuestionService,
+  SurveyAnswerService,
+  SurveyRunService
 };
