@@ -11,7 +11,12 @@ function onReceiveNextQuestion(question) {
   //TODO: Render fields as you would like it.
 
   localStorage.setItem("quizquestion", JSON.stringify(question));
-  console.log(question);
+}
+
+function onGetQuizRunInfo(info) {
+  // data = { id: <the quizRun id>, quizId: quizId, pin: pin };
+
+  localStorage.setItem("quizruninfo", JSON.stringify(info));
 }
 
 function onWhenSomeoneJustJoined(payload) {
@@ -37,7 +42,7 @@ function onDisconnect(reason) {
 }
 
 function onError(errorMessage) {
-  console.log("From /gameadmin callback fn: An error occurred.");
+  console.log("From /quizadmin callback fn: An error occurred.");
   console.log(errorMessage);
 }
 
@@ -56,22 +61,16 @@ function authenticateAdmin() {
   });
 }
 
-function getQueryStringParams(queryString) {
-  if (!queryString) {
-    queryString = window.location.search;
-  }
-  if (!queryString) {
-    return {};
-  }
-
-  return (/^[?#]/.test(queryString) ? queryString.slice(1) : queryString)
-    .split("&")
-    .reduce((params, param) => {
-      let [key, value] = param.split("=");
-      params[key] = value ? decodeURIComponent(value.replace(/\+/g, " ")) : "";
-      return params;
-    }, {});
+/**
+ * The 'Next' button that loads a new question should call this.
+ */
+function getNextQuestion() {
+  const quizRunInfo = JSON.parse(localStorage.setItem("quizruninfo"));
+  var data = { quizRunId: quizRunInfo.Id, quizId: quizRunInfo.quizId };
+  socket.emit("get-next-question", data, onError);
 }
+
+socket.on("get-quizrun-info", onGetQuizRunInfo);
 
 socket.on("receive-next-question", onReceiveNextQuestion);
 

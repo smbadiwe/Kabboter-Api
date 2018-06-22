@@ -14,6 +14,12 @@ function onReceiveNextQuestion(question) {
   console.log(question);
 }
 
+function onGetSurveyRunInfo(info) {
+  // data = { id: <the surveyRun id>, surveyId: surveyId, pin: pin };
+
+  localStorage.setItem("surveyruninfo", JSON.stringify(info));
+}
+
 function onWhenSomeoneJustJoined(payload) {
   // payload = { nPlayers: nPlayers, topFive: topFive };
   // You get the total number of players still connecting
@@ -55,6 +61,8 @@ function authenticateAdmin() {
     alert(error);
   });
 }
+
+socket.on("get-surveyrun-info", onGetSurveyRunInfo);
 
 socket.on("receive-next-question", onReceiveNextQuestion);
 

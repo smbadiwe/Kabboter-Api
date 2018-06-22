@@ -8,7 +8,9 @@ export default class QuizRunService extends BaseEntityService {
   }
 
   async getNextQuestionToBeAnswered(quizRunId, quizId) {
-    const quizQns = await new QuizQuestionService().getBy({ quizId: quizId });
+    const quizQns = await new QuizQuestionService().getBy({
+      quizId: quizId
+    });
     if (!quizQns) throw new RequestError("No questions under the given quiz.");
 
     const question = await new QuizAnswerService().getOneUnansweredQuestionInQuiz(
@@ -19,6 +21,10 @@ export default class QuizRunService extends BaseEntityService {
     return question;
   }
 
+  /**
+   * Returns { id: <the quizRun id>, quizId: quizId, pin: pin };
+   * @param {*} record
+   */
   async save(record) {
     const quiz = await new QuizService().getById(record.quizId);
     if (!quiz) throw new RequestError("Invalid quiz id");
@@ -41,7 +47,7 @@ export default class QuizRunService extends BaseEntityService {
     };
 
     const res = await super.save(quizRun);
-    return { id: res[0], pin: pin }; // the id of the newly saved record
+    return { id: res[0], quizId: quizId, pin: pin }; // the id of the newly saved record
   }
 
   async hasQuizBeenRun(quizId) {

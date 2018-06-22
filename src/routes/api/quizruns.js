@@ -33,17 +33,15 @@ function launchSocketIO(quizRunInfo) {
     //  data = { pin: pin, userInfo: userInfo }; // userInfo as provided during login
     socket.on("authenticate", (data, onError) => {
       try {
-        //const token = data.token
-
-        // You'll probably want to log the username or ID here instead. I don't
-        // use socket.id at all myself.
         log.debug(`authenticated socket ID "${socket.id}"`);
 
         socket.authenticated = true;
 
         // Join the room playing the game
-        log.debug("Socket %s joining room %s", socket.id, roomNo);
         socket.join(roomNo);
+        log.debug("Socket %s joined room %s", socket.id, roomNo);
+
+        socket.emit("get-quizrun-info", quizRunInfo);
       } catch (e) {
         log.error("Server Socket: Error on 'authenticate' for socket %s: %O", socket.id, e.message);
         if (onError) {
@@ -52,13 +50,14 @@ function launchSocketIO(quizRunInfo) {
       }
     });
 
-    // { pin: 'w323', quizId: 3, questionId: 2, answer: 1, bonus: 4, points:
+    // data = { quizRunId: 2, quizId: 3 }
     socket.on("get-next-question", async (data, onError) => {
       try {
         const question = await new QuizRunService().getNextQuestionToBeAnswered(
-          data.pin,
+          data.quizRunId,
           data.quizId
         );
+        // send question to both moderators and players
         io.in(roomNo).emit("receive-next-question", question);
       } catch (e) {
         log.error(
@@ -79,7 +78,10 @@ function launchSocketIO(quizRunInfo) {
             const nPlayers = clients.length;
             const topFive = clients.slice(0, 5);
             // Inform admin so she can display on UI
-            const payload = { nPlayers: nPlayers, topFive: topFive };
+            const payload = {
+              nPlayers: nPlayers,
+              topFive: topFive
+            };
             adminIO.in(roomNo).emit("when-someone-just-joined", payload);
           } else {
             log.error(
@@ -105,7 +107,10 @@ function launchSocketIO(quizRunInfo) {
             const nPlayers = clients.length;
             const topFive = clients.slice(0, 5);
             // Inform admin so she can display on UI
-            const payload = { nPlayers: nPlayers, topFive: topFive };
+            const payload = {
+              nPlayers: nPlayers,
+              topFive: topFive
+            };
             adminIO.in(roomNo).emit("when-someone-just-left", payload);
           } else {
             log.error(
@@ -180,6 +185,7 @@ function launchSocketIO(quizRunInfo) {
       try {
         validateQuizAnswerProps(data);
         await new QuizAnswerService().save(data);
+        adminIO.emit("", {});
         socket.emit("answer-submitted", "Submitted");
       } catch (e) {
         log.error(
