@@ -8,12 +8,7 @@ export default class QuizQuestionService extends BaseEntityService {
   }
 
   async getTotalQuizQuestions(quizId) {
-    const totalQuestions = await this.connector
-      .table(this.tableName)
-      .where({ quizId: quizId })
-      .count("*");
-
-    return totalQuestions;
+    return await this.getCount({ quizId: quizId });
   }
 
   /**

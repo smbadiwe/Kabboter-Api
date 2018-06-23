@@ -31,7 +31,7 @@
                 },
                 success: function (result) {
                     console.log(result);
-                    localStorage.setItem("quizruninfo", result);
+                    localStorage.setItem("quizruninfo", JSON.stringify(result));
                     window.location.href = "http://localhost:3000/quizadmin";
                 },
                 error: function (error) {

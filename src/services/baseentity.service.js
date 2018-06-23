@@ -46,6 +46,19 @@ export class BaseEntityService {
     return await this.connector.table(this.tableName).first();
   }
 
+  async getCount(equalityConditions) {
+    let count;
+    if (equalityConditions) {
+      count = await this.connector
+        .table(this.tableName)
+        .where(equalityConditions)
+        .count({ total: ["*"] });
+    }
+
+    count = await this.connector.table(this.tableName).count({ total: ["*"] });
+    return count[0].total;
+  }
+
   async getById(entityId) {
     if (!entityId) return null;
     return await this.connector

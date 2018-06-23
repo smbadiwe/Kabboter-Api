@@ -1,49 +1,19 @@
-import Koa from "koa";
-import Router from "koa-router";
-import { SurveyRunService, SurveyAnswerService } from "../../services";
-import { validateSurveyRunProps } from "./surveyruns.validate";
-import log from "../../utils/log";
+import { QuizRunService, QuizAnswerService } from "./";
+import log from "../utils/log";
 
-const router = new Router({ prefix: "/api/user/surveyruns" });
+function setupQuizSockets(io) {
+  const quizAdminIO = io.of("/quizadmin");
+  const quizPlayerIO = io.of("/quizplayer");
 
-router.post("/create", async ctx => {
-  try {
-    validateSurveyRunProps(ctx.request.body);
-
-    const res = await new SurveyRunService().save(ctx.request.body);
-
-    launchSocketIO(res);
-    ctx.body = res;
-  } catch (e) {
-    ctx.throw(e.status || 500, e);
-  }
-});
-
-function launchSocketIO(surveyRunInfo) {
-  const app = new Koa();
-  const server = require("http").createServer(app.callback());
-
-  const roomNo = `survey-${surveyRunInfo.pin}`;
-  const io = require("socket.io")(server);
-  const surveyAdminIO = io.of(`/surveyadmin`);
-  const surveyPlayerIO = io.of(`/surveyplayer`);
-  surveyAdminIO.on("connection", function(socket) {
+  quizAdminIO.on("connection", function(socket) {
     socket.authenticated = false;
 
-    //  data = { pin: pin, userInfo: userInfo }; // userInfo as provided during login
+    //  data = { userInfo: userInfo }; // userInfo as provided during login
     socket.on("authenticate", (data, onError) => {
       try {
-        //const token = data.token
-
-        // You'll probably want to log the username or ID here instead. I don't
-        // use socket.id at all myself.
         log.debug(`authenticated socket ID "${socket.id}"`);
 
         socket.authenticated = true;
-
-        // Join the room playing the game
-        log.debug("Socket %s joining room %s", socket.id, roomNo);
-        socket.join(roomNo);
       } catch (e) {
         log.error("Server Socket: Error on 'authenticate' for socket %s: %O", socket.id, e.message);
         if (onError) {
@@ -52,13 +22,28 @@ function launchSocketIO(surveyRunInfo) {
       }
     });
 
-    // { pin: 'w323', surveyId: 3, questionId: 2, answer: 1, bonus: 4, points:
+    // data = { quizId: quidId, pin: pin, totalQuestions: totalQuestions }
+    // When quizrun is created, admin at the client will emit this event.
+    socket.on("share-quizrun-info", data => {
+      // Join the room playing the game
+      const roomNo = getQuizRoomNo(data.pin);
+      socket.roomNo = roomNo;
+      socket.join(roomNo);
+      log.debug("Socket %s joined room %s", socket.id, roomNo);
+
+      // share to all players so they can join room too.
+      quizPlayerIO.emit("get-quizrun-info", data);
+    });
+
+    // data = { quizRunId: 2, pin: pin, quizId: 3 }
     socket.on("get-next-question", async (data, onError) => {
       try {
-        const question = await new SurveyRunService().getNextQuestionToBeAnswered(
-          data.pin,
-          data.surveyId
+        const question = await new QuizRunService().getNextQuestionToBeAnswered(
+          data.quizRunId,
+          data.quizId
         );
+        // send question to both moderators and players
+        const roomNo = getQuizRoomNo(data.pin);
         io.in(roomNo).emit("receive-next-question", question);
       } catch (e) {
         log.error(
@@ -72,15 +57,20 @@ function launchSocketIO(surveyRunInfo) {
       }
     });
 
-    socket.on("someone-just-joined", player => {
+    // data = { quizRunId: 2, pin: pin, quizId: 3 }
+    socket.on("someone-just-joined", data => {
       try {
-        surveyPlayerIO.in(roomNo).clients((err, clients) => {
+        const roomNo = getQuizRoomNo(data.pin);
+        quizPlayerIO.in(roomNo).clients((err, clients) => {
           if (!err) {
             const nPlayers = clients.length;
             const topFive = clients.slice(0, 5);
             // Inform admin so she can display on UI
-            const payload = { nPlayers: nPlayers, topFive: topFive };
-            surveyAdminIO.in(roomNo).emit("when-someone-just-joined", payload);
+            const payload = {
+              nPlayers: nPlayers,
+              topFive: topFive
+            };
+            quizAdminIO.in(roomNo).emit("when-someone-just-joined", data);
           } else {
             log.error(
               "Server Socket: Error on 'someone-just-joined' trying to get clients in room. Socket: %s: %s",
@@ -98,15 +88,20 @@ function launchSocketIO(surveyRunInfo) {
       }
     });
 
-    socket.on("someone-just-left", socketId => {
+    // data = { pin: pin, socketId: socketId }
+    socket.on("someone-just-left", data => {
       try {
-        surveyPlayerIO.in(roomNo).clients((err, clients) => {
+        const roomNo = getQuizRoomNo(data.pin);
+        quizPlayerIO.in(roomNo).clients((err, clients) => {
           if (!err) {
             const nPlayers = clients.length;
             const topFive = clients.slice(0, 5);
             // Inform admin so she can display on UI
-            const payload = { nPlayers: nPlayers, topFive: topFive };
-            surveyAdminIO.in(roomNo).emit("when-someone-just-left", payload);
+            const payload = {
+              nPlayers: nPlayers,
+              topFive: topFive
+            };
+            quizAdminIO.in(roomNo).emit("when-someone-just-left", data);
           } else {
             log.error(
               "Server Socket: Error on 'someone-just-left' trying to get clients in room. Socket: %s: %s",
@@ -124,26 +119,31 @@ function launchSocketIO(surveyRunInfo) {
       }
     });
 
+    // data = { quizQuestionId: quizQuestionId, choice: choice }
+    socket.on("player-sumbitted-answer", data => {
+      //TODO: Emit to client to display in chart.
+    });
+
     socket.on("disconnect", () => {
-      socket.leave(roomNo);
+      socket.leave(socket.roomNo);
       log.debug(`user ${socket.id} disconnected`);
     });
 
     socket.on("error", error => {
-      console.log(`From server /surveyadmin. An error occurred`);
+      console.log(`From server /quizadmin. An error occurred`);
       console.log(error);
     });
   });
 
-  surveyPlayerIO.on("connection", function(socket) {
+  quizPlayerIO.on("connection", function(socket) {
     socket.authenticated = false;
-    socket.emit("get-survey-pin", `${surveyRunInfo.pin}`);
 
+    // Rethink
     //  data = { pin: pin, userInfo: userInfo }; // userInfo as provided during login
     socket.on("authenticate", (data, onError) => {
       try {
         //const token = data.token
-        if (data.pin === surveyRunInfo.pin) {
+        if (data.pin === quizRunInfo.pin) {
           // You'll probably want to log the username or ID here instead. I don't
           // use socket.id at all myself.
           log.debug(`authenticated socket ID "${socket.id}"`);
@@ -156,7 +156,7 @@ function launchSocketIO(surveyRunInfo) {
           socket.join(roomNo);
 
           // Tell server someone just connected
-          surveyAdminIO.emit("someone-just-joined", data.userInfo);
+          quizAdminIO.emit("someone-just-joined", data.userInfo);
         } else {
           socket.disconnect(true);
           if (onError) {
@@ -175,13 +175,13 @@ function launchSocketIO(surveyRunInfo) {
       }
     });
 
-    // { pin: 'w323', userId: 3, surveyQuestionId: 2, choice: 1, correct: true, bonus: 4, points: 12 }
+    // { pin: 'w323', userId: 3, quizQuestionId: 2, choice: 1, correct: true, bonus: 4, points: 12 }
     socket.on("submit-answer", async (data, onError) => {
       try {
-        validateSurveyAnswerProps(data);
-        await new SurveyAnswerService().save(data);
-        surveyAdminIO.emit("player-sumbitted-answer", {
-          surveyQuestionId: data.surveyQuestionId,
+        validateQuizAnswerProps(data);
+        await new QuizAnswerService().save(data);
+        quizAdminIO.in(getQuizRoomNo(data.pin)).emit("player-sumbitted-answer", {
+          quizQuestionId: data.quizQuestionId,
           choice: data.choice
         });
         socket.emit("answer-submitted", "Submitted");
@@ -199,22 +199,21 @@ function launchSocketIO(surveyRunInfo) {
 
     socket.on("disconnect", () => {
       socket.leave(roomNo);
-      surveyAdminIO.emit("someone-just-left", socket.user);
+      quizAdminIO.emit("someone-just-left", socket.user);
       log.debug("user %s: $o disconnected", socket.id, socket.user);
     });
 
     socket.on("error", error => {
-      console.log(`From server /surveyplayer. An error occurred`);
+      console.log(`From server /quizplayer. An error occurred`);
       console.log(error);
     });
   });
-
-  server.listen(process.env.PORT, () => {
-    log.debug("Socket.IO listening on *:%d", process.env.PORT);
-  });
 }
 
-// console.log(router.stack.map(i => i));
-// Don't change this to ES6 style. We use 'require' to auto-register routes
-// See src/app.js
-module.exports = router;
+function getQuizRoomNo(pin) {
+  return "quiz-" + pin;
+}
+
+module.exports = {
+  setupQuizSockets
+};

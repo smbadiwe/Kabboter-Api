@@ -57,13 +57,7 @@ export default class QuizService extends BaseEntityService {
    * @param {*} userId
    */
   async getUserQuizCount(userId) {
-    const quizCount = await this.connector
-      .table(this.tableName)
-      .where({ userId: userId })
-      .andWhereNot({ disabled: true })
-      .count({ total: ["*"] });
-
-    return quizCount[0].total;
+    return await this.getCount({ userId: userId });
   }
 
   async getByUserId(userId, doNotGetQuestions = false) {

@@ -10,7 +10,7 @@ const app = new Koa();
 const keys = [process.env.APP_SECRET];
 app.keys = new KeyGrip(keys, "sha256");
 
-app.use(serve(__dirname + "/services/socketclients"), { hidden: true });
+app.use(serve(__dirname + "/services/socketclients"));
 
 app.use(middleware());
 app.use(routes());

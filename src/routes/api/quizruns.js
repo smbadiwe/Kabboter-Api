@@ -38,9 +38,9 @@ function launchSocketIO(quizRunInfo) {
 
   const roomNo = `quiz-${quizRunInfo.pin}`;
   const io = require("socket.io")(server);
-  const adminIO = io.of(`/quizadmin`);
-  const playerIO = io.of(`/quizplayer`);
-  adminIO.on("connection", function(socket) {
+  const quizAdmindminIO = io.of(`/quizadmin`);
+  const quizPlayerIO = io.of(`/quizplayer`);
+  quizAdmindminIO.on("connection", function(socket) {
     socket.authenticated = false;
 
     //  data = { pin: pin, userInfo: userInfo }; // userInfo as provided during login
@@ -86,7 +86,7 @@ function launchSocketIO(quizRunInfo) {
 
     socket.on("someone-just-joined", player => {
       try {
-        playerIO.in(roomNo).clients((err, clients) => {
+        quizPlayerIO.in(roomNo).clients((err, clients) => {
           if (!err) {
             const nPlayers = clients.length;
             const topFive = clients.slice(0, 5);
@@ -95,7 +95,7 @@ function launchSocketIO(quizRunInfo) {
               nPlayers: nPlayers,
               topFive: topFive
             };
-            adminIO.in(roomNo).emit("when-someone-just-joined", payload);
+            quizAdmindminIO.in(roomNo).emit("when-someone-just-joined", payload);
           } else {
             log.error(
               "Server Socket: Error on 'someone-just-joined' trying to get clients in room. Socket: %s: %s",
@@ -115,7 +115,7 @@ function launchSocketIO(quizRunInfo) {
 
     socket.on("someone-just-left", socketId => {
       try {
-        playerIO.in(roomNo).clients((err, clients) => {
+        quizPlayerIO.in(roomNo).clients((err, clients) => {
           if (!err) {
             const nPlayers = clients.length;
             const topFive = clients.slice(0, 5);
@@ -124,7 +124,7 @@ function launchSocketIO(quizRunInfo) {
               nPlayers: nPlayers,
               topFive: topFive
             };
-            adminIO.in(roomNo).emit("when-someone-just-left", payload);
+            quizAdmindminIO.in(roomNo).emit("when-someone-just-left", payload);
           } else {
             log.error(
               "Server Socket: Error on 'someone-just-left' trying to get clients in room. Socket: %s: %s",
@@ -153,7 +153,7 @@ function launchSocketIO(quizRunInfo) {
     });
   });
 
-  playerIO.on("connection", function(socket) {
+  quizPlayerIO.on("connection", function(socket) {
     socket.authenticated = false;
     socket.emit("get-quiz-pin", `${quizRunInfo.pin}`);
 
@@ -174,7 +174,7 @@ function launchSocketIO(quizRunInfo) {
           socket.join(roomNo);
 
           // Tell server someone just connected
-          adminIO.emit("someone-just-joined", data.userInfo);
+          quizAdmindminIO.emit("someone-just-joined", data.userInfo);
         } else {
           socket.disconnect(true);
           if (onError) {
@@ -198,7 +198,7 @@ function launchSocketIO(quizRunInfo) {
       try {
         validateQuizAnswerProps(data);
         await new QuizAnswerService().save(data);
-        adminIO.emit("player-sumbitted-answer", {
+        quizAdmindminIO.emit("player-sumbitted-answer", {
           quizQuestionId: data.quizQuestionId,
           choice: data.choice
         });
@@ -217,7 +217,7 @@ function launchSocketIO(quizRunInfo) {
 
     socket.on("disconnect", () => {
       socket.leave(roomNo);
-      adminIO.emit("someone-just-left", socket.user);
+      quizAdmindminIO.emit("someone-just-left", socket.user);
       log.debug("user %s: $o disconnected", socket.id, socket.user);
     });
 
