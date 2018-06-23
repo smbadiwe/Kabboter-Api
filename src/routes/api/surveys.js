@@ -1,6 +1,7 @@
 import Router from "koa-router";
 import { SurveyService } from "../../services";
-import { validateSurveyProps, validateInteger } from "./surveys.validate";
+import { validateInteger } from "../../utils/ValidationErrors";
+import { validateSurveyProps } from "./surveys.validate";
 
 const router = new Router({ prefix: "/api/user/surveys" });
 

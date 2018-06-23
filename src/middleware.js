@@ -10,7 +10,7 @@ import { verify } from "jsonwebtoken";
 function corsConfig() {
   const accessControlMaxAge = "1200";
 
-  const allowedOrigins = "*";
+  const allowedOrigins = ["*"];
 
   const accessControlAllowMethods = ["OPTIONS", "GET", "POST", "PUT", "DELETE", "HEAD"];
 

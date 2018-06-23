@@ -17,6 +17,11 @@ router.get("/quizadmin", function(ctx) {
   ctx.body = fs.createReadStream(htmlFolderPath + "/quizadmin.html");
 });
 
+router.get("/quizplayer", function(ctx) {
+  ctx.type = "html";
+  ctx.body = fs.createReadStream(htmlFolderPath + "/quizplayer.html");
+});
+
 router.get("/startsurveyadmin", function(ctx) {
   ctx.type = "html";
   ctx.body = fs.createReadStream(htmlFolderPath + "/startsurveyadmin.html");
@@ -25,6 +30,11 @@ router.get("/startsurveyadmin", function(ctx) {
 router.get("/surveyadmin", function(ctx) {
   ctx.type = "html";
   ctx.body = fs.createReadStream(htmlFolderPath + "/surveyadmin.html");
+});
+
+router.get("/surveyplayer", function(ctx) {
+  ctx.type = "html";
+  ctx.body = fs.createReadStream(htmlFolderPath + "/surveyplayer.html");
 });
 
 router.get("/login", function(ctx) {

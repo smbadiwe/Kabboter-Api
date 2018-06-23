@@ -17,5 +17,16 @@ const visibleTo = {
 };
 //Object.freeze(visibleTo);
 
-const Enums = { UserType: userType, Audience: audience, VisibleTo: visibleTo };
+const userRoleOptions = {
+  Players: 1,
+  Moderator: 2,
+  SuperAdmin: 3
+};
+
+const Enums = {
+  UserType: userType,
+  Audience: audience,
+  VisibleTo: visibleTo,
+  UserRoleOptions: userRoleOptions
+};
 export default Enums;

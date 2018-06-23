@@ -4,11 +4,74 @@ import { RequestError, Required } from "../utils/ValidationErrors";
 import { sign, verify } from "jsonwebtoken";
 import { compare, hashSync, genSaltSync } from "bcrypt";
 import { generatePin } from "../utils";
+import Enums from "./enums";
 import log from "../utils/log";
 
 export default class UserService extends BaseEntityService {
   constructor() {
     super("users");
+  }
+
+  /**
+   *
+   * @param {*} pagingOptions { perPage: perPage, page: page, }
+   */
+  async getAdmins(pagingOptions) {
+    const playeyQuery = this.connector
+      .table(this.tableName)
+      .whereNot({ roles: Enums.UserRoleOptions.Players, disabled: true })
+      .modify(queryBuilder => {
+        if (payload.lastname) {
+          queryBuilder.where("lastname", "like", `%${payload.lastname}%`);
+        }
+        if (payload.firstname) {
+          queryBuilder.where("firstname", "like", `%${payload.firstname}%`);
+        }
+        if (payload.username) {
+          queryBuilder.where("username", "like", `%${payload.username}%`);
+        }
+        if (payload.email) {
+          queryBuilder.where("email", "like", `%${payload.email}%`);
+        }
+        if (payload.phone) {
+          queryBuilder.where("phone", "like", `%${payload.phone}%`);
+        }
+      });
+    const result = await this.dbPaging(playeyQuery, pagingOptions);
+    return result; // = { data, pagination }
+  }
+
+  /**
+   *
+   * @param {*} pagingOptions { perPage: perPage, page: page, }
+   */
+  async getPlayers(payload) {
+    const { perPage, page } = payload;
+    const playeyQuery = this.connector
+      .table(this.tableName)
+      .where({
+        roles: Enums.UserRoleOptions.Players,
+        disabled: false
+      })
+      .modify(queryBuilder => {
+        if (payload.lastname) {
+          queryBuilder.where("lastname", "like", `%${payload.lastname}%`);
+        }
+        if (payload.firstname) {
+          queryBuilder.where("firstname", "like", `%${payload.firstname}%`);
+        }
+        if (payload.username) {
+          queryBuilder.where("username", "like", `%${payload.username}%`);
+        }
+        if (payload.email) {
+          queryBuilder.where("email", "like", `%${payload.email}%`);
+        }
+        if (payload.phone) {
+          queryBuilder.where("phone", "like", `%${payload.phone}%`);
+        }
+      });
+    const result = await this.dbPaging(playeyQuery, { perPage: perPage, page: page });
+    return result; // = { data, pagination }
   }
 
   async getUserProfile(uid) {
@@ -56,15 +119,7 @@ export default class UserService extends BaseEntityService {
         "Sorry, we already have someone with the username specified. Use the 'Forgot Password' link if you forgot your password."
       );
     }
-    let username;
-    do {
-      username =
-        userRegInfo.lastname.substring(0, 2) +
-        userRegInfo.firstname.substring(0, 2) +
-        generatePin();
-
-      user = await this.getByUsername(username);
-    } while (!user);
+    const username = await this.generateUsername(userRegInfo.lastname, userRegInfo.firstname);
     user = {
       firstname: userRegInfo.firstname,
       organization: userRegInfo.organization,
@@ -72,6 +127,7 @@ export default class UserService extends BaseEntityService {
       email: userRegInfo.email,
       phone: userRegInfo.phone,
       username: username,
+      roles: Enums.UserRoleOptions.Players,
       passwordHash: hashSync(userRegInfo.password, genSaltSync()),
       usertype: userRegInfo.usertype
     };
@@ -79,6 +135,16 @@ export default class UserService extends BaseEntityService {
 
     // log the user in
     return await this.processLogin(userRegInfo.username, userRegInfo.password, true);
+  }
+
+  async generateUsername(lastname, firstname) {
+    let username;
+    do {
+      username = lastname.substring(0, 2) + firstname.substring(0, 2) + generatePin();
+
+      user = await this.getByUsername(username);
+    } while (!user);
+    return username;
   }
 
   async getByEmail(email) {
@@ -190,13 +256,7 @@ export default class UserService extends BaseEntityService {
 
       return {
         token: token,
-        user: {
-          i: user.id,
-          u: user.username,
-          f: user.firstname,
-          l: user.lastname,
-          r: roleNames
-        }
+        user: { i: user.id, u: user.username, f: user.firstname, l: user.lastname, r: roleNames }
       };
     } else {
       throw new RequestError("Wrong password");

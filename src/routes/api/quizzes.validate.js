@@ -6,7 +6,6 @@ import {
   RequestError,
   NoDataReceived
 } from "../../utils/ValidationErrors";
-export { validateInteger };
 
 export function validateQuizProps(payload, updating = false) {
   if (!payload) throw new NoDataReceived();
