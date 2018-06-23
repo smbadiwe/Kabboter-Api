@@ -74,7 +74,14 @@ user model:
 };
  */
 async function authorizeRequest(ctx, next) {
-  if (ctx.request.url.startsWith("/api/")) {
+  const url = ctx.request.url;
+  const verifyAuth =
+    url.startsWith("/api/") &&
+    !url.startsWith("/api/public/") &&
+    !url.endsWith(".js") &&
+    !url.endsWith(".css");
+
+  if (verifyAuth) {
     let token = getTokenFromHeaderOrQuerystring(ctx.request);
     // log.debug("%s - token: %s", ctx.request.url, token);
     const decodedToken = verify(token, process.env.APP_SECRET);
@@ -94,8 +101,12 @@ async function authorizeRequest(ctx, next) {
       username: decodedToken.u,
       permissions: decodedToken.p
     };
+  } else {
+    log.debug("Incoming Url: %s.", url);
   }
-
+  if (ctx.request.body) {
+    log.debug("%s: %s. Body: %O", ctx.request.method, url, ctx.request.body);
+  }
   await next();
 }
 

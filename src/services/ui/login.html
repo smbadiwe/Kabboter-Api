@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+</head>
+
+<body>
+    <input id="username" placeholder="Username" />
+    <br />
+    <input id="password" placeholder="Password" />
+    <br />
+    <button onclick="login();">Login</button>
+</body>
+<script>
+    function login() {
+        const data = {
+            username: $("#username").val(),
+            password: $("#password").val(),
+        };
+        $.ajax({
+            type: 'POST',
+            url: 'http://localhost:3000/api/public/login',
+            data: data,
+            success: function (result) {
+                console.log(result);
+                localStorage.setItem("token", result.token);
+                localStorage.setItem("userInfo", JSON.stringify(result.user));
+                window.location.href = "http://localhost:3000/";
+            },
+            error: function (error) {
+                console.log("Status: " + error.status + " Message: " + error.statusText);
+                console.log(error);
+            }
+        });
+    }
+    // $(function () {
+
+    // });
+</script>
+
+</html>

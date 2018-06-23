@@ -1,10 +1,10 @@
 import Router from "koa-router";
-import { apiSuccess } from "../utils";
-import { UserService } from "../services";
-import knex from "../db/connection";
-import * as knexfile from "../db/knexfile";
+import { apiSuccess } from "../../../utils";
+import { UserService } from "../../../services";
+import knex from "../../../db/connection";
+import * as knexfile from "../../../db/knexfile";
 
-const router = new Router();
+const router = new Router({ prefix: "/api/public" });
 
 //NOTE: Routes here DO NOT require login
 
@@ -38,7 +38,7 @@ router.get("/initdb", async ctx => {
     const path = require("path");
     console.log("from /initdb: __dirname = " + BASE_PATH);
     let config = knexfile[process.env.NODE_ENV || "development"];
-    config.knexfile = path.join(BASE_PATH, "../db/knexfile.js");
+    config.knexfile = path.join(BASE_PATH, "../../../db/knexfile.js");
     console.log("from /initdb: config.knexfile = " + config.knexfile);
     console.log(config);
     await knex.migrate.latest(config);

@@ -5,6 +5,7 @@
 // <script src="./surveyadmin.ui.js"></script>
 // to the page BEFORE importing this js file. That's where io is defined.
 
+import io from "socket.io-client";
 const socket = io("/surveyadmin");
 
 function onReceiveNextQuestion(question) {

@@ -7,7 +7,7 @@ dist
 # config file
 .env
 web.config
-app.yaml
+*.yaml
 
 # test db
 dev.sqlite3

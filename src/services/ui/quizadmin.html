@@ -36,9 +36,21 @@
             padding: 10px;
         }
     </style>
+    <!-- <script src="/socket.io/socket.io.js"></script> -->
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <!-- <script src="../socketclients/general.js"></script>
+        <script src="../socketclients/quizadmin.js"></script>
+        <script src="../socketclients/quizadmin.ui.js"></script> -->
+    <script src="/general.js"></script>
+    <script src="/quizadmin.js"></script>
+    <script src="/quizadmin.ui.js"></script>
 </head>
 
 <body>
+    <div>
+        <button onclick="loadNextQuestion(event);">
+            Load question</button>
+    </div>
     <div>
         <section>
             <hi>Error</hi>
@@ -61,15 +73,6 @@
             <span id="dashboard"></span>
         </section>
     </div>
-    <div>
-        <button onclick="loadNextQuestion(event);">
-            Next question</button>
-    </div>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-    <script src="./general.js"></script>
-    <script src="./quizadmin.js"></script>
-    <script src="./quizadmin.ui.js"></script>
     <script>
         function loadNextQuestion(e) {
             e.preventDefault();

@@ -3,7 +3,7 @@ require("babel-register");
 const path = require("path");
 const BASE_PATH = __dirname;
 const dotenv = require("dotenv");
-dotenv.load({ path: path.join(BASE_PATH, "/.env") });
+dotenv.load({ path: path.join(BASE_PATH, "../../.env") });
 module.exports = {
   test: {
     client: "sqlite3",

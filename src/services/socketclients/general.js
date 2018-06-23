@@ -21,3 +21,7 @@ function getUserInfo() {
   const userInfo = localStorage.getItem("userInfo"); //TODO: Get it from wherever you kept it.
   return JSON.parse(userInfo);
 }
+
+function getAuthToken() {
+  return localStorage.getItem("token");
+}

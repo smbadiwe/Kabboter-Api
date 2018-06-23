@@ -5,6 +5,7 @@
 // <script src="./quizadmin.ui.js"></script>
 // to the page BEFORE importing this js file. That's where io is defined.
 
+import io from "socket.io-client";
 const socket = io("/quizadmin");
 
 function onReceiveNextQuestion(question) {
@@ -47,16 +48,20 @@ function onPlayerSubmittedAnswer(data) {
   updateQuizDashboardOnPlayerSubmittedAnswer(data);
 }
 
+function getQuizRunInfo() {
+  return JSON.parse(localStorage.getItem("quizruninfo"));
+}
+
 /**
  * Call this function as soon as you can on page load.
  * The URL loading the page MUST pass pin via querystring, with key: 'pin'
  */
-function authenticateQuizAdmin() {
+export function authenticateQuizAdmin() {
   // Server sends this info on successful login, as a JSON: { token: ..., user: {...} }
   // I'm assuming you saved it somewhere in local storage, with key: userInfo.
   const userInfo = getUserInfo();
-  const pin = getQueryStringParams().pin;
-  const auth = { pin: pin, userInfo: userInfo };
+  const quizRunInfo = getQuizRunInfo();
+  const auth = { pin: quizRunInfo.pin, userInfo: userInfo };
   socket.emit("authenticate", auth, error => {
     alert(error);
   });
@@ -66,8 +71,8 @@ function authenticateQuizAdmin() {
  * The 'Next' button that loads a new question should call this.
  */
 function getNextQuestion() {
-  const quizRunInfo = JSON.parse(localStorage.setItem("quizruninfo"));
-  var data = { quizRunId: quizRunInfo.Id, quizId: quizRunInfo.quizId };
+  const quizRunInfo = getQuizRunInfo();
+  var data = { quizRunId: quizRunInfo.id, quizId: quizRunInfo.quizId };
   socket.emit("get-next-question", data, callbackOnQuizAdminError);
 }
 

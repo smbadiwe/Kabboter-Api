@@ -3,11 +3,14 @@ import KeyGrip from "keygrip";
 import log from "./utils/log";
 import middleware from "./middleware";
 import routes from "./routes";
+import serve from "koa-static";
 
 const app = new Koa();
 
 const keys = [process.env.APP_SECRET];
 app.keys = new KeyGrip(keys, "sha256");
+
+app.use(serve(__dirname + "/services/socketclients"), { hidden: true });
 
 app.use(middleware());
 app.use(routes());

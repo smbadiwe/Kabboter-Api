@@ -1,10 +1,12 @@
 import { BaseEntityService } from "./baseentity.service";
 import { QuizService, QuizQuestionService, QuizAnswerService } from "./";
 import { generatePin } from "../utils";
+import log from "../utils/log";
 
 export default class QuizRunService extends BaseEntityService {
   constructor() {
     super("quizruns");
+    log.setNamespace("QuizRunService");
   }
 
   async getNextQuestionToBeAnswered(quizRunId, quizId) {
@@ -26,14 +28,17 @@ export default class QuizRunService extends BaseEntityService {
    * @param {*} record
    */
   async save(record) {
+    log.debug("Getting quiz by quizId");
     const quiz = await new QuizService().getById(record.quizId);
+    log.debug("Done getting quiz by quizId");
     if (!quiz) throw new RequestError("Invalid quiz id");
 
     let pin;
     let exist;
     do {
       pin = generatePin();
-      exist = await this.getBy({ pin: pin });
+      exist = await this.getFirst({ pin: pin });
+      log.debug("Done getting quiz run by pin: %s. value = %o", pin, exist);
     } while (exist);
 
     const quizRun = {

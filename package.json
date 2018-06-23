@@ -21,6 +21,7 @@
     "koa-logger": "^3.2.0",
     "koa-router": "^7.4.0",
     "koa-session": "^5.8.1",
+    "koa-static": "^4.0.3",
     "mustache": "^2.3.0",
     "mysql": "^2.15.0",
     "nodemailer": "^4.6.5",
@@ -37,7 +38,7 @@
   },
   "scripts": {
     "start": "nodemon src/index.js --exec babel-node",
-    "start-debug": "set DEBUG=Kabooter:* && npm start",
+    "start-debug": "set DEBUG=koa-send,Kabooter:* && npm start",
     "build": "babel src -d dist",
     "serve": "node dist/index.js",
     "test": "mocha --require babel-register",

@@ -1,0 +1,14 @@
+# For complete reference, see 
+# https://cloud.google.com/appengine/docs/flexible/nodejs/reference/app-yaml
+env: flex
+runtime: nodejs
+env_variables:
+  APP_DB_HOST: localhost
+  APP_DB_NAME: kabooter
+  APP_DB_USR: root
+  APP_DB_PWD: P@ssw0rd
+  APP_SECRET: rieognedlsswe3943u43jreknsg34t3hthnpeinpg3be034438f49034u03843sd6gnfglsdgnslrnglg
+  APP_NAME: Kabooter
+# Google App Engine needs this to successfully talk to MySQL
+beta_settings:
+  cloud_sql_instances: localhost

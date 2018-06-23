@@ -9,11 +9,24 @@ const router = new Router({ prefix: "/api/user/quizruns" });
 router.post("/create", async ctx => {
   try {
     validateQuizRunProps(ctx.request.body);
-
+    log.debug("Creating quiz run...");
     const res = await new QuizRunService().save(ctx.request.body);
+    log.debug("Done creating quiz run...");
 
-    launchSocketIO(res);
     ctx.body = res;
+  } catch (e) {
+    ctx.throw(e.status || 500, e);
+  }
+});
+
+router.get("/start", async ctx => {
+  try {
+    validateQuizRunProps(ctx.request.body);
+
+    // const res = await new QuizRunService().save(ctx.request.body);
+
+    // launchSocketIO(res);
+    // ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
   }
