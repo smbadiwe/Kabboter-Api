@@ -72,6 +72,15 @@ router.post("/update", async ctx => {
   }
 });
 
+router.get("/", async ctx => {
+  const allMembers = await new UserService().getPlayers(ctx.request.body);
+  if (!allMembers) {
+    ctx.status = 503;
+  } else {
+    ctx.body = allMembers;
+  }
+});
+
 router.get("/:id", async ctx => {
   try {
     const member = await new UserService().getById(ctx.params.id);
@@ -83,15 +92,6 @@ router.get("/:id", async ctx => {
   } catch (err) {
     console.log(err);
     ctx.throw(503, "No member with the given id found.");
-  }
-});
-
-router.get("/", async ctx => {
-  const allMembers = await new UserService().getPlayers(ctx.request.body);
-  if (!allMembers) {
-    ctx.status = 503;
-  } else {
-    ctx.body = allMembers;
   }
 });
 

@@ -25,18 +25,19 @@ function onWhenSomeoneJustJoined(payload) {
   // payload = { nPlayers: nPlayers, topFive: topFive };
   // You get the total number of players still connecting
   // and a list of the top 5 to display on page.
-  console.log(payload);
+  updateQuizAdminPageOnWhenSomeoneJustJoined(payload);
 }
 
 function onWhenSomeoneJustLeft(payload) {
   // payload = { nPlayers: nPlayers, topFive: topFive };
   // You get the total number of players still connecting
   // and a list of the top 5 to display on page.
-  updateQuizAdminPageOnWhenSomeoneJustJoined;
-  payload;
+  updateQuizAdminPageOnWhenSomeoneJustLeft(payload);
 }
 
 function onDisconnect(reason) {
+  localStorage.removeItem("quizruninfo");
+  localStorage.removeItem("quizquestion");
   if (reason === "io server disconnect") {
     // the disconnection was initiated by the server, you need to reconnect manually
     socket.connect();
@@ -45,12 +46,14 @@ function onDisconnect(reason) {
 }
 
 function onPlayerSubmittedAnswer(data) {
-  console.log(data);
   updateQuizDashboardOnPlayerSubmittedAnswer(data);
 }
 
 function getQuizRunInfo() {
-  return JSON.parse(localStorage.getItem("quizruninfo"));
+  const info = localStorage.getItem("quizruninfo");
+  if (!info) throw new Error("quizruninfo not yet created");
+
+  return JSON.parse(info);
 }
 
 /**

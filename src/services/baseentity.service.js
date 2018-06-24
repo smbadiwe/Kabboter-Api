@@ -66,6 +66,17 @@ export class BaseEntityService {
     };
   }
 
+  /**
+   * Use this to run select queries.
+   * @param {*} rawSqlQuery string containing the query, written the way knex wants it. We pass it directly to this.connector.raw (knex.raw) and return the data.
+   * @param {*} args The query parameters.
+   */
+  async runSqlSelectQuery(rawSqlQuery, args) {
+    const result = await this.connector.raw(rawSqlQuery, args);
+    // See https://github.com/tgriesser/knex/issues/1802 for why the [0][0]
+    return result[0][0];
+  }
+
   async getAll() {
     return await this.connector.table(this.tableName).select();
   }

@@ -13,18 +13,15 @@ export default class QuizAnswerService extends BaseEntityService {
    * @param {*} uid
    */
   async getUserQuizParticipationCount(uid) {
-    const count = await this.connector.raw(
-      `
+    const countQuery = `
 select count(*) as total from (
   select q.quizRunId from quizanswers q
   where q.userId = ?
   group by q.quizRunId
-  ) as a;`,
-      [uid]
-    );
-
-    log.debug("getUserQuizParticipationCount - count = %o", count);
-    return count[0].total;
+  ) as a;`;
+    const result = await this.runSqlSelectQuery(countQuery, [uid]);
+    log.debug("getUserQuizParticipationCount - count = %o", result);
+    return result.total;
   }
 
   async getOneUnansweredQuestionInQuiz(quizRunId, quizId, quizQuestionIds) {
@@ -35,6 +32,7 @@ select count(*) as total from (
       .groupBy("quizQuestionId")
       .havingIn("quizQuestionId", quizQuestionIds);
 
+    log.debug("getOneUnansweredQuestionInQuiz - count = %o", answeredQuestions);
     if (!answeredQuestions || answeredQuestions.length === 0) {
       return await new QuizQuestionService().getById(quizQuestionIds[0]);
     }

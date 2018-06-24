@@ -42,7 +42,7 @@ router.post("/update", async ctx => {
 
 router.post("/delete/:id", async ctx => {
   try {
-    validateInteger(ctx.params.id);
+    validateInteger(ctx.params.id, "id");
     const res = await new QuizService().deleteRecord(ctx.params.id);
     ctx.body = res;
   } catch (e) {
@@ -50,21 +50,6 @@ router.post("/delete/:id", async ctx => {
   }
 });
 
-router.get("/my/:id", async ctx => {
-  try {
-    validateInteger(ctx.params.id);
-    const wq = ctx.request.query.wq;
-    const withoutQuestions = !wq || wq !== "y";
-    const userId = ctx.request.user.id;
-    const res = await new QuizService().getBy(
-      { userId: userId, id: ctx.params.id },
-      withoutQuestions
-    );
-    ctx.body = res;
-  } catch (e) {
-    ctx.throw(e.status || 500, e);
-  }
-});
 router.get("/my", async ctx => {
   try {
     const userId = ctx.request.user.id;
@@ -77,12 +62,16 @@ router.get("/my", async ctx => {
   }
 });
 
-router.get("/:id", async ctx => {
+router.get("/my/:id", async ctx => {
   try {
-    validateInteger(ctx.params.id);
+    validateInteger(ctx.params.id, "id");
     const wq = ctx.request.query.wq;
     const withoutQuestions = !wq || wq !== "y";
-    const res = await new QuizService().getBy({ id: ctx.params.id }, withoutQuestions);
+    const userId = ctx.request.user.id;
+    const res = await new QuizService().getBy(
+      { userId: userId, id: ctx.params.id },
+      withoutQuestions
+    );
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
@@ -92,6 +81,18 @@ router.get("/:id", async ctx => {
 router.get("/", async ctx => {
   try {
     const res = await new QuizService().getAll();
+    ctx.body = res;
+  } catch (e) {
+    ctx.throw(e.status || 500, e);
+  }
+});
+
+router.get("/:id", async ctx => {
+  try {
+    validateInteger(ctx.params.id, "id");
+    const wq = ctx.request.query.wq;
+    const withoutQuestions = !wq || wq !== "y";
+    const res = await new QuizService().getBy({ id: ctx.params.id }, withoutQuestions);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);

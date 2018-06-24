@@ -1,10 +1,28 @@
-function setQuizQuestionsOnPage(question) {
-  // question: as defined in doc
+function setQuizQuestionsOnPage(quizquestion) {
+  // quizquestion: as defined in doc
   // TODO: Set question to the corresponding UI controls
-  $("#questions").html(JSON.stringify(question));
+
+  const oldQn = $("#questions").html();
+  try {
+    $("#questions").html(JSON.stringify(quizquestion));
+    $("#error").html("");
+    $("#feedback").html("");
+    $("#stats").html("");
+    $("#dashboard").html("");
+  } catch (e) {
+    $("#error").html(e);
+    $("#questions").html(oldQn);
+  }
 }
 
 function updateQuizAdminPageOnWhenSomeoneJustJoined(data) {
+  // data = { nPlayers: nPlayers, topFive: topFive };
+  // You get the total number of players still connecting
+  // and a list of the top 5 to display on page.
+  $("#stats").html(JSON.stringify(data));
+}
+
+function updateQuizAdminPageOnWhenSomeoneJustLeft(data) {
   // data = { nPlayers: nPlayers, topFive: topFive };
   // You get the total number of players still connecting
   // and a list of the top 5 to display on page.

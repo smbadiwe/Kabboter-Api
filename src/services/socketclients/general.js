@@ -19,6 +19,8 @@ function getUserInfo() {
   // Server sent you the user info when you logged in, as a JSON: { token: ..., user: {...} }
   // I'm assuming you saved it somewhere in local storage, with key: userInfo.
   const userInfo = localStorage.getItem("userInfo"); //TODO: Get it from wherever you kept it.
+  if (!userInfo) throw new Error("userInfo not yet created. Please logout and login again");
+
   return JSON.parse(userInfo);
 }
 

@@ -13,18 +13,15 @@ export default class SurveyAnswerService extends BaseEntityService {
    * @param {*} uid
    */
   async getUserSurveyParticipationCount(uid) {
-    const count = await this.connector.raw(
-      `
+    const countQuery = `
 select count(*) as total from (
   select q.surveyRunId from surveyanswers q
   where q.userId = ?
   group by q.surveyRunId
-  ) as a;`,
-      [uid]
-    );
-
-    log.debug("getUserSurveyParticipationCount - count = %o", count);
-    return count[0].total;
+  ) as a;`;
+    const result = await this.runSqlSelectQuery(countQuery, [uid]);
+    log.debug("getUserSurveyParticipationCount - count = %o", result);
+    return result.total;
   }
 
   async getOneUnansweredQuestionInSurvey(surveyRunId, surveyId, surveyQuestionIds) {
