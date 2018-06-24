@@ -1,8 +1,54 @@
 import Router from "koa-router";
 import { QuizService } from "../../services";
-import { validateQuizProps, validateInteger } from "./quizzes.validate";
+import { validateQuizProps } from "./quizzes.validate";
+import { validateInteger } from "../../utils/ValidationErrors";
 
 const router = new Router({ prefix: "/api/user/quizzes" });
+
+router.post("/create", async ctx => {
+  try {
+    validateQuizProps(ctx.request.body);
+
+    const userId = ctx.request.user.id;
+    const res = await new QuizService().create(userId, ctx.request.body);
+    ctx.body = res;
+  } catch (e) {
+    ctx.throw(e.status || 500, e);
+  }
+});
+
+router.post("/batchcreate", async ctx => {
+  try {
+    validateQuizBatchCreateProps(ctx.request.body);
+
+    const userId = ctx.request.user.id;
+    const res = await new QuizService().createBatch(userId, ctx.request.body);
+    ctx.body = res;
+  } catch (e) {
+    ctx.throw(e.status || 500, e);
+  }
+});
+
+router.post("/update", async ctx => {
+  try {
+    validateQuizProps(ctx.request.body, true);
+
+    const res = await new QuizService().update(ctx.request.body);
+    ctx.body = res;
+  } catch (e) {
+    ctx.throw(e.status || 500, e);
+  }
+});
+
+router.post("/delete/:id", async ctx => {
+  try {
+    validateInteger(ctx.params.id);
+    const res = await new QuizService().deleteRecord(ctx.params.id);
+    ctx.body = res;
+  } catch (e) {
+    ctx.throw(e.status || 500, e);
+  }
+});
 
 router.get("/my/:id", async ctx => {
   try {
@@ -46,39 +92,6 @@ router.get("/:id", async ctx => {
 router.get("/", async ctx => {
   try {
     const res = await new QuizService().getAll();
-    ctx.body = res;
-  } catch (e) {
-    ctx.throw(e.status || 500, e);
-  }
-});
-
-router.post("/create", async ctx => {
-  try {
-    validateQuizProps(ctx.request.body);
-
-    const userId = ctx.request.user.id;
-    const res = await new QuizService().create(userId, ctx.request.body);
-    ctx.body = res;
-  } catch (e) {
-    ctx.throw(e.status || 500, e);
-  }
-});
-
-router.post("/update", async ctx => {
-  try {
-    validateQuizProps(ctx.request.body, true);
-
-    const res = await new QuizService().update(ctx.request.body);
-    ctx.body = res;
-  } catch (e) {
-    ctx.throw(e.status || 500, e);
-  }
-});
-
-router.post("/delete/:id", async ctx => {
-  try {
-    validateInteger(ctx.params.id);
-    const res = await new QuizService().deleteRecord(ctx.params.id);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);

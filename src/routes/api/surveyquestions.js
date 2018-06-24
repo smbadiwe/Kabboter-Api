@@ -1,15 +1,15 @@
 import Router from "koa-router";
-import { QuizQuestionService } from "../../services";
-import { validateQuizQuestionProps } from "./quizquestions.validate";
+import { SurveyQuestionService } from "../../services";
+import { validateSurveyQuestionProps } from "./surveyquestions.validate";
 import { validateInteger } from "../../utils/ValidationErrors";
 
-const router = new Router({ prefix: "/api/user/quizquestions" });
+const router = new Router({ prefix: "/api/user/surveyquestions" });
 
 router.post("/create", async ctx => {
   try {
-    validateQuizQuestionProps(ctx.request.body);
+    validateSurveyQuestionProps(ctx.request.body);
 
-    const res = await new QuizQuestionService().save(ctx.request.body);
+    const res = await new SurveyQuestionService().save(ctx.request.body);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
@@ -18,9 +18,9 @@ router.post("/create", async ctx => {
 
 router.post("/update", async ctx => {
   try {
-    validateQuizQuestionProps(ctx.request.body, true);
+    validateSurveyQuestionProps(ctx.request.body, true);
 
-    const res = await new QuizQuestionService().update(ctx.request.body);
+    const res = await new SurveyQuestionService().update(ctx.request.body);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
@@ -30,7 +30,7 @@ router.post("/update", async ctx => {
 router.post("/delete/:id", async ctx => {
   try {
     validateInteger(ctx.params.id);
-    const res = await new QuizQuestionService().daleteRecord(ctx.params.id);
+    const res = await new SurveyQuestionService().daleteRecord(ctx.params.id);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
@@ -39,11 +39,11 @@ router.post("/delete/:id", async ctx => {
 
 router.get("/:id", async ctx => {
   try {
-    const quizId = ctx.request.query.quizId;
+    const surveyId = ctx.request.query.surveyId;
     const recordId = ctx.params.id;
-    validateInteger(quizId);
+    validateInteger(surveyId);
     validateInteger(recordId);
-    const res = await new QuizQuestionService().getBy({ id: recordId, quizId: quizId });
+    const res = await new SurveyQuestionService().getBy({ id: recordId, surveyId: surveyId });
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
@@ -52,9 +52,9 @@ router.get("/:id", async ctx => {
 
 router.get("/", async ctx => {
   try {
-    const quizId = ctx.request.query.quizId;
-    validateInteger(quizId);
-    const res = await new QuizQuestionService().getBy({ quizId: quizId });
+    const surveyId = ctx.request.query.surveyId;
+    validateInteger(surveyId);
+    const res = await new SurveyQuestionService().getBy({ surveyId: surveyId });
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);

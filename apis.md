@@ -155,6 +155,40 @@ The response data will be an object whose keys are defined below.
 
 [Back to table of contents](#contents)
 
+# Players
+
+This set of APIs gets users that are players by role. These are typically admin roles.
+
+## GET /api/user/players
+
+Data will have keys: page, perPage and any search parameter you like, picking from the user definition - the same definition you used for /register. We enforce database paging.
+
+`data: { page: 1, // the page in the data you want to show perPage: 10, // the number of records per display (grid) page // other search params }`
+
+The values 1 and 10 will be default values if you don't send those parameters.
+
+The result you'll get will be something like this
+
+`result = { pagination: { total: total, perPage, currentPage: page, lastPage: Math.ceil(total / perPage), from: offset, to: offset + data.length }, data: data // array of the data you requested. If none, we return empty array }`
+
+_pagination_ field can help you display useful info on your grid. Eg. _11 - 20 of 350_
+
+## View Player details
+
+**GET /api/user/players/:id**
+
+To view details of a player record, where :id si the id of the player.
+
+## Create Player record
+
+**POST /api/user/players/create**
+
+Add/Create is not useful since they will use /register; but it's provided anyway.
+
+## Update player record
+
+**POST /api/user/players/update**
+
 # Quiz
 
 ### Quiz Data Definition (**request**)

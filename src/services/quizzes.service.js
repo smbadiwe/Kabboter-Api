@@ -39,6 +39,48 @@ export default class QuizService extends BaseEntityService {
     return { id: res[0] }; // the id of the newly saved record
   }
 
+  /**
+   * Create survey and return the id or the newly-created record.
+   * @param {*} userId
+   * @param {*} payload
+   */
+  async createBatch(userId, payload) {
+    const quiz = {
+      title: payload.title,
+      description: payload.description,
+      audience: payload.audience || Enums.Audience.Social,
+      introLink: payload.introLink,
+      visibleTo: payload.visibleTo || Enums.VisibleTo.Everyone,
+      creditResources: payload.creditResources,
+      userId: userId
+    };
+    const res = await this.save(quiz);
+    const quizId = res[0];
+
+    const questionList = [];
+    payload.questions.forEach(q => {
+      const qn = {
+        question: q.question,
+        timeLimit: q.timeLimit,
+        quizId: quizId,
+        option1: q.option1,
+        option2: q.option2,
+        option3: q.option3,
+        option4: q.option4,
+        correctOptions: q.correctOptions,
+        points: q.points,
+        maxBonus: q.maxBonus,
+        introLink: q.introLink,
+        creditResources: q.creditResources
+      };
+      questionList.push(qn);
+    });
+
+    await new QuizQuestionService().saveList(questionList);
+
+    return { id: res[0], nQuestions: questionList.length }; // the id of the newly saved record
+  }
+
   async update(payload) {
     const quiz = {
       id: payload.id,

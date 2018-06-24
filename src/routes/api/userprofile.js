@@ -1,8 +1,20 @@
 import Router from "koa-router";
 import { UserService } from "../../services";
 import { validateChangePassword } from "./userprofile.validate";
+import { validateMemberOnAdd } from "./players.validate";
 
 const router = new Router({ prefix: "/api/user" });
+
+router.post("/profile/update", async ctx => {
+  try {
+    const userId = ctx.request.user.id;
+    validateMemberOnAdd(ctx.request.body);
+    const res = await new UserService().updateUserProfile(userId, ctx.request.body);
+    ctx.body = res;
+  } catch (e) {
+    ctx.throw(e.status || 500, e);
+  }
+});
 
 router.get("/profile", async ctx => {
   try {

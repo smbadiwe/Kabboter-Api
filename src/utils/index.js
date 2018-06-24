@@ -40,3 +40,11 @@ export function apiSuccess(responseData) {
     status: true
   };
 }
+
+export function isArray(a) {
+  return !!a && a.constructor === Array;
+}
+
+export function isObject(a) {
+  return !!a && a.constructor === Object;
+}

@@ -1,9 +1,54 @@
 import Router from "koa-router";
 import { SurveyService } from "../../services";
 import { validateInteger } from "../../utils/ValidationErrors";
-import { validateSurveyProps } from "./surveys.validate";
+import { validateSurveyProps, validateSurveyBatchCreateProps } from "./surveys.validate";
 
 const router = new Router({ prefix: "/api/user/surveys" });
+
+router.post("/create", async ctx => {
+  try {
+    validateSurveyProps(ctx.request.body);
+
+    const userId = ctx.request.user.id;
+    const res = await new SurveyService().create(userId, ctx.request.body);
+    ctx.body = res;
+  } catch (e) {
+    ctx.throw(e.status || 500, e);
+  }
+});
+
+router.post("/batchcreate", async ctx => {
+  try {
+    validateSurveyBatchCreateProps(ctx.request.body);
+
+    const userId = ctx.request.user.id;
+    const res = await new SurveyService().createBatch(userId, ctx.request.body);
+    ctx.body = res;
+  } catch (e) {
+    ctx.throw(e.status || 500, e);
+  }
+});
+
+router.post("/update", async ctx => {
+  try {
+    validateSurveyProps(ctx.request.body, true);
+
+    const res = await new SurveyService().update(ctx.request.body);
+    ctx.body = res;
+  } catch (e) {
+    ctx.throw(e.status || 500, e);
+  }
+});
+
+router.post("/delete/:id", async ctx => {
+  try {
+    validateInteger(ctx.params.id);
+    const res = await new SurveyService().deleteRecord(ctx.params.id);
+    ctx.body = res;
+  } catch (e) {
+    ctx.throw(e.status || 500, e);
+  }
+});
 
 router.get("/my/:id", async ctx => {
   try {
@@ -20,6 +65,7 @@ router.get("/my/:id", async ctx => {
     ctx.throw(e.status || 500, e);
   }
 });
+
 router.get("/my", async ctx => {
   try {
     const userId = ctx.request.user.id;
@@ -47,39 +93,6 @@ router.get("/:id", async ctx => {
 router.get("/", async ctx => {
   try {
     const res = await new SurveyService().getAll();
-    ctx.body = res;
-  } catch (e) {
-    ctx.throw(e.status || 500, e);
-  }
-});
-
-router.post("/create", async ctx => {
-  try {
-    validateSurveyProps(ctx.request.body);
-
-    const userId = ctx.request.user.id;
-    const res = await new SurveyService().create(userId, ctx.request.body);
-    ctx.body = res;
-  } catch (e) {
-    ctx.throw(e.status || 500, e);
-  }
-});
-
-router.post("/update", async ctx => {
-  try {
-    validateSurveyProps(ctx.request.body, true);
-
-    const res = await new SurveyService().update(ctx.request.body);
-    ctx.body = res;
-  } catch (e) {
-    ctx.throw(e.status || 500, e);
-  }
-});
-
-router.post("/delete/:id", async ctx => {
-  try {
-    validateInteger(ctx.params.id);
-    const res = await new SurveyService().deleteRecord(ctx.params.id);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);

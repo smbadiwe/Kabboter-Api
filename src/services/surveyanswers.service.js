@@ -1,10 +1,30 @@
 import { BaseEntityService } from "./baseentity.service";
 import { SurveyRunService, SurveyQuestionService } from "./";
 import { RequestError } from "../utils/ValidationErrors";
+import log from "../utils/log";
 
 export default class SurveyAnswerService extends BaseEntityService {
   constructor() {
     super("surveyanswers");
+  }
+
+  /**
+   * Get the number of surveys this user has participated in.
+   * @param {*} uid
+   */
+  async getUserSurveyParticipationCount(uid) {
+    const count = await this.connector.raw(
+      `
+select count(*) as total from (
+  select q.surveyRunId from surveyanswers q
+  where q.userId = ?
+  group by q.surveyRunId
+  ) as a;`,
+      [uid]
+    );
+
+    log.debug("getUserSurveyParticipationCount - count = %o", count);
+    return count[0].total;
   }
 
   async getOneUnansweredQuestionInSurvey(surveyRunId, surveyId, surveyQuestionIds) {

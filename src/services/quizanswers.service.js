@@ -1,10 +1,30 @@
 import { BaseEntityService } from "./baseentity.service";
 import { QuizRunService, QuizQuestionService } from "./";
 import { RequestError } from "../utils/ValidationErrors";
+import log from "../utils/log";
 
 export default class QuizAnswerService extends BaseEntityService {
   constructor() {
     super("quizanswers");
+  }
+
+  /**
+   * Get the number of surveys this user has participated in.
+   * @param {*} uid
+   */
+  async getUserQuizParticipationCount(uid) {
+    const count = await this.connector.raw(
+      `
+select count(*) as total from (
+  select q.quizRunId from quizanswers q
+  where q.userId = ?
+  group by q.quizRunId
+  ) as a;`,
+      [uid]
+    );
+
+    log.debug("getUserQuizParticipationCount - count = %o", count);
+    return count[0].total;
   }
 
   async getOneUnansweredQuestionInQuiz(quizRunId, quizId, quizQuestionIds) {
@@ -32,7 +52,6 @@ export default class QuizAnswerService extends BaseEntityService {
    * Save quiz answer. If user has answered this quiz before, we update the record.
    * @param {*} record
    */
-
   async save(record) {
     const quizRun = await new QuizRunService().getBy({
       pin: record.pin

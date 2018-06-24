@@ -1,5 +1,12 @@
 import { BaseEntityService } from "./baseentity.service";
-import { UserRoleService, PermissionService, QuizService } from "./";
+import {
+  UserRoleService,
+  PermissionService,
+  QuizService,
+  SurveyService,
+  QuizAnswerService,
+  SurveyAnswerService
+} from "./";
 import { RequestError, Required } from "../utils/ValidationErrors";
 import { sign, verify } from "jsonwebtoken";
 import { compare, hashSync, genSaltSync } from "bcrypt";
@@ -10,6 +17,22 @@ import log from "../utils/log";
 export default class UserService extends BaseEntityService {
   constructor() {
     super("users");
+  }
+
+  async updateUserProfile(userId, payload) {
+    const user = await this.getById(userId);
+    if (!user) throw new RequestError("Invalid user id");
+
+    const updateValues = {
+      id: user.id,
+      email: payload.email,
+      phone: payload.phone,
+      lastname: payload.lastname,
+      firstname: payload.firstname,
+      organization: payload.organization,
+      usertype: payload.usertype
+    };
+    await this.update(updateValues);
   }
 
   /**
@@ -76,7 +99,7 @@ export default class UserService extends BaseEntityService {
 
   async getUserProfile(uid) {
     const user = await this.getById(uid);
-    if (user) throw new RequestError("Invalid user id");
+    if (!user) throw new RequestError("Invalid user id");
     if (user.disabled)
       throw new RequestError(
         "User is currently not active. You need to get reactivated first. Contact admin."
@@ -86,20 +109,25 @@ export default class UserService extends BaseEntityService {
       id: user.id,
       email: user.email,
       username: user.username,
+      phone: user.phone,
       lastname: user.lastname,
       firstname: user.firstname,
       organization: user.organization,
       usertype: user.usertype
     };
-    const quizCount = await new QuizService().getUserQuizCount(uid);
-    result.nQuizzes = quizCount;
+    result.nQuizzes = await new QuizService().getUserQuizCount(uid);
+    result.nSurveys = await new SurveyService().getUserSurveyCount(uid);
+    result.nQuizAnswered = await new QuizAnswerService().getUserQuizParticipationCount(uid);
+    log.debug("userprofile - result.nQuizAnswered = %o", result.nQuizAnswered);
+    result.nSurveyAnswered = await new SurveyAnswerService().getUserSurveyParticipationCount(uid);
+    log.debug("userprofile - result.nSurveyAnswered = %o", result.nSurveyAnswered);
 
     return result;
   }
 
   async changePassword(uid, oldPwd, newPwd) {
     const user = await this.getById(uid);
-    if (user) throw new RequestError("Invalid user id");
+    if (!user) throw new RequestError("Invalid user id");
     if (user.disabled)
       throw new RequestError(
         "User is currently not active. You need to get reactivated first. Contact admin."

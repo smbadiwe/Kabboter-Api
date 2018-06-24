@@ -1,4 +1,5 @@
 import knex from "../db/connection";
+import { isArray, isObject } from "../utils";
 
 export class BaseEntityService {
   constructor(tableName) {
@@ -130,12 +131,23 @@ export class BaseEntityService {
   async save(records) {
     if (isObject(records)) {
       delete records.id;
-    } else if (isArray(records)) {
+
+      return await this.connector.table(this.tableName).insert(records, "id");
+    }
+  }
+
+  /**
+   * Inserts the supplied record(s) to the table and return array of the id(s) of the inserted record.
+   * @param {*} records An object or array of objects to be inserted.
+   */
+  async saveList(records) {
+    if (isArray(records)) {
       records.forEach(r => {
         delete r.id;
       });
+
+      return await this.connector.table(this.tableName).insert(records, "id");
     }
-    if (records) return await this.connector.table(this.tableName).insert(records, "id");
   }
 
   /**
@@ -177,12 +189,4 @@ export class BaseEntityService {
         .where(equalityConditions)
         .del();
   }
-}
-
-function isArray(a) {
-  return !!a && a.constructor === Array;
-}
-
-function isObject(a) {
-  return !!a && a.constructor === Object;
 }

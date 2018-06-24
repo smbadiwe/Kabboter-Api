@@ -95,7 +95,7 @@ async function authorizeRequest(ctx, next) {
     // }
 
     //finally
-    // log.debug("%s - decoded token: %O", ctx.request.url, decodedToken);
+    log.debug("%s - decoded token: %O", ctx.request.url, decodedToken);
     ctx.request.user = {
       id: decodedToken.i,
       username: decodedToken.u,
