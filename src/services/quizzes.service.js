@@ -36,7 +36,7 @@ export default class QuizService extends BaseEntityService {
       userId: userId
     };
     const res = await this.save(quiz);
-    return { id: res[0] }; // the id of the newly saved record
+    return { id: res }; // the id of the newly saved record
   }
 
   /**
@@ -54,8 +54,7 @@ export default class QuizService extends BaseEntityService {
       creditResources: payload.creditResources,
       userId: userId
     };
-    const res = await this.save(quiz);
-    const quizId = res[0];
+    const quizId = await this.save(quiz);
 
     const questionList = [];
     payload.questions.forEach(q => {
@@ -78,7 +77,7 @@ export default class QuizService extends BaseEntityService {
 
     await new QuizQuestionService().saveList(questionList);
 
-    return { id: res[0], nQuestions: questionList.length }; // the id of the newly saved record
+    return { id: quizId, nQuestions: questionList.length }; // the id of the newly saved record
   }
 
   async update(payload) {

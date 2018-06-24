@@ -7,8 +7,8 @@ import {
   QuizAnswerService,
   SurveyAnswerService
 } from "./";
-import { RequestError, Required } from "../utils/ValidationErrors";
-import { sign, verify } from "jsonwebtoken";
+import { RequestError, ValidationError, Required } from "../utils/ValidationErrors";
+import { sign } from "jsonwebtoken";
 import { compare, hashSync, genSaltSync } from "bcrypt";
 import { generatePin } from "../utils";
 import Enums from "./enums";
@@ -17,6 +17,40 @@ import log from "../utils/log";
 export default class UserService extends BaseEntityService {
   constructor() {
     super("users");
+  }
+
+  async processResetPassword(payload) {
+    const { username, password } = payload;
+    if (!username) throw new Required("username");
+    if (!password) throw new Required("password");
+
+    const user = await this.getByUsernameOrEmailOrPhone(username);
+    if (!user) {
+      throw new ValidationError("Username (or phone or email) is incorrect.");
+    }
+
+    const record = { id: user.id, passwordHash: hashSync(password, genSaltSync()) };
+    await super.update(record);
+  }
+
+  async validateSecurityQuestion(payload) {
+    const { username, securityquestion, securityanswer } = payload;
+    if (!username) throw new Required("username");
+    if (!securityquestion) throw new Required("securityquestion");
+    if (!securityanswer) throw new Required("securityanswer");
+
+    const user = await this.getByUsernameOrEmailOrPhone(username);
+    if (!user) {
+      throw new ValidationError("Username (or phone or email) is incorrect.");
+    }
+
+    if (securityquestion !== user.securityquestion)
+      throw new ValidationError(
+        "Security question does not match what we have on file for this user."
+      );
+
+    const isValid = await compare(securityanswer, user.securityanswer);
+    if (!isValid) throw new ValidationError("Answer to security question not correct.");
   }
 
   async updateUserProfile(userId, payload) {
@@ -42,7 +76,10 @@ export default class UserService extends BaseEntityService {
   async getAdmins(pagingOptions) {
     const playeyQuery = this.connector
       .table(this.tableName)
-      .whereNot({ roles: Enums.UserRoleOptions.Players, disabled: true })
+      .whereNot({
+        roles: Enums.UserRoleOptions.Players,
+        disabled: true
+      })
       .modify(queryBuilder => {
         if (payload.lastname) {
           queryBuilder.where("lastname", "like", `%${payload.lastname}%`);
@@ -93,7 +130,10 @@ export default class UserService extends BaseEntityService {
           queryBuilder.where("phone", "like", `%${payload.phone}%`);
         }
       });
-    const result = await this.dbPaging(playeyQuery, { perPage: perPage, page: page });
+    const result = await this.dbPaging(playeyQuery, {
+      perPage: perPage,
+      page: page
+    });
     return result; // = { data, pagination }
   }
 
@@ -144,7 +184,7 @@ export default class UserService extends BaseEntityService {
     let user = await this.getByEmailOrPhone(userRegInfo.email, userRegInfo.phone);
     if (user) {
       throw new RequestError(
-        "Sorry, we already have someone with the username specified. Use the 'Forgot Password' link if you forgot your password."
+        "Sorry, we already have someone with the email or phone number specified. Use the 'Forgot Password' link if you forgot your password."
       );
     }
     const username = await this.generateUsername(userRegInfo.lastname, userRegInfo.firstname);
@@ -157,21 +197,28 @@ export default class UserService extends BaseEntityService {
       username: username,
       roles: Enums.UserRoleOptions.Players,
       passwordHash: hashSync(userRegInfo.password, genSaltSync()),
-      usertype: userRegInfo.usertype
+      usertype: userRegInfo.usertype,
+      securityquestion: userRegInfo.securityquestion,
+      securityanswer: hashSync(userRegInfo.securityanswer, genSaltSync())
     };
     await this.save(user);
 
     // log the user in
-    return await this.processLogin(userRegInfo.username, userRegInfo.password, true);
+    return {
+      email: userRegInfo.email,
+      phone: userRegInfo.phone,
+      username: username
+    };
   }
 
   async generateUsername(lastname, firstname) {
     let username;
+    let user;
     do {
       username = lastname.substring(0, 2) + firstname.substring(0, 2) + generatePin();
 
       user = await this.getByUsername(username);
-    } while (!user);
+    } while (user);
     return username;
   }
 
@@ -231,7 +278,7 @@ export default class UserService extends BaseEntityService {
       });
   }
 
-  async processLogin(username, password, rememberme) {
+  async getByUsernameOrEmailOrPhone(username) {
     const user = await this.connector
       .table(this.tableName)
       .where({ username: username })
@@ -239,8 +286,14 @@ export default class UserService extends BaseEntityService {
       .orWhere({ email: username })
       .first();
 
+    return user;
+  }
+
+  async processLogin(username, password, rememberme) {
+    const user = await this.getByUsernameOrEmailOrPhone(username);
+
     if (!user) {
-      throw new RequestError("Username or password incorrect");
+      throw new RequestError("Username (or phone or email) is incorrect.");
     }
     if (user.disabled) {
       throw new RequestError("Account not yet verified or enabled");

@@ -33,7 +33,7 @@ export default class SurveyRunService extends BaseEntityService {
     let exist;
     do {
       pin = generatePin();
-      exist = await this.getBy({ pin: pin });
+      exist = await this.getFirst({ pin: pin });
     } while (exist);
 
     const surveyRun = {
@@ -52,7 +52,7 @@ export default class SurveyRunService extends BaseEntityService {
       record.surveyId
     );
 
-    return { id: res[0], surveyId: record.surveyId, pin: pin, totalQuestions: totalQuestions };
+    return { id: res, surveyId: record.surveyId, pin: pin, totalQuestions: totalQuestions };
   }
 
   async hasSurveyBeenRun(surveyId) {

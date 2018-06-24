@@ -3,16 +3,6 @@
 // <script src="/socket.io/socket.io.js"></script>
 // to the page BEFORE importing this js file. That's where io is defined.
 
-import io from "socket.io-client";
-const socket = io("/quizplayer");
-
-function onReceiveNextQuestion(question) {
-  //TODO: This is a question object as defined in the API doc.
-  // Render fields on a page as you would like it. Depending, you may,
-  // want to only render the answers. Whatever!
-  localStorage.setItem("quizquestion", JSON.stringify(question));
-}
-
 function onAnswerSubmitted(feedback) {
   // If all went well, 'feedback' will just be a string saying "Submitted".
   //TODO: You decide. You can clear input fields or reset data used for the just-submitted question.
@@ -20,22 +10,25 @@ function onAnswerSubmitted(feedback) {
   console.log(feedback);
 }
 
-function onGetQuizPin(pin) {
-  const userInfo = getUserInfo();
-  const auth = { pin: pin, userInfo: userInfo };
+const socket = io("/quizplayer");
 
+function onGetQuizPin(pin) {
   // Set the PIN somewhere the player can see it.
   localStorage.setItem("quizpin", pin);
 
+  const userInfo = getUserInfo();
+  const auth = { pin: pin, userInfo: userInfo };
   socket.emit("authenticate", auth, error => {
     alert(error);
+    return false;
   });
 }
 
 function onDisconnect(reason) {
+  console.log("onDisconnect: reason - " + reason);
   // Tell admin that someone just disconnected
-  io.of("/quizadmin").emit("someone-just-left", socket.id, callbackOnQuizPlayerError);
-  localStorage.removeItem("quizpin");
+  // io.of("/quizadmin").emit("someone-just-left", socket.id, callbackOnQuizPlayerError);
+  // localStorage.removeItem("quizpin");
   if (reason === "io server disconnect") {
     // the disconnection was initiated by the server, you need to reconnect manually
     socket.connect();
@@ -107,8 +100,10 @@ socket.on("receive-next-question", onReceiveNextQuestion);
 
 socket.on("answer-submitted", onAnswerSubmitted);
 
-socket.on("get-quiz-pin", onGetQuizPin);
+socket.on("get-quizrun-info", onGetQuizRunInfo);
 
 socket.on("error", callbackOnQuizPlayerError);
 
 socket.on("disconnect", onDisconnect);
+
+socket.on("aoth-success", onAuthSuccess);

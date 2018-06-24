@@ -36,7 +36,7 @@ export default class SurveyService extends BaseEntityService {
       userId: userId
     };
     const res = await this.save(survey);
-    return { id: res[0] }; // the id of the newly saved record
+    return { id: res }; // the id of the newly saved record
   }
 
   /**
@@ -54,8 +54,7 @@ export default class SurveyService extends BaseEntityService {
       creditResources: payload.creditResources,
       userId: userId
     };
-    const res = await this.save(survey);
-    const surveyId = res[0];
+    const surveyId = await this.save(survey);
 
     const questionList = [];
     payload.questions.forEach(q => {
@@ -77,7 +76,7 @@ export default class SurveyService extends BaseEntityService {
 
     await new SurveyQuestionService().saveList(questionList);
 
-    return { id: res[0], nQuestions: questionList.length }; // the id of the newly saved record
+    return { id: surveyId, nQuestions: questionList.length }; // the id of the newly saved record
   }
 
   async update(payload) {

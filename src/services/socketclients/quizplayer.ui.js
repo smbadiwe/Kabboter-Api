@@ -1,6 +1,8 @@
-function setQuizQuestionsOnPage(question) {
-  // question: as defined in doc
-  // TODO: Set question to the corresponding UI controls
+function onReceiveNextQuestion(question) {
+  //TODO: This is a question object as defined in the API doc.
+  // Render fields on a page as you would like it. Depending, you may,
+  // want to only render the answers. Whatever!
+  localStorage.setItem("quizquestion", JSON.stringify(question));
 }
 
 function submitQuizAmswerChoice(event) {
@@ -13,6 +15,29 @@ function submitQuizAmswerChoice(event) {
     choice: choice
   };
   submitAnswer(answerInfo);
+}
+
+function onAuthSuccess(feedback) {
+  // Redirect to the page where user can answer the questions.
+  console.log("onAuthSuccess called");
+  $("button#startBtn").hide();
+  $("input#quizpin").prop("disabled", true);
+
+  $("div#step2").show();
+
+  // Redirecting closes the socket. So, don't.
+  // window.location.href = "http://localhost:3000/quizplayer";
+}
+
+//  data = { pin: pin, userInfo: userInfo }
+function onGetQuizRunInfo(data) {
+  console.log("onGetQuizRunInfo: data = ");
+  console.log(data);
+
+  // if we're still in the start page, set the pin
+  if ($("input#quizpin").length) {
+    $("input#quizpin").val(data.pin);
+  }
 }
 
 function feedbackOnQuizAnswerSubmitted(feedback) {

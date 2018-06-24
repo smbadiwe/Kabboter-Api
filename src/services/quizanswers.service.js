@@ -6,6 +6,7 @@ import log from "../utils/log";
 export default class QuizAnswerService extends BaseEntityService {
   constructor() {
     super("quizanswers");
+    log.setNamespace("QuizAnswerService");
   }
 
   /**
@@ -25,6 +26,11 @@ select count(*) as total from (
   }
 
   async getOneUnansweredQuestionInQuiz(quizRunId, quizId, quizQuestionIds) {
+    log.debug("getOneUnansweredQuestionInQuiz - params = %o", {
+      quizId: quizId,
+      quizRunId: quizRunId,
+      quizQuestionIds: quizQuestionIds
+    });
     const answeredQuestions = await this.connector
       .table(this.tableName)
       .select("quizQuestionId")

@@ -17,6 +17,11 @@ router.get("/quizadmin", function(ctx) {
   ctx.body = fs.createReadStream(htmlFolderPath + "/quizadmin.html");
 });
 
+router.get("/startquizplayer", function(ctx) {
+  ctx.type = "html";
+  ctx.body = fs.createReadStream(htmlFolderPath + "/startquizplayer.html");
+});
+
 router.get("/quizplayer", function(ctx) {
   ctx.type = "html";
   ctx.body = fs.createReadStream(htmlFolderPath + "/quizplayer.html");

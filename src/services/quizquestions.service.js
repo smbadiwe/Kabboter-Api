@@ -1,10 +1,12 @@
 import { BaseEntityService } from "./baseentity.service";
 import { QuizService, QuizAnswerService } from "./";
 import { RequestError } from "../utils/ValidationErrors";
+import log from "../utils/log";
 
 export default class QuizQuestionService extends BaseEntityService {
   constructor() {
     super("quizquestions");
+    log.setNamespace("QuizQuestionService");
   }
 
   async getTotalQuizQuestions(quizId) {
@@ -34,7 +36,7 @@ export default class QuizQuestionService extends BaseEntityService {
       creditResources: payload.creditResources
     };
     const res = await super.save(quizQn);
-    return { id: res[0], points: payload.points, maxBonus: payload.maxBonus }; // the id of the newly saved record
+    return { id: res, points: payload.points, maxBonus: payload.maxBonus }; // the id of the newly saved record
   }
 
   async daleteRecord(id) {

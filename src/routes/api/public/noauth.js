@@ -1,5 +1,6 @@
 import Router from "koa-router";
 import { apiSuccess } from "../../../utils";
+import { ValidationError } from "../../../utils/ValidationErrors";
 import { UserService } from "../../../services";
 import knex from "../../../db/connection";
 import * as knexfile from "../../../db/knexfile";
@@ -7,6 +8,41 @@ import * as knexfile from "../../../db/knexfile";
 const router = new Router({ prefix: "/api/public" });
 
 //NOTE: Routes here DO NOT require login
+
+router.get("/getsecurityquestion", async ctx => {
+  try {
+    const { username } = ctx.request.body;
+    const user = await new UserService().getByUsernameOrEmailOrPhone(username);
+    if (!user) {
+      throw new ValidationError("Username (or phone or email) is incorrect.");
+    }
+    const res = {
+      username: username,
+      securityquestion: user.securityquestion
+    };
+    ctx.body = res;
+  } catch (e) {
+    ctx.throw(e.status || 500, e);
+  }
+});
+
+router.post("/validatesecurityquestion", async ctx => {
+  try {
+    const respBody = await new UserService().validateSecurityQuestion(ctx.request.body);
+    ctx.body = respBody;
+  } catch (e) {
+    ctx.throw(e.status || 500, e);
+  }
+});
+
+router.post("/resetpassword", async ctx => {
+  try {
+    const respBody = await new UserService().processResetPassword(ctx.request.body);
+    ctx.body = respBody;
+  } catch (e) {
+    ctx.throw(e.status || 500, e);
+  }
+});
 
 router.post("/register", async ctx => {
   try {

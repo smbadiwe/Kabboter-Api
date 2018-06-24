@@ -14,14 +14,14 @@ export function getRoutesRequiringAuthorization() {
 
 function getExportedRoutes(postProcess) {
   const allRoutes = [];
-  log.debug("__dirname: " + __dirname);
-  log.debug("__filename: " + __filename);
+  // log.debug("__dirname: " + __dirname);
+  // log.debug("__filename: " + __filename);
   const files = listFilesInFolderRecursively(__dirname, [__filename]);
   const path = require("path");
   files.forEach(item => {
     if (item && !item.endsWith(".validate.js") && item.endsWith(".js")) {
       const relPath = "./" + path.relative(__dirname, item).replace(".js", "");
-      log.debug("route file path being required: " + relPath);
+      // log.debug("route file path being required: " + relPath);
       const router = require(relPath);
       postProcess(router, allRoutes);
     }

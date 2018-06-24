@@ -30,7 +30,7 @@ export default class SurveyQuestionService extends BaseEntityService {
       creditResources: payload.creditResources
     };
     const res = await super.save(surveyQn);
-    return { id: res[0], question: payload.question, timeLimit: payload.timeLimit }; // the id of the newly saved record
+    return { id: res, question: payload.question, timeLimit: payload.timeLimit }; // the id of the newly saved record
   }
 
   /**

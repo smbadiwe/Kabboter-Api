@@ -20,6 +20,8 @@ export async function up(knex) {
     })
     .table("users", t => {
       t.string("phone");
+      t.string("securityquestion");
+      t.string("securityanswer");
     });
 }
 
@@ -27,6 +29,8 @@ export async function down(knex) {
   return await knex.schema
     .table("users", t => {
       t.dropColumn("phone");
+      t.dropColumn("securityquestion");
+      t.dropColumn("securityanswer");
     })
     .table("quizzes", t => {
       t.dropColumn("description");

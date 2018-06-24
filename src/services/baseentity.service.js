@@ -136,14 +136,15 @@ export class BaseEntityService {
   }
 
   /**
-   * Inserts the supplied record(s) to the table and return array of the id(s) of the inserted record.
-   * @param {*} records An object or array of objects to be inserted.
+   * Inserts the supplied record(s) to the table and return the id of the inserted record.
+   * @param {*} record An object to be inserted.
    */
-  async save(records) {
-    if (isObject(records)) {
-      delete records.id;
+  async save(record) {
+    if (isObject(record)) {
+      delete record.id;
 
-      return await this.connector.table(this.tableName).insert(records, "id");
+      const id = await this.connector.table(this.tableName).insert(record, "id");
+      return id[0];
     }
   }
 
@@ -157,7 +158,8 @@ export class BaseEntityService {
         delete r.id;
       });
 
-      return await this.connector.table(this.tableName).insert(records, "id");
+      const ids = await this.connector.table(this.tableName).insert(records, "id");
+      return ids;
     }
   }
 
@@ -194,10 +196,11 @@ export class BaseEntityService {
    * All fields must be within the table. No joins.
    */
   async deletePermanently(equalityConditions) {
-    if (equalityConditions)
+    if (equalityConditions) {
       return await this.connector
         .table(this.tableName)
         .where(equalityConditions)
         .del();
+    }
   }
 }

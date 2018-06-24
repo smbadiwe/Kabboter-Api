@@ -2,6 +2,7 @@ import { BaseEntityService } from "./baseentity.service";
 import { QuizService, QuizQuestionService, QuizAnswerService } from "./";
 import { generatePin } from "../utils";
 import log from "../utils/log";
+import { RequestError, Required } from "../utils/ValidationErrors";
 
 export default class QuizRunService extends BaseEntityService {
   constructor() {
@@ -10,16 +11,22 @@ export default class QuizRunService extends BaseEntityService {
   }
 
   async getNextQuestionToBeAnswered(quizRunId, quizId) {
+    if (!quizRunId) throw new Required("quizRunId");
+    if (!quizId) throw new Required("quizId");
     const quizQns = await new QuizQuestionService().getBy({
       quizId: quizId
     });
-    if (!quizQns) throw new RequestError("No questions under the given quiz.");
+    if (!quizQns) throw new RequestError("404 - No questions under the given quiz.");
 
     const question = await new QuizAnswerService().getOneUnansweredQuestionInQuiz(
       quizRunId,
       quizId,
       quizQns.map(q => q.id)
     );
+
+    log.debug("getNextQuestionToBeAnswered - question = %o", question);
+    // if (!question) throw new RequestError("404 - No more pending questions for this quiz", 404);
+    // Null means there is no more question to answer.
     return question;
   }
 
@@ -54,7 +61,7 @@ export default class QuizRunService extends BaseEntityService {
     const res = await super.save(quizRun);
 
     const totalQuestions = await new QuizQuestionService().getTotalQuizQuestions(record.quizId);
-    return { id: res[0], quizId: record.quizId, pin: pin, totalQuestions: totalQuestions }; // the id of the newly saved record
+    return { quizRunId: res, quizId: record.quizId, pin: pin, totalQuestions: totalQuestions }; // the id of the newly saved record
   }
 
   async hasQuizBeenRun(quizId) {

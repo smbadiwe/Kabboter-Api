@@ -5,39 +5,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Quiz Admin - Start</title>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
 </head>
 
 <body>
-    <div>Select Quiz:
+    <div id="step1">Select Quiz:
         <select id="quiz">
             <option value="1">Quiz 1</option>
         </select>
+        <button onclick="startQuizAdmin(event);">Start Quiz</button>
     </div>
-    <button onclick="startQuizAdmin(event);">Start Quiz</button>
+    <div id="step2" hidden="hidden">
+        <div>
+            <span id="quizinfo"></span>
+            <button onclick="loadNextQuestion(event);">
+                Load next question</button>
+        </div>
+        <div>
+            <section>
+                <hi>Error</hi>
+                <span id="error" style="color: red;"></span>
+            </section>
+            <section>
+                <hi>Feedback</hi>
+                <span id="feedback"></span>
+            </section>
+            <section>
+                <hi>Question</hi>
+                <span id="questions"></span>
+            </section>
+            <section>
+                <hi>Stats</hi>
+                <span id="stats"></span>
+            </section>
+            <section>
+                <hi>Dashboard</hi>
+                <span id="dashboard"></span>
+            </section>
+        </div>
+    </div>
     <script src="/general.js"></script>
+    <script src="/quizadmin.ui.js"></script>
+    <script src="/quizadmin.js"></script>
     <script>
         function startQuizAdmin(e) {
             e.preventDefault();
 
-            console.log("calling startQuizAdmin: ");
             const data = {
-                quizId: 1
+                quizId: $("#quiz").val()
             };
+            console.log("calling startQuizAdmin with data: ");
+            console.log(data);
             $.ajax({
                 type: 'POST',
                 url: 'http://localhost:3000/api/user/quizruns/create',
                 data: data,
                 beforeSend: function (xhr) {
                     const authToken = "Bearer " + getAuthToken();
-                    console.log("authToken: " + authToken);
                     xhr.setRequestHeader("Authorization", authToken);
                 },
                 success: function (result) {
-                    console.log(result);
-                    localStorage.setItem("quizruninfo", JSON.stringify(result));
-                    window.location.href = "http://localhost:3000/quizadmin";
+                    onGetQuizRunInfo(result);
                 },
                 error: function (error) {
                     console.log("Status: " + error.status + " Message: " + error.statusText);
@@ -45,6 +75,37 @@
                 }
             });
         }
+
+        function loadNextQuestion(e) {
+            e.preventDefault();
+            getNextQuestion();
+        }
+
+        $(function () {
+            $.ajax({
+                type: 'GET',
+                url: 'http://localhost:3000/api/user/quizzes',
+                beforeSend: function (xhr) {
+                    const authToken = "Bearer " + getAuthToken();
+                    xhr.setRequestHeader("Authorization", authToken);
+                },
+                success: function (result) {
+                    console.log("Result from http://localhost:3000/api/user/quizzes");
+                    console.log(result);
+                    let options = "";
+                    if (result) {
+                        result.forEach(function (r) {
+                            options += ('<option value="' + r.id + '">' + r.title + '</option>');
+                        });
+                    }
+                    $("#quiz").html(options);
+                },
+                error: function (error) {
+                    console.log("Status: " + error.status + " Message: " + error.statusText);
+                    console.log(error);
+                }
+            });
+        });
     </script>
 </body>
 

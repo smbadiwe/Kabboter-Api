@@ -21,7 +21,7 @@ switch (environment) {
     break;
 }
 
-log.debug("Knex configurations: %O", knexConfiguration);
+// log.debug("Knex configurations: %O", knexConfiguration);
 const knex = config(knexConfiguration);
 
 export default knex;

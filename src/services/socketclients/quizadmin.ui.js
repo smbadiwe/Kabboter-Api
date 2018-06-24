@@ -1,19 +1,44 @@
-function setQuizQuestionsOnPage(quizquestion) {
-  // quizquestion: as defined in doc
-  // TODO: Set question to the corresponding UI controls
-
-  const oldQn = $("#questions").html();
-  try {
-    $("#questions").html(JSON.stringify(quizquestion));
-    $("#error").html("");
-    $("#feedback").html("");
-    $("#stats").html("");
-    $("#dashboard").html("");
-  } catch (e) {
-    $("#error").html(e);
-    $("#questions").html(oldQn);
+function onReceiveNextQuestion(question) {
+  // This is a question object as defined in the API doc.
+  //TODO: Render fields as you would like it.
+  console.log("onReceiveNextQuestion. question = ");
+  console.log(question);
+  if (question) {
+    const oldQn = $("#questions").html();
+    try {
+      $("#questions").html(JSON.stringify(quizquestion));
+      $("#error").html("");
+      $("#feedback").html("");
+      $("#stats").html("");
+      $("#dashboard").html("");
+    } catch (e) {
+      $("#error").html(e);
+      $("#questions").html(oldQn);
+    }
+    localStorage.setItem("quizquestions", JSON.stringify(question));
+  } else {
+    $("#feedback").html("That's all! Thank you for participating.");
   }
 }
+
+function onGetQuizRunInfo(info) {
+  // info = { id: <the quizRun id>, quizId: quizId, pin: pin, totalQuestions: totalQuestions };
+  console.log("onGetQuizRunInfo - info = ");
+  console.log(info);
+  localStorage.setItem("quizruninfo", JSON.stringify(info));
+
+  $("div#step1").hide();
+  $("div#step2").show();
+
+  $("#quizinfo").html("PIN: " + info.pin + " Total Questions: " + info.totalQuestions);
+  // Finally
+  authenticateQuizAdmin();
+
+  // Redirect sloses our sockets. So, don't.
+  // window.location.href = "http://localhost:3000/quizadmin";
+}
+
+function updateQuizQuestionList() {}
 
 function updateQuizAdminPageOnWhenSomeoneJustJoined(data) {
   // data = { nPlayers: nPlayers, topFive: topFive };
@@ -37,8 +62,10 @@ function updateQuizDashboardOnPlayerSubmittedAnswer(data) {
 }
 
 function callbackOnQuizAdminError(errorMessage) {
-  //TODO: Whatever you want.
+  //TODO:  if there are no more questions to display, decide how to handle it.
+  // Such error messages will start with '404 - '
   console.log("From /quizadmin callback fn: An error occurred.");
   console.log(errorMessage);
+  //TODO: Whatever you want.
   $("#error").html(errorMessage);
 }
