@@ -1,12 +1,48 @@
-function onReceiveNextQuestion(question) {
+function onReceiveNextQuestion(quizquestion) {
   //TODO: This is a question object as defined in the API doc.
   // Render fields on a page as you would like it. Depending, you may,
-  // want to only render the answers. Whatever!
-  localStorage.setItem("quizquestion", JSON.stringify(question));
+  // want to only render the answers. Whatever!console.log("onReceiveNextQuestion. question = ");
+  console.log(quizquestion);
+  if (quizquestion) {
+    const oldQn = $("#questions").html();
+    try {
+      $("#questions").html(JSON.stringify(quizquestion));
+      $("#error").html("");
+      $("#feedback").html("");
+      $("#stats").html("");
+      $("#dashboard").html("");
+
+      // Enable the buttons
+      $("#option1").prop("disabled", false);
+      $("#option2").prop("disabled", false);
+      $("#option3").prop("disabled", false);
+      $("#option4").prop("disabled", false);
+    } catch (e) {
+      $("#error").html(e);
+      $("#questions").html(oldQn);
+    }
+    localStorage.setItem("quizquestion", JSON.stringify(quizquestion));
+  } else {
+    $("#feedback").html("That's all! Thank you for participating.");
+  }
+}
+
+function refreshFieldsAfterAnswerIsSubmitted() {
+  $("#questions").html("");
+  $("#error").html("");
+  $("#feedback").html("");
+  $("#stats").html("");
+  $("#dashboard").html("");
 }
 
 function submitQuizAmswerChoice(event) {
   const id = event.target.id;
+
+  // Disable the buttons
+  $("#option1").prop("disabled", true);
+  $("#option2").prop("disabled", true);
+  $("#option3").prop("disabled", true);
+  $("#option4").prop("disabled", true);
 
   const timeCount = Math.floor(5 + Math.random() * 10); //TODO: Get it where where you have it. We assume value counts from 0 - as in, count up, not count down.
   const choice = id.substr(id.length - 1); //TODO: Get it from the event target or however you want.

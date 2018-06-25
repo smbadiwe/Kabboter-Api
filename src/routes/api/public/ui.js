@@ -9,51 +9,61 @@ const htmlFolderPath = path.join(__dirname, "../../../services/ui");
 
 router.get("/startquizadmin", function(ctx) {
   ctx.type = "html";
+  ctx.set("Access-Control-Allow-Origin", "*");
   ctx.body = fs.createReadStream(htmlFolderPath + "/startquizadmin.html");
 });
 
 router.get("/quizadmin", function(ctx) {
   ctx.type = "html";
+  ctx.set("Access-Control-Allow-Origin", "*");
   ctx.body = fs.createReadStream(htmlFolderPath + "/quizadmin.html");
 });
 
 router.get("/startquizplayer", function(ctx) {
   ctx.type = "html";
+  ctx.set("Access-Control-Allow-Origin", "*");
   ctx.body = fs.createReadStream(htmlFolderPath + "/startquizplayer.html");
 });
 
 router.get("/quizplayer", function(ctx) {
   ctx.type = "html";
+  ctx.set("Access-Control-Allow-Origin", "*");
   ctx.body = fs.createReadStream(htmlFolderPath + "/quizplayer.html");
 });
 
 router.get("/startsurveyadmin", function(ctx) {
   ctx.type = "html";
+  ctx.set("Access-Control-Allow-Origin", "*");
   ctx.body = fs.createReadStream(htmlFolderPath + "/startsurveyadmin.html");
 });
 
 router.get("/surveyadmin", function(ctx) {
   ctx.type = "html";
+  ctx.set("Access-Control-Allow-Origin", "*");
   ctx.body = fs.createReadStream(htmlFolderPath + "/surveyadmin.html");
 });
 
 router.get("/surveyplayer", function(ctx) {
   ctx.type = "html";
+  ctx.set("Access-Control-Allow-Origin", "*");
   ctx.body = fs.createReadStream(htmlFolderPath + "/surveyplayer.html");
 });
 
 router.get("/login", function(ctx) {
   ctx.type = "html";
+  ctx.set("Access-Control-Allow-Origin", "*");
   ctx.body = fs.createReadStream(htmlFolderPath + "/login.html");
 });
 
 router.get("/", function(ctx) {
   ctx.type = "html";
+  ctx.set("Access-Control-Allow-Origin", "*");
   ctx.body = fs.createReadStream(htmlFolderPath + "/index.html");
 });
 
 router.get("/register", function(ctx) {
   ctx.type = "html";
+  ctx.set("Access-Control-Allow-Origin", "*");
   ctx.body = fs.createReadStream(htmlFolderPath + "/register.html");
 });
 

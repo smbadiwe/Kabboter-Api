@@ -28,6 +28,7 @@ function corsConfig() {
   ];
 
   return {
+    //allRoutes: true,
     origin: allowedOrigins,
     methods: accessControlAllowMethods,
     headers: accessControlAllowHeaders,

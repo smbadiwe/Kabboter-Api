@@ -48,9 +48,11 @@ export class NonExistentId extends ValidationError {
   }
 }
 
-export function validateInteger(integer, param = null) {
+export function validateInteger(integer, param = null, strictlyPositive = false) {
   param = param || "Value";
   if (integer === null || integer === undefined) throw new Required(param);
 
   if (isNaN(integer)) throw new ValidationError(`${param} is not a number`);
+
+  if (strictlyPositive && integer < 1) throw new PositiveNumber(`${param}`);
 }

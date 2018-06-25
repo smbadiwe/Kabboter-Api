@@ -29,10 +29,6 @@ function onWhenSomeoneJustLeft(payload) {
   updateQuizAdminPageOnWhenSomeoneJustLeft(payload);
 }
 
-function onPlayerSubmittedAnswer(data) {
-  updateQuizDashboardOnPlayerSubmittedAnswer(data);
-}
-
 function getQuizRunInfo() {
   const info = localStorage.getItem("quizruninfo");
   if (!info) throw new Error("quizruninfo not yet created");
@@ -40,14 +36,32 @@ function getQuizRunInfo() {
   return JSON.parse(info);
 }
 
+function updateAnsweredQuestionsList(newQuestionId) {
+  let list = localStorage.getItem("answeredquestionlist");
+  if (list) {
+    localStorage.setItem("answeredquestionlist", `${list}${newQuestionId},`);
+  } else {
+    localStorage.setItem("answeredquestionlist", `${newQuestionId},`);
+  }
+}
+
+function onReceiveNextQuestion(quizquestion) {
+  if (quizquestion) {
+    localStorage.setItem("quizquestion", JSON.stringify(quizquestion));
+    updateAnsweredQuestionsList(quizquestion.id);
+  }
+  setQuizQuestionPropsOnPage(quizquestion);
+}
+
 // Sockets now
-const socket = io("/quizadmin");
+const socket = io("/quizadmin", getSocketOptions());
 
 function onDisconnect(reason) {
   localStorage.removeItem("quizruninfo");
   localStorage.removeItem("quizquestion");
   if (reason === "io server disconnect") {
     // the disconnection was initiated by the server, you need to reconnect manually
+    console.log("Server disconnected you do to auth fail");
     socket.connect();
   }
   // else the socket will automatically try to reconnect
@@ -63,6 +77,8 @@ function authenticateQuizAdmin() {
   const userInfo = getUserInfo();
   const quizRunInfo = getQuizRunInfo();
   const auth = { pin: quizRunInfo.pin, userInfo: userInfo };
+  console.log("sending auth data for auth. data: ");
+  console.log(auth);
   socket.emit("authenticate", auth, error => {
     alert(error);
   });

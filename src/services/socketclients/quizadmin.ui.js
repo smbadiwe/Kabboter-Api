@@ -1,9 +1,9 @@
-function onReceiveNextQuestion(question) {
+function setQuizQuestionPropsOnPage(quizquestion) {
   // This is a question object as defined in the API doc.
   //TODO: Render fields as you would like it.
   console.log("onReceiveNextQuestion. question = ");
-  console.log(question);
-  if (question) {
+  console.log(quizquestion);
+  if (quizquestion) {
     const oldQn = $("#questions").html();
     try {
       $("#questions").html(JSON.stringify(quizquestion));
@@ -15,7 +15,6 @@ function onReceiveNextQuestion(question) {
       $("#error").html(e);
       $("#questions").html(oldQn);
     }
-    localStorage.setItem("quizquestions", JSON.stringify(question));
   } else {
     $("#feedback").html("That's all! Thank you for participating.");
   }
@@ -38,7 +37,16 @@ function onGetQuizRunInfo(info) {
   // window.location.href = "http://localhost:3000/quizadmin";
 }
 
-function updateQuizQuestionList() {}
+function onPlayerSubmittedAnswer(data) {
+  //data: {
+  //     quizQuestionId: data.quizQuestionId,
+  //     choice: data.choice
+  // }
+  // data = { quizQuestionId: quizQuestionId<integer>, choice: <1,2,3,or 4> }
+  //TODO: Use this info to update dashboard. That dashboard where you show
+  // chart of the different options and how many players chose each.
+  $("#dashboard").html(JSON.stringify(data));
+}
 
 function updateQuizAdminPageOnWhenSomeoneJustJoined(data) {
   // data = { nPlayers: nPlayers, topFive: topFive };
@@ -52,13 +60,6 @@ function updateQuizAdminPageOnWhenSomeoneJustLeft(data) {
   // You get the total number of players still connecting
   // and a list of the top 5 to display on page.
   $("#stats").html(JSON.stringify(data));
-}
-
-function updateQuizDashboardOnPlayerSubmittedAnswer(data) {
-  // data = { quizQuestionId: quizQuestionId<integer>, choice: <1,2,3,or 4> }
-  //TODO: Use this info to update dashboard. That dashboard where you show
-  // chart of the different options and how many players chose each.
-  $("#dashboard").html(JSON.stringify(data));
 }
 
 function callbackOnQuizAdminError(errorMessage) {

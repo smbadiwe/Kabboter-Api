@@ -64,7 +64,8 @@ export default class UserService extends BaseEntityService {
       lastname: payload.lastname,
       firstname: payload.firstname,
       organization: payload.organization,
-      usertype: payload.usertype
+      usertype: payload.usertype,
+      country: payload.country
     };
     await this.update(updateValues);
   }
@@ -153,7 +154,8 @@ export default class UserService extends BaseEntityService {
       lastname: user.lastname,
       firstname: user.firstname,
       organization: user.organization,
-      usertype: user.usertype
+      usertype: user.usertype,
+      country: user.country
     };
     result.nQuizzes = await new QuizService().getUserQuizCount(uid);
     result.nSurveys = await new SurveyService().getUserSurveyCount(uid);
@@ -199,11 +201,11 @@ export default class UserService extends BaseEntityService {
       passwordHash: hashSync(userRegInfo.password, genSaltSync()),
       usertype: userRegInfo.usertype,
       securityquestion: userRegInfo.securityquestion,
-      securityanswer: hashSync(userRegInfo.securityanswer, genSaltSync())
+      securityanswer: hashSync(userRegInfo.securityanswer, genSaltSync()),
+      country: userRegInfo.country
     };
     await this.save(user);
 
-    // log the user in
     return {
       email: userRegInfo.email,
       phone: userRegInfo.phone,

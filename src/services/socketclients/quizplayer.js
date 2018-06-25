@@ -4,13 +4,14 @@
 // to the page BEFORE importing this js file. That's where io is defined.
 
 function onAnswerSubmitted(feedback) {
+  console.log(feedback);
   // If all went well, 'feedback' will just be a string saying "Submitted".
   //TODO: You decide. You can clear input fields or reset data used for the just-submitted question.
   localStorage.removeItem("quizquestion");
-  console.log(feedback);
+  refreshFieldsAfterAnswerIsSubmitted();
 }
 
-const socket = io("/quizplayer");
+const socket = io("/quizplayer", getSocketOptions());
 
 function onGetQuizPin(pin) {
   // Set the PIN somewhere the player can see it.
@@ -48,14 +49,16 @@ function submitAnswer(answerInfo) {
   const quizquestion = JSON.parse(localStorage.getItem("quizquestion"));
   const isCorrect = quizquestion.correctOptions.indexOf(answerInfo.choice);
   //TODO: get the user info server sent you at login wherever you kept it.
-  //const userInfo = localStorage.getItem("userInfo");
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+
   const userId = userInfo.i;
   const answerToSubmit = {
     pin: pin,
-    quizId: quizQuestionId.quizId,
+    quizId: quizquestion.quizId,
     quizQuestionId: quizquestion.id,
     points: quizquestion.points,
     userId: userId,
+    choice: answerInfo.choice,
     correct: isCorrect
   };
   answerToSubmit.bonus = getBonus(
@@ -93,7 +96,7 @@ function getBonus(maxBonus, maxTimeCount, timeCount, answeredCorrectly = true) {
   //TODO: bonus will often be a floating point number. Is it OK to convert to integer?
   // If yes, do we round it up or down, or do we use the normal math way?
   // Confirm with Project Manager.
-  return bonus;
+  return Math.ceil(bonus);
 }
 
 socket.on("receive-next-question", onReceiveNextQuestion);

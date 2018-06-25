@@ -27,3 +27,17 @@ function getUserInfo() {
 function getAuthToken() {
   return localStorage.getItem("token");
 }
+
+function getSocketOptions() {
+  // See https://github.com/socketio/socket.io-client/issues/1097 for explanations
+  return {
+    // [1] Important as fuck
+    reconnectionDelay: 1000,
+    reconnection: true,
+    reconnectionAttempts: 10,
+    transports: ["websocket", "polling"],
+    agent: false,
+    upgrade: false,
+    rejectUnauthorized: false
+  }; // [2] Please don't set this to true
+}

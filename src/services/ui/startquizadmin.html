@@ -6,6 +6,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Quiz Admin - Start</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font: 13px Helvetica, Arial;
+        }
+
+        form {
+            background: #000;
+            padding: 3px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        input {
+            border: 0;
+            padding: 10px;
+            width: 90%;
+            margin-right: .5%;
+        }
+
+        button {
+            width: 9%;
+            background: rgb(130, 224, 255);
+            border: none;
+            padding: 10px;
+        }
+    </style>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
 </head>
@@ -58,9 +91,10 @@
             };
             console.log("calling startQuizAdmin with data: ");
             console.log(data);
+            const baseUrl = window.location.origin;
             $.ajax({
                 type: 'POST',
-                url: 'http://localhost:3000/api/user/quizruns/create',
+                url: baseUrl + '/api/user/quizruns/create',
                 data: data,
                 beforeSend: function (xhr) {
                     const authToken = "Bearer " + getAuthToken();
@@ -82,15 +116,16 @@
         }
 
         $(function () {
+            const baseUrl = window.location.origin;
             $.ajax({
                 type: 'GET',
-                url: 'http://localhost:3000/api/user/quizzes',
+                url: baseUrl + '/api/user/quizzes',
                 beforeSend: function (xhr) {
                     const authToken = "Bearer " + getAuthToken();
                     xhr.setRequestHeader("Authorization", authToken);
                 },
                 success: function (result) {
-                    console.log("Result from http://localhost:3000/api/user/quizzes");
+                    console.log("Result from " + baseUrl + "/api/user/quizzes");
                     console.log(result);
                     let options = "";
                     if (result) {

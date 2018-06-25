@@ -57,35 +57,39 @@ select count(*) as total from (
    * @param {*} record
    */
   async save(record) {
-    const quizRun = await new QuizRunService().getBy({
+    log.debug(`save: record: %O`, record);
+    const quizRun = await new QuizRunService().getFirst({
       pin: record.pin
     });
     if (!quizRun) throw new RequestError("Invalid PIN");
 
-    const existing = this.getBy({
+    log.debug(`save: quizRun record: %O`, quizRun);
+    const existing = await this.getFirst({
       quizId: record.quizId,
       quizQuestionId: record.quizQuestionId,
       quizRunId: quizRun.id,
       userId: record.userId
     });
-    if (existing && existing.length) {
-      existing[0].choice = record.choice;
-      existing[0].correct = record.correct;
-      existing[0].points = record.points;
-      existing[0].bonus = record.bonus;
+    if (existing) {
+      existing.choice = record.choice;
+      existing.correct = record.correct;
+      existing.points = record.points;
+      existing.bonus = record.bonus;
 
-      await super.update(existing[0]);
+      log.debug(`save: existing record being updated: %O`, existing);
+      await super.update(existing);
     } else {
       const newRecord = {
         quizId: record.quizId,
         quizQuestionId: record.quizQuestionId,
-        quizRunId: record.quizRunId,
+        quizRunId: quizRun.id,
         userId: record.userId,
         choice: record.choice,
         correct: record.correct,
         points: record.points,
         bonus: record.bonus
       };
+      log.debug(`save: new record being saved: %O`, newRecord);
       await super.save(newRecord);
     }
   }

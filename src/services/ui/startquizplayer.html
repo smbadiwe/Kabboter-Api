@@ -18,16 +18,35 @@
     </div>
     <div id="step2" hidden="hidden">
         <section>
-            <span id="question"></span>
+            <section>
+                <hi>Question</hi>
+                <span id="questions"></span>
+            </section>
+            <section>
+                <hi>Error</hi>
+                <span id="error" style="color: red;"></span>
+            </section>
+            <section>
+                <hi>Feedback</hi>
+                <span id="feedback"></span>
+            </section>
+            <section>
+                <hi>Stats</hi>
+                <span id="stats"></span>
+            </section>
+            <section>
+                <hi>Dashboard</hi>
+                <span id="dashboard"></span>
+            </section>
         </section>
         <section>
-            <button id="option1" onclick="submitQuizAmswerChoice(event);">
+            <button id="option1" onclick="submitQuizAmswerChoice(event);" disabled="disabled">
                 Option 1</button>
-            <button id="option2" onclick="submitQuizAmswerChoice(event);">
+            <button id="option2" onclick="submitQuizAmswerChoice(event);" disabled="disabled">
                 Option 2</button>
-            <button id="option3" onclick="submitQuizAmswerChoice(event);">
+            <button id="option3" onclick="submitQuizAmswerChoice(event);" disabled="disabled">
                 Option 3</button>
-            <button id="option4" onclick="submitQuizAmswerChoice(event);">
+            <button id="option4" onclick="submitQuizAmswerChoice(event);" disabled="disabled">
                 Option 4</button>
         </section>
     </div>

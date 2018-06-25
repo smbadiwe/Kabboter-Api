@@ -22,6 +22,7 @@ export async function up(knex) {
       t.string("phone");
       t.string("securityquestion");
       t.string("securityanswer");
+      t.string("country");
     });
 }
 
@@ -31,6 +32,7 @@ export async function down(knex) {
       t.dropColumn("phone");
       t.dropColumn("securityquestion");
       t.dropColumn("securityanswer");
+      t.dropColumn("country");
     })
     .table("quizzes", t => {
       t.dropColumn("description");

@@ -1,5 +1,7 @@
 import { QuizRunService, QuizAnswerService } from "./";
 import log from "../utils/log";
+import { validateInteger } from "../utils/ValidationErrors";
+
 log.setNamespace("socketsetup");
 
 const quizRooms = new Set();
@@ -52,6 +54,14 @@ function tellQuizAdminThatSomeoneJustJoined(quizAdminIO, quizPlayerIO, data) {
   }
 }
 
+function validateQuizAnswerProps(data) {
+  validateInteger(data.quizId, "quizId", true);
+  validateInteger(data.quizQuestionId, "quizQuestionId", true);
+  validateInteger(data.points, "points");
+  validateInteger(data.userId, "userId", true);
+  validateInteger(data.bonus, "bonus");
+}
+
 function setupQuizSockets(io) {
   const quizAdminIO = io.of("/quizadmin");
   const quizPlayerIO = io.of("/quizplayer");
@@ -74,12 +84,12 @@ function setupQuizSockets(io) {
       }
     });
 
-    //NOT USED: data = { quizId: quidId, pin: pin, totalQuestions: totalQuestions }
-    // When quizrun is created, admin at the client will emit this event.
-    socket.on("share-quizrun-info", data => {
-      // share to all players so they can join room too.
-      quizPlayerIO.emit("get-quizrun-info", data);
-    });
+    // //NOT USED: data = { quizId: quidId, pin: pin, totalQuestions: totalQuestions }
+    // // When quizrun is created, admin at the client will emit this event.
+    // socket.on("share-quizrun-info", data => {
+    //   // share to all players so they can join room too.
+    //   quizPlayerIO.emit("get-quizrun-info", data);
+    // });
 
     // data = { quizRunId: 2, pin: pin, quizId: 3 }
     socket.on("get-next-question", async (data, onError) => {
@@ -90,7 +100,9 @@ function setupQuizSockets(io) {
           data.quizId
         );
         // send question to both moderators and players
-        io.emit("receive-next-question", question);
+        log.debug(`send question to both moderators and players. data = %o`, question);
+        socket.emit("receive-next-question", question);
+        quizPlayerIO.emit("receive-next-question", question);
         // const roomNo = getQuizRoomNo(data.pin);
         //io.in(roomNo).emit("receive-next-question", question);
       } catch (e) {
@@ -215,7 +227,8 @@ function setupQuizSockets(io) {
       try {
         validateQuizAnswerProps(data);
         await new QuizAnswerService().save(data);
-        quizAdminIO.in(getQuizRoomNo(data.pin)).emit("player-sumbitted-answer", {
+        // quizAdminIO.in(getQuizRoomNo(data.pin))
+        quizAdminIO.emit("player-sumbitted-answer", {
           quizQuestionId: data.quizQuestionId,
           choice: data.choice
         });

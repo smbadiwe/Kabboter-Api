@@ -5,14 +5,19 @@ import middleware from "./middleware";
 import routes from "./routes";
 import serve from "koa-static";
 
+import send from "koa-send";
+
 const app = new Koa();
 
 const keys = [process.env.APP_SECRET];
 app.keys = new KeyGrip(keys, "sha256");
-
-app.use(serve(__dirname + "/services/socketclients"));
-
+// const serveOpts = {
+//   setHeader: function (res, path, stats) {
+//     res.
+//   }
+// };
 app.use(middleware());
+app.use(serve(__dirname + "/services/socketclients"));
 app.use(routes());
 // Finally
 // app.use(ctx => (ctx.status = 404));
