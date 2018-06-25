@@ -5,48 +5,66 @@
 // <script src="./surveyadmin.ui.js"></script>
 // to the page BEFORE importing this js file. That's where io is defined.
 
-import io from "socket.io-client";
-const socket = io("/surveyadmin");
-
-function onReceiveNextQuestion(question) {
-  //This is a question object as defined in the API doc.
-  //TODO:  Render fields as you would like it.
-  setSurveyQuestionsOnPage(question);
-  localStorage.setItem("surveyquestion", JSON.stringify(question));
-}
-
-function onGetSurveyRunInfo(info) {
-  // info = { id: <the surveyRun id>, surveyId: surveyId, pin: pin, totalQuestions: totalQuestions };
-
-  localStorage.setItem("surveyruninfo", JSON.stringify(info));
-}
-
 function onWhenSomeoneJustJoined(payload) {
-  // payload = { nPlayers: nPlayers, topFive: topFive };
+  // payload = {
+  //   nPlayers: nPlayers,
+  //   topFive: topFive,
+  //   newPlayer: data.userInfo,
+  //   pin: data.pin
+  // };
   // You get the total number of players still connecting
   // and a list of the top 5 to display on page.
-  console.log(payload);
+  updateSurveyAdminPageOnWhenSomeoneJustJoined(payload);
 }
 
 function onWhenSomeoneJustLeft(payload) {
-  // payload = { nPlayers: nPlayers, topFive: topFive };
+  // payload = {
+  //   nPlayers: nPlayers,
+  //   topFive: topFive,
+  //   newPlayer: data.userInfo,
+  //   pin: data.pin
+  // };
   // You get the total number of players still connecting
   // and a list of the top 5 to display on page.
-  console.log(payload);
+  updateSurveyAdminPageOnWhenSomeoneJustLeft(payload);
 }
 
+function getSurveyRunInfo() {
+  const info = localStorage.getItem("surveyruninfo");
+  if (!info) throw new Error("surveyruninfo not yet created");
+
+  return JSON.parse(info);
+}
+
+function updateAnsweredQuestionsList(newQuestionId) {
+  let list = localStorage.getItem("answeredquestionlist");
+  if (list) {
+    localStorage.setItem("answeredquestionlist", `${list}${newQuestionId},`);
+  } else {
+    localStorage.setItem("answeredquestionlist", `${newQuestionId},`);
+  }
+}
+
+function onReceiveNextQuestion(surveyquestion) {
+  if (surveyquestion) {
+    localStorage.setItem("surveyquestion", JSON.stringify(surveyquestion));
+    updateAnsweredQuestionsList(surveyquestion.id);
+  }
+  setSurveyQuestionPropsOnPage(surveyquestion);
+}
+
+// Sockets now
+const socket = io("/surveyadmin", getSocketOptions());
+
 function onDisconnect(reason) {
+  localStorage.removeItem("surveyruninfo");
+  localStorage.removeItem("surveyquestion");
   if (reason === "io server disconnect") {
     // the disconnection was initiated by the server, you need to reconnect manually
+    console.log("Server disconnected you do to auth fail");
     socket.connect();
   }
   // else the socket will automatically try to reconnect
-}
-
-function onPlayerSubmittedAnswer(data) {
-  // data = { surveyQuestionId: surveyQuestionId<integer>, choice: <1,2,3,or 4> }
-  //TODO: Use this info to update dashboard. That dashboard where you show
-  // chart of the different options and how many players chose each.
 }
 
 /**
@@ -57,14 +75,24 @@ function authenticateSurveyAdmin() {
   // Server sends this info on successful login, as a JSON: { token: ..., user: {...} }
   // I'm assuming you saved it somewhere in local storage, with key: userInfo.
   const userInfo = getUserInfo();
-  const pin = getQueryStringParams().pin;
-  const auth = { pin: pin, userInfo: userInfo };
+  const surveyRunInfo = getSurveyRunInfo();
+  const auth = { pin: surveyRunInfo.pin, userInfo: userInfo };
+  console.log("sending auth data for auth. data: ");
+  console.log(auth);
   socket.emit("authenticate", auth, error => {
     alert(error);
   });
 }
 
-socket.on("get-surveyrun-info", onGetSurveyRunInfo);
+/**
+ * The 'Next' button that loads a new question should call this.
+ */
+function getNextQuestion() {
+  const surveyRunInfo = getSurveyRunInfo();
+  socket.emit("get-next-question", surveyRunInfo, callbackOnSurveyAdminError);
+}
+
+// socket.on("get-surveyrun-info", onGetSurveyRunInfo);
 
 socket.on("receive-next-question", onReceiveNextQuestion);
 
@@ -72,8 +100,8 @@ socket.on("when-someone-just-joined", onWhenSomeoneJustJoined);
 
 socket.on("when-someone-just-left", onWhenSomeoneJustLeft);
 
-socket.on("error", callbackOnSurveyError);
+socket.on("error", callbackOnSurveyAdminError);
 
 socket.on("disconnect", onDisconnect);
 
-adminIO.on("player-sumbitted-answer", onPlayerSubmittedAnswer);
+socket.on("player-sumbitted-answer", onPlayerSubmittedAnswer);

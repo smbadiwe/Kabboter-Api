@@ -5,32 +5,103 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Survey Admin - Start</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font: 13px Helvetica, Arial;
+        }
+
+        form {
+            background: #000;
+            padding: 3px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        input {
+            border: 0;
+            padding: 10px;
+            width: 90%;
+            margin-right: .5%;
+        }
+
+        button {
+            width: 9%;
+            background: rgb(130, 224, 255);
+            border: none;
+            padding: 10px;
+        }
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
 </head>
 
 <body>
-    <button onclick="startQuiz(event);">Start Quiz</button>
+    <div id="step1">Select Survey:
+        <select id="survey">
+            <option value="1">Survey 1</option>
+        </select>
+        <button onclick="startSurveyAdmin(event);">Start Survey</button>
+    </div>
+    <div id="step2" hidden="hidden">
+        <div>
+            <span id="surveyinfo"></span>
+            <button onclick="loadNextQuestion(event);">
+                Load next question</button>
+        </div>
+        <div>
+            <section>
+                <hi>Error</hi>
+                <span id="error" style="color: red;"></span>
+            </section>
+            <section>
+                <hi>Feedback</hi>
+                <span id="feedback"></span>
+            </section>
+            <section>
+                <hi>Question</hi>
+                <span id="questions"></span>
+            </section>
+            <section>
+                <hi>Stats</hi>
+                <span id="stats"></span>
+            </section>
+            <section>
+                <hi>Dashboard</hi>
+                <span id="dashboard"></span>
+            </section>
+        </div>
+    </div>
+    <script src="/general.js"></script>
+    <script src="/surveyadmin.ui.js"></script>
+    <script src="/surveyadmin.js"></script>
     <script>
-        function startQuiz(e) {
+        function startSurveyAdmin(e) {
             e.preventDefault();
+
             const data = {
-                username: $("#username").val(),
-                password: $("#password").val(),
+                surveyId: $("#survey").val()
             };
+            console.log("calling startSurveyAdmin with data: ");
+            console.log(data);
+            const baseUrl = window.location.origin;
             $.ajax({
                 type: 'POST',
-                url: 'http://localhost:3000/api/public/login',
+                url: baseUrl + '/api/user/surveyruns/create',
                 data: data,
                 beforeSend: function (xhr) {
-                    const token = localStorage.getItem("token");
-                    xhr.setRequestHeader("Authorization", "Bearer " + token);
+                    const authToken = "Bearer " + getAuthToken();
+                    xhr.setRequestHeader("Authorization", authToken);
                 },
                 success: function (result) {
-                    console.log(result);
-                    localStorage.setItem("token", result.token);
-                    localStorage.setItem("userInfo", JSON.stringify(result.user));
-                    window.location.href = "http://localhost:3000/quizadmin";
+                    onGetSurveyRunInfo(result);
                 },
                 error: function (error) {
                     console.log("Status: " + error.status + " Message: " + error.statusText);
@@ -38,6 +109,38 @@
                 }
             });
         }
+
+        function loadNextQuestion(e) {
+            e.preventDefault();
+            getNextQuestion();
+        }
+
+        $(function () {
+            const baseUrl = window.location.origin;
+            $.ajax({
+                type: 'GET',
+                url: baseUrl + '/api/user/surveys',
+                beforeSend: function (xhr) {
+                    const authToken = "Bearer " + getAuthToken();
+                    xhr.setRequestHeader("Authorization", authToken);
+                },
+                success: function (result) {
+                    console.log("Result from " + baseUrl + "/api/user/surveys");
+                    console.log(result);
+                    let options = "";
+                    if (result) {
+                        result.forEach(function (r) {
+                            options += ('<option value="' + r.id + '">' + r.title + '</option>');
+                        });
+                    }
+                    $("#survey").html(options);
+                },
+                error: function (error) {
+                    console.log("Status: " + error.status + " Message: " + error.statusText);
+                    console.log(error);
+                }
+            });
+        });
     </script>
 </body>
 

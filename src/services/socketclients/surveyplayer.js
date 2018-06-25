@@ -1,37 +1,35 @@
-// Sample client code for survey player
+// Sample client code for game player
 // Add this:
 // <script src="/socket.io/socket.io.js"></script>
 // to the page BEFORE importing this js file. That's where io is defined.
 
-import io from "socket.io-client";
-const socket = io("/surveyplayer");
-
-function onReceiveNextQuestion(question) {
-  setSurveyQuestionsOnPage(question);
-  localStorage.setItem("surveyquestion", JSON.stringify(question));
-}
-
 function onAnswerSubmitted(feedback) {
-  feedbackOnSurveyAnswerSubmitted(feedback);
+  console.log(feedback);
+  // If all went well, 'feedback' will just be a string saying "Submitted".
+  //TODO: You decide. You can clear input fields or reset data used for the just-submitted question.
   localStorage.removeItem("surveyquestion");
+  refreshFieldsAfterAnswerIsSubmitted();
 }
+
+const socket = io("/surveyplayer", getSocketOptions());
 
 function onGetSurveyPin(pin) {
-  const userInfo = getUserInfo();
-  const auth = { pin: pin, userInfo: userInfo };
-
   // Set the PIN somewhere the player can see it.
   localStorage.setItem("surveypin", pin);
 
+  const userInfo = getUserInfo();
+  const auth = { pin: pin, userInfo: userInfo };
   socket.emit("authenticate", auth, error => {
     alert(error);
+    return false;
   });
 }
 
 function onDisconnect(reason) {
+  console.log("onDisconnect: reason - " + reason);
   // Tell admin that someone just disconnected
-  io.of("/surveyadmin").emit("someone-just-left", socket.id, callbackOnSurveyError);
-  localStorage.removeItem("surveypin");
+  // io.of("/surveyadmin").emit("someone-just-left", socket.id, callbackOnSurveyPlayerError);
+  // localStorage.removeItem("surveypin");
   if (reason === "io server disconnect") {
     // the disconnection was initiated by the server, you need to reconnect manually
     socket.connect();
@@ -40,47 +38,33 @@ function onDisconnect(reason) {
 }
 
 /**
- * Submit answer to a quiz question via socket.
+ * Submit answer to a survey question via socket.
  * TODO: package the answerInfo object and pass it to this method. Do this when client clicks on an answer button.
  * answerInfo should be a JSON with these keys:
- *
- * @param {*} answerInfo { timeCount: <integer>, choice: <integer> }
+ * { timeCount: 2, choice: 1 }
+ * @param {*} answerInfo
  */
 function submitAnswer(answerInfo) {
   const pin = localStorage.getItem("surveypin");
-  const quizquestion = JSON.parse(localStorage.getItem("surveyquestion"));
-  const userInfo = getUserInfo();
+  const surveyquestion = JSON.parse(localStorage.getItem("surveyquestion"));
+  //TODO: get the user info server sent you at login wherever you kept it.
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+
   const userId = userInfo.i;
   const answerToSubmit = {
     pin: pin,
-    quizId: quizQuestionId.quizId,
-    quizQuestionId: quizquestion.id,
-    points: quizquestion.points,
+    surveyId: surveyquestion.surveyId,
+    surveyQuestionId: surveyquestion.id,
+    points: surveyquestion.points,
     userId: userId
   };
-  const isCorrect = false;
   answerToSubmit.bonus = getBonus(
-    quizquestion.maxBonus,
-    quizquestion.timeLimit,
+    surveyquestion.maxBonus,
+    surveyquestion.timeLimit,
     answerInfo.timeCount,
-    isCorrect
+    false
   );
-  socket.emit("submit-answer", answerToSubmit, callbackOnSurveyError);
-}
-
-/**
- * Call this function as soon as you can on page load.
- * The URL loading the page MUST pass pin via querystring, with key: 'pin'
- */
-function authenticateSurveyPlayer() {
-  // Server sends this info on successful login, as a JSON: { token: ..., user: {...} }
-  // I'm assuming you saved it somewhere in local storage, with key: userInfo.
-  const userInfo = getUserInfo();
-  const pin = getQueryStringParams().pin;
-  const auth = { pin: pin, userInfo: userInfo };
-  socket.emit("authenticate", auth, error => {
-    alert(error);
-  });
+  socket.emit("submit-answer", answerToSubmit, callbackOnSurveyPlayerError);
 }
 
 /**
@@ -91,7 +75,7 @@ function authenticateSurveyPlayer() {
  * @param {*} answeredCorrectly True if player answered correctly. False otherwise.
  */
 function getBonus(maxBonus, maxTimeCount, timeCount, answeredCorrectly = true) {
-  if (!answeredCorrectly) return 0;
+  if (!answeredCorrectly || maxTimeCount < 1 || maxBonus < 1) return 0;
   /*
       Let max bonus be B, with values, b, going from 0 to B.
       Let max time count be T, with values, t, going from 0 to T.
@@ -109,15 +93,17 @@ function getBonus(maxBonus, maxTimeCount, timeCount, answeredCorrectly = true) {
   //TODO: bonus will often be a floating point number. Is it OK to convert to integer?
   // If yes, do we round it up or down, or do we use the normal math way?
   // Confirm with Project Manager.
-  return bonus;
+  return Math.ceil(bonus);
 }
 
 socket.on("receive-next-question", onReceiveNextQuestion);
 
 socket.on("answer-submitted", onAnswerSubmitted);
 
-socket.on("get-survey-pin", onGetSurveyPin);
+socket.on("get-surveyrun-info", onGetSurveyRunInfo);
 
-socket.on("error", callbackOnSurveyError);
+socket.on("error", callbackOnSurveyPlayerError);
 
 socket.on("disconnect", onDisconnect);
+
+socket.on("aoth-success", onAuthSuccess);

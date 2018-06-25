@@ -78,7 +78,7 @@ function submitAnswer(answerInfo) {
  * @param {*} answeredCorrectly True if player answered correctly. False otherwise.
  */
 function getBonus(maxBonus, maxTimeCount, timeCount, answeredCorrectly = true) {
-  if (!answeredCorrectly) return 0;
+  if (!answeredCorrectly || maxTimeCount < 1 || maxBonus < 1) return 0;
   /*
       Let max bonus be B, with values, b, going from 0 to B.
       Let max time count be T, with values, t, going from 0 to T.

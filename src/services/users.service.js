@@ -292,6 +292,8 @@ export default class UserService extends BaseEntityService {
   }
 
   async processLogin(username, password, rememberme) {
+    if (!username) throw new Required("username");
+    if (!password) throw new Required("password");
     const user = await this.getByUsernameOrEmailOrPhone(username);
 
     if (!user) {
