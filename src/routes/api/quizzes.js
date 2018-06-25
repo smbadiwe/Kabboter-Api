@@ -89,7 +89,7 @@ router.get("/", async ctx => {
 
 router.get("/:id", async ctx => {
   try {
-    validateInteger(ctx.params.id, "id");
+    validateInteger(ctx.params.id, "id", true);
     const wq = ctx.request.query.wq;
     const withoutQuestions = !wq || wq !== "y";
     const res = await new QuizService().getBy({ id: ctx.params.id }, withoutQuestions);

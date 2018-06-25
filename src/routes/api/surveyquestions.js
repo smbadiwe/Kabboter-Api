@@ -29,7 +29,7 @@ router.post("/update", async ctx => {
 
 router.post("/delete/:id", async ctx => {
   try {
-    validateInteger(ctx.params.id, "id");
+    validateInteger(ctx.params.id, "id", true);
     const res = await new SurveyQuestionService().daleteRecord(ctx.params.id);
     ctx.body = res;
   } catch (e) {
@@ -40,8 +40,13 @@ router.post("/delete/:id", async ctx => {
 router.get("/", async ctx => {
   try {
     const surveyId = ctx.request.query.surveyId;
-    validateInteger(surveyId, "surveyId");
-    const res = await new SurveyQuestionService().getBy({ surveyId: surveyId });
+    if (surveyId) {
+      validateInteger(surveyId, "surveyId", true);
+    }
+    const res =
+      surveyId > 0
+        ? await new SurveyQuestionService().getBy({ surveyId: surveyId })
+        : await new SurveyQuestionService().getAll();
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
@@ -50,11 +55,9 @@ router.get("/", async ctx => {
 
 router.get("/:id", async ctx => {
   try {
-    const surveyId = ctx.request.query.surveyId;
     const recordId = ctx.params.id;
-    validateInteger(surveyId, "surveyId");
-    validateInteger(recordId, "id");
-    const res = await new SurveyQuestionService().getBy({ id: recordId, surveyId: surveyId });
+    validateInteger(recordId, "id", true);
+    const res = await new SurveyQuestionService().getById(recordId);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);

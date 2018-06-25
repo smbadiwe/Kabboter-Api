@@ -197,7 +197,7 @@ export default class UserService extends BaseEntityService {
       email: userRegInfo.email,
       phone: userRegInfo.phone,
       username: username,
-      roles: Enums.UserRoleOptions.Players,
+      roles: Enums.UserRoleOptions.Moderator,
       passwordHash: hashSync(userRegInfo.password, genSaltSync()),
       usertype: userRegInfo.usertype,
       securityquestion: userRegInfo.securityquestion,

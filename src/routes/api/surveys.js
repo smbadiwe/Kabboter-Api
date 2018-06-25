@@ -42,7 +42,7 @@ router.post("/update", async ctx => {
 
 router.post("/delete/:id", async ctx => {
   try {
-    validateInteger(ctx.params.id, "id");
+    validateInteger(ctx.params.id, "id", true);
     const res = await new SurveyService().deleteRecord(ctx.params.id);
     ctx.body = res;
   } catch (e) {
@@ -64,7 +64,7 @@ router.get("/my", async ctx => {
 
 router.get("/my/:id", async ctx => {
   try {
-    validateInteger(ctx.params.id, "id");
+    validateInteger(ctx.params.id, "id", true);
     const wq = ctx.request.query.wq;
     const withoutQuestions = !wq || wq !== "y";
     const userId = ctx.request.user.id;

@@ -29,7 +29,7 @@ router.post("/update", async ctx => {
 
 router.post("/delete/:id", async ctx => {
   try {
-    validateInteger(ctx.params.id, "id");
+    validateInteger(ctx.params.id, "id", true);
     const res = await new QuizQuestionService().daleteRecord(ctx.params.id);
     ctx.body = res;
   } catch (e) {
@@ -40,8 +40,13 @@ router.post("/delete/:id", async ctx => {
 router.get("/", async ctx => {
   try {
     const quizId = ctx.request.query.quizId;
-    validateInteger(quizId, "quizId");
-    const res = await new QuizQuestionService().getBy({ quizId: quizId });
+    if (quizId) {
+      validateInteger(quizId, "quizId", true);
+    }
+    const res =
+      quizId > 0
+        ? await new QuizQuestionService().getBy({ quizId: quizId })
+        : await new QuizQuestionService().getAll();
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
@@ -50,11 +55,9 @@ router.get("/", async ctx => {
 
 router.get("/:id", async ctx => {
   try {
-    const quizId = ctx.request.query.quizId;
     const recordId = ctx.params.id;
-    validateInteger(quizId, "quizId");
-    validateInteger(recordId, "id");
-    const res = await new QuizQuestionService().getBy({ id: recordId, quizId: quizId });
+    validateInteger(recordId, "id", true);
+    const res = await new QuizQuestionService().getById(recordId);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);

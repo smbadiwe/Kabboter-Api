@@ -1,0 +1,47 @@
+{
+  "name": "kabooter",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "bcrypt": "^2.0.1",
+    "debug": "^3.1.0",
+    "dotenv": "^6.0.0",
+    "jsonwebtoken": "^8.2.2",
+    "knex": "^0.14.6",
+    "koa": "^2.5.1",
+    "koa-bodyparser": "^4.2.1",
+    "koa-combine-routers": "^3.0.1",
+    "koa-compose": "^4.1.0",
+    "koa-convert": "^1.2.0",
+    "koa-cors": "0.0.16",
+    "koa-helmet": "^4.0.0",
+    "koa-logger": "^3.2.0",
+    "koa-router": "^7.4.0",
+    "koa-session": "^5.8.1",
+    "koa-static": "^4.0.3",
+    "mustache": "^2.3.0",
+    "mysql": "^2.15.0",
+    "nodemailer": "^4.6.5",
+    "nodemon": "^1.17.5",
+    "socket.io": "^2.1.1",
+    "upath": "^1.1.0",
+    "validator": "^10.2.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "chai-http": "^4.0.0",
+    "mocha": "^5.2.0",
+    "supertest": "^3.1.0"
+  },
+  "private": true,
+  "scripts": {
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": ">=8.9.4"
+  },
+  "author": "Soma Mbadiwe",
+  "license": "ISC"
+}

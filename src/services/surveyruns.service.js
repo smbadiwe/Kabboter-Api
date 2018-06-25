@@ -38,6 +38,8 @@ export default class SurveyRunService extends BaseEntityService {
 
     const surveyRun = {
       surveyId: record.surveyId,
+      surveytitle: survey.title,
+      surveydescription: survey.description,
       pin: pin,
       randomizeQuestions: record.randomizeQuestions,
       randomizeAnswers: record.randomizeAnswers,

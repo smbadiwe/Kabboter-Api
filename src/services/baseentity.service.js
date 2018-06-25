@@ -1,5 +1,6 @@
 import knex from "../db/connection";
 import { isArray, isObject } from "../utils";
+import { validateInteger } from "../utils/ValidationErrors";
 
 export class BaseEntityService {
   constructor(tableName) {
@@ -123,7 +124,7 @@ export class BaseEntityService {
   }
 
   async getById(entityId) {
-    if (!entityId) return null;
+    validateInteger(entityId, "id", true);
     return await this.connector
       .table(this.tableName)
       .where({ id: entityId })
@@ -132,6 +133,9 @@ export class BaseEntityService {
 
   async getByIds(entityIds) {
     if (!entityIds || entityIds.length == 0) return null;
+    entityIds.forEach(id => {
+      validateInteger(id, "id", true);
+    });
     return await this.connector.table(this.tableName).whereIn("id", entityIds);
   }
 
@@ -150,7 +154,7 @@ export class BaseEntityService {
 
   /**
    * Inserts the supplied record(s) to the table and return array of the id(s) of the inserted record.
-   * @param {*} records An object or array of objects to be inserted.
+   * @param {*} records An array of objects to be inserted.
    */
   async saveList(records) {
     if (isArray(records)) {
@@ -185,6 +189,7 @@ export class BaseEntityService {
   }
 
   async deleteRecord(id) {
+    validateInteger(id, "id", true);
     return await this.connector
       .table(this.tableName)
       .where({ id: id })

@@ -50,6 +50,8 @@ export default class QuizRunService extends BaseEntityService {
 
     const quizRun = {
       quizId: record.quizId,
+      quiztitle: quiz.title,
+      quizdescription: quiz.description,
       pin: pin,
       randomizeQuestions: record.randomizeQuestions,
       randomizeAnswers: record.randomizeAnswers,
