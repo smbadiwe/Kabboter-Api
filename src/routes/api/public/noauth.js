@@ -73,7 +73,7 @@ router.get("/initdb", async ctx => {
     const BASE_PATH = __dirname; // process.cwd();
     const path = require("path");
     console.log("from /initdb: __dirname = " + BASE_PATH);
-    let config = knexfile[process.env.NODE_ENV || "development"];
+    let config = knexfile[process.env.NODE_ENV || "production"];
     config.knexfile = path.join(BASE_PATH, "../../../db/knexfile.js");
     console.log("from /initdb: config.knexfile = " + config.knexfile);
     console.log(config);

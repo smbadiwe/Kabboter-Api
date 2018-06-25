@@ -2,7 +2,7 @@ import config from "knex";
 import * as knexfile from "./knexfile";
 import log from "../utils/log";
 
-const environment = process.env.NODE_ENV || "development";
+const environment = process.env.NODE_ENV || "production";
 log.debug("NODE_ENV: " + environment);
 let knexConfiguration;
 switch (environment) {

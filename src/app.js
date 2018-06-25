@@ -5,8 +5,6 @@ import middleware from "./middleware";
 import routes from "./routes";
 import serve from "koa-static";
 
-import send from "koa-send";
-
 const app = new Koa();
 
 const keys = [process.env.APP_SECRET];

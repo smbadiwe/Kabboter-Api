@@ -38,6 +38,7 @@
   },
   "scripts": {
     "start": "npm run build && npm run serve",
+    "start-dev": "set DEBUG=Kabooter:* && nodemon src/index.js --exec babel-node",
     "start-debug": "set DEBUG=Kabooter:* && npm start",
     "build": "babel src -d dist",
     "serve": "set DEBUG=Kabooter:* && node dist/index.js",
