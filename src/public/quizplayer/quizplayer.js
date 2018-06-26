@@ -13,20 +13,48 @@ function onAnswerSubmitted(feedback) {
 
 const socket = io("/quizplayer", getSocketOptions());
 
-function onGetQuizPin(pin) {
-  // Set the PIN somewhere the player can see it.
-  localStorage.setItem("quizpin", pin);
-
-  const userInfo = getUserInfo();
-  const auth = { pin: pin, userInfo: userInfo };
-  socket.emit("authenticate", auth, error => {
+/**
+ * playerInfo = {
+                    pin: quizPin,
+                    userInfo: {
+                        lastname: lastname,
+                        firstname: firstname,
+                        email: email,
+                        phone: phone
+                    }
+                };
+ * @param {*} playerInfo 
+ */
+function onGetQuizPin(playerInfo) {
+  socket.emit("authenticate", playerInfo, error => {
     alert(error);
     return false;
   });
 }
 
+/**
+ * playerInfo: {
+ *  pin: xxx,
+ *  id: userId,
+ *  lastname: xxx,
+ *  firstname: xxx,
+ *  username: xxx
+ * }
+ * @param {*} playerInfo
+ */
+function onAuthSuccess(playerInfo) {
+  // Show the view where user can answer the questions.
+  console.log("onAuthSuccess called with feedback: ");
+  console.log(playerInfo);
+
+  localStorage.setItem("quizPlayerInfo", JSON.stringify(playerInfo));
+  showAnswerQuizViewOnnAuthSuccess();
+}
+
 function onDisconnect(reason) {
   console.log("onDisconnect: reason - " + reason);
+  localStorage.removeItem("quizPlayerInfo");
+  localStorage.removeItem("quizquestion");
   // Tell admin that someone just disconnected
   // io.of("/quizadmin").emit("someone-just-left", socket.id, callbackOnQuizPlayerError);
   // localStorage.removeItem("quizpin");
@@ -45,15 +73,13 @@ function onDisconnect(reason) {
  * @param {*} answerInfo
  */
 function submitAnswer(answerInfo) {
-  const pin = localStorage.getItem("quizpin");
+  const quizPlayerInfo = JSON.parse(localStorage.getItem("quizPlayerInfo"));
   const quizquestion = JSON.parse(localStorage.getItem("quizquestion"));
   const isCorrect = quizquestion.correctOptions.indexOf(answerInfo.choice);
-  //TODO: get the user info server sent you at login wherever you kept it.
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-  const userId = userInfo.i;
   const answerToSubmit = {
-    pin: pin,
+    userId: quizPlayerInfo.id,
+    pin: quizPlayerInfo.pin,
     quizId: quizquestion.quizId,
     quizQuestionId: quizquestion.id,
     points: quizquestion.points,

@@ -50,8 +50,6 @@ export default class QuizRunService extends BaseEntityService {
 
     const quizRun = {
       quizId: record.quizId,
-      quiztitle: quiz.title,
-      quizdescription: quiz.description,
       pin: pin,
       randomizeQuestions: record.randomizeQuestions,
       randomizeAnswers: record.randomizeAnswers,
@@ -63,7 +61,14 @@ export default class QuizRunService extends BaseEntityService {
     const res = await super.save(quizRun);
 
     const totalQuestions = await new QuizQuestionService().getTotalQuizQuestions(record.quizId);
-    return { quizRunId: res, quizId: record.quizId, pin: pin, totalQuestions: totalQuestions }; // the id of the newly saved record
+    return {
+      quizRunId: res,
+      quizId: record.quizId,
+      pin: pin,
+      totalQuestions: totalQuestions,
+      quiztitle: quiz.title,
+      quizdescription: quiz.description
+    }; // the id of the newly saved record
   }
 
   async hasQuizBeenRun(quizId) {

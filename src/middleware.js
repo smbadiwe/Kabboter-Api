@@ -6,6 +6,7 @@ import convert from "koa-convert";
 import bodyParser from "koa-bodyparser";
 import log from "./utils/log";
 import { verify } from "jsonwebtoken";
+import { decode } from "punycode";
 
 function corsConfig() {
   const accessControlMaxAge = "1200";
@@ -87,12 +88,19 @@ async function authorizeRequest(ctx, next) {
 
   if (verifyAuth) {
     let token = getTokenFromHeaderOrQuerystring(ctx.request);
-    // log.debug("%s - token: %s", ctx.request.url, token);
-    const decodedToken = verify(token, process.env.APP_SECRET);
-    if (!decodedToken) {
-      ctx.throw(401, "No jwt token");
+    if (!token) {
+      ctx.throw(401, "Authentication Failure. No token");
     }
-
+    // log.debug("%s - token: %s", ctx.request.url, token);
+    let decodedToken;
+    try {
+      decodedToken = verify(token, process.env.APP_SECRET);
+      if (!decodedToken) {
+        ctx.throw(401, "Authentication Failure. Token could not be verified");
+      }
+    } catch (e) {
+      ctx.throw(401, "Authentication Failure. Token could not be verified. " + e.message);
+    }
     // const permissionName = `${ctx.request.method} ${ctx.request.url}`;
     // if (decodedToken.p.indexOf(permissionName) < 0) {
     //   ctx.throw(401, "Unauthorized request");

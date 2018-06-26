@@ -15,7 +15,7 @@ app.keys = new KeyGrip(keys, "sha256");
 //   }
 // };
 app.use(middleware());
-app.use(serve(__dirname + "/services/socketclients"));
+app.use(serve(__dirname + "/public"));
 app.use(routes());
 // Finally
 // app.use(ctx => (ctx.status = 404));

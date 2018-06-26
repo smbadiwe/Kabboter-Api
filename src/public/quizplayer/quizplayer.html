@@ -56,13 +56,37 @@
     <script>
         function startQuizPlayer(e) {
             e.preventDefault();
+            const lastname = $("#lastname").val();
+            if (!lastname) {
+                alert("lastname not set.");
+                return;
+            }
+            const firstname = $("#firstname").val();
+            if (!firstname) {
+                alert("firstname not set.");
+                return;
+            }
             const quizPin = $("#quizpin").val();
             if (!quizPin) {
                 alert("Quiz PIN not set.");
                 return;
             }
-            console.log("calling onGetQuizPin: PIN = " + quizPin);
-            onGetQuizPin(quizPin);
+            const email = $("#email").val();
+            const phone = $("#phone").val();
+            if (email || phone) {
+                console.log("calling onGetQuizPin: PIN = " + quizPin);
+                const playerInfo = {
+                    pin: quizPin,
+                    lastname: lastname,
+                    firstname: firstname,
+                    email: email,
+                    phone: phone
+                };
+                onGetQuizPin(playerInfo);
+            } else {
+                alert("We need at least one way to contact you. So give us either email address or phone number");
+                return;
+            }
         }
     </script>
 </body>

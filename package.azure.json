@@ -37,7 +37,7 @@
   },
   "private": true,
   "scripts": {
-    "start": "node index.js"
+    "start": "set DEBUG=Kabooter:* && node index.js"
   },
   "engines": {
     "node": ">=8.9.4"

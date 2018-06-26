@@ -182,6 +182,10 @@ export default class UserService extends BaseEntityService {
     await this.update(user);
   }
 
+  /**
+   * This is for admin users
+   * @param {*} userRegInfo
+   */
   async processUserRegistration(userRegInfo) {
     let user = await this.getByEmailOrPhone(userRegInfo.email, userRegInfo.phone);
     if (user) {
@@ -209,6 +213,45 @@ export default class UserService extends BaseEntityService {
     return {
       email: userRegInfo.email,
       phone: userRegInfo.phone,
+      username: username
+    };
+  }
+
+  /**
+   * This is for players
+   * @param {*} userRegInfo
+   */
+  async processPlayerRegistration(userRegInfo) {
+    let user;
+    if (userRegInfo.username) {
+      user = await this.getByUsername(userRegInfo.username);
+    } else {
+      user = await this.getByEmailOrPhone(userRegInfo.email, userRegInfo.phone);
+    }
+    if (user) {
+      return {
+        id: user.id,
+        lastname: user.lastname,
+        firstname: user.firstname,
+        username: user.username
+      };
+    }
+    const username = await this.generateUsername(userRegInfo.lastname, userRegInfo.firstname);
+    user = {
+      firstname: userRegInfo.firstname,
+      lastname: userRegInfo.lastname,
+      email: userRegInfo.email,
+      phone: userRegInfo.phone,
+      username: username,
+      roles: Enums.UserRoleOptions.Players,
+      usertype: Enums.UserType.SocialUser
+    };
+    const userId = await this.save(user);
+
+    return {
+      id: userId,
+      lastname: userRegInfo.lastname,
+      firstname: userRegInfo.firstname,
       username: username
     };
   }

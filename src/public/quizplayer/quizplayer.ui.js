@@ -53,16 +53,14 @@ function submitQuizAmswerChoice(event) {
   submitAnswer(answerInfo);
 }
 
-function onAuthSuccess(feedback) {
-  // Redirect to the page where user can answer the questions.
-  console.log("onAuthSuccess called");
+function showAnswerQuizViewOnnAuthSuccess() {
+  // Show the view where user can answer the questions.
   $("button#startBtn").hide();
   $("input#quizpin").prop("disabled", true);
 
   $("div#step2").show();
 
   // Redirecting closes the socket. So, don't.
-  // window.location.href = "http://localhost:3000/quizplayer";
 }
 
 //  data = { pin: pin, userInfo: userInfo }

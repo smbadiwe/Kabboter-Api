@@ -1,4 +1,4 @@
-import { QuizRunService, QuizAnswerService } from "./";
+import { QuizRunService, QuizAnswerService, UserService } from "./";
 import log from "../utils/log";
 import { validateInteger } from "../utils/ValidationErrors";
 
@@ -167,8 +167,15 @@ function setupQuizSockets(io) {
   quizPlayerIO.on("connection", function(socket) {
     socket.authenticated = false;
 
-    // Rethink
-    //  data = { pin: pin, userInfo: userInfo }; // userInfo as provided during login
+    /**
+     * data = {
+                    pin: quizPin,
+                    lastname: lastname,
+                    firstname: firstname,
+                    email: email,
+                    phone: phone
+                };
+     */
     socket.on("authenticate", (data, onError) => {
       try {
         //const token = data.token
@@ -182,20 +189,25 @@ function setupQuizSockets(io) {
         );
 
         if (quizRooms.has(roomNo)) {
-          // You'll probably want to log the username or ID here instead. I don't
-          // use socket.id at all myself.
-          log.debug(`authenticated player socket - ID "${socket.id}"`);
-
           socket.authenticated = true;
           socket.user = data.userInfo;
+
+          // create user
+          log.debug("Creating player record for player: %o", data);
+          const userInfo = new UserService().processPlayerRegistration(data);
+          userInfo.pin = data.pin; // the quiz pin. Not part of player record, so, not set in 'processPlayerRegistration'
+
+          log.debug(
+            `authenticated player socket - ID "${socket.id}" (${data.firstname} ${data.lastname})`
+          );
 
           // Join the room playing the game
           joinQuizRoom(socket, roomNo);
 
-          // tell client auth is OK
-          socket.emit("aoth-success", "OK");
+          // tell client auth is OK, hand it the user info
+          socket.emit("aoth-success", userInfo);
           // Tell admin someone just connected
-          tellQuizAdminThatSomeoneJustJoined(quizAdminIO, quizPlayerIO, data);
+          tellQuizAdminThatSomeoneJustJoined(quizAdminIO, quizPlayerIO, userInfo);
           log.debug(
             `authenticated OK forplayer socket - ID "${socket.id}". Admin informed of new arrival`
           );

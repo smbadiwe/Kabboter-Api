@@ -5,48 +5,30 @@ import Router from "koa-router";
 const router = new Router();
 
 //NOTE: Routes here call actual html files
-const htmlFolderPath = path.join(__dirname, "../../../services/ui");
-
-router.get("/startquizadmin", function(ctx) {
-  ctx.type = "html";
-  ctx.set("Access-Control-Allow-Origin", "*");
-  ctx.body = fs.createReadStream(htmlFolderPath + "/startquizadmin.html");
-});
+const htmlFolderPath = path.join(__dirname, "../../../public");
 
 router.get("/quizadmin", function(ctx) {
   ctx.type = "html";
   ctx.set("Access-Control-Allow-Origin", "*");
-  ctx.body = fs.createReadStream(htmlFolderPath + "/quizadmin.html");
-});
-
-router.get("/startquizplayer", function(ctx) {
-  ctx.type = "html";
-  ctx.set("Access-Control-Allow-Origin", "*");
-  ctx.body = fs.createReadStream(htmlFolderPath + "/startquizplayer.html");
+  ctx.body = fs.createReadStream(htmlFolderPath + "/quizadmin/quizadmin.html");
 });
 
 router.get("/quizplayer", function(ctx) {
   ctx.type = "html";
   ctx.set("Access-Control-Allow-Origin", "*");
-  ctx.body = fs.createReadStream(htmlFolderPath + "/quizplayer.html");
-});
-
-router.get("/startsurveyadmin", function(ctx) {
-  ctx.type = "html";
-  ctx.set("Access-Control-Allow-Origin", "*");
-  ctx.body = fs.createReadStream(htmlFolderPath + "/startsurveyadmin.html");
+  ctx.body = fs.createReadStream(htmlFolderPath + "/quizplayer/quizplayer.html");
 });
 
 router.get("/surveyadmin", function(ctx) {
   ctx.type = "html";
   ctx.set("Access-Control-Allow-Origin", "*");
-  ctx.body = fs.createReadStream(htmlFolderPath + "/surveyadmin.html");
+  ctx.body = fs.createReadStream(htmlFolderPath + "/surveyadmin/surveyadmin.html");
 });
 
 router.get("/surveyplayer", function(ctx) {
   ctx.type = "html";
   ctx.set("Access-Control-Allow-Origin", "*");
-  ctx.body = fs.createReadStream(htmlFolderPath + "/surveyplayer.html");
+  ctx.body = fs.createReadStream(htmlFolderPath + "/surveyplayer/surveyplayer.html");
 });
 
 router.get("/login", function(ctx) {
