@@ -5,7 +5,7 @@ node_modules
 dist
 
 # config file
-.env
+*.env
 web.config
 *.yaml
 

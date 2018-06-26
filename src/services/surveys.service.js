@@ -26,6 +26,9 @@ export default class SurveyService extends BaseEntityService {
    * @param {*} payload
    */
   async create(userId, payload) {
+    const existing = await this.getBy({ title: payload.title });
+    if (existing) throw new RequestError(`A survey with the title ${payload.title} already exists`);
+
     const survey = {
       title: payload.title,
       description: payload.description,
@@ -45,6 +48,9 @@ export default class SurveyService extends BaseEntityService {
    * @param {*} payload
    */
   async createBatch(userId, payload) {
+    const existing = await this.getBy({ title: payload.title });
+    if (existing) throw new RequestError(`A survey with the title ${payload.title} already exists`);
+
     const survey = {
       title: payload.title,
       description: payload.description,
@@ -80,6 +86,10 @@ export default class SurveyService extends BaseEntityService {
   }
 
   async update(payload) {
+    const existing = await this.getBy({ title: payload.title });
+    if (existing && existing.id !== payload.id)
+      throw new RequestError(`A survey with the title ${payload.title} already exists`);
+
     const survey = {
       id: payload.id,
       title: payload.title,

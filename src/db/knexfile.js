@@ -1,6 +1,7 @@
 // changing this to ES6 style is problematic.
 require("babel-register");
 const path = require("path");
+const fs = require("fs");
 const BASE_PATH = __dirname;
 const dotenv = require("dotenv");
 dotenv.load({ path: path.join(BASE_PATH, "../../.env") });
@@ -81,10 +82,12 @@ module.exports = {
   production: {
     client: "mysql",
     connection: {
-      socketPath: `${process.env.APP_DB_HOST}`,
+      host: `${process.env.APP_DB_HOST}`,
       database: process.env.APP_DB_NAME,
-      user: process.env.APP_DB_USR,
-      password: process.env.APP_DB_PWD
+      user: `${process.env.APP_DB_USR}`,
+      password: process.env.APP_DB_PWD,
+      //port: 3306,
+      ssl: { ca: fs.readFileSync(path.resolve(__dirname, "../kabooter.crt.pem")) }
     },
     pool: {
       min: 2,
