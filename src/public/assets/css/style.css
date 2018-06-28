@@ -1,0 +1,133 @@
+/* START SIGN UP AND SIGN IN PAGE */
+
+.signup-page {
+    background-color: #ffffff;
+    padding-left: 0;
+    max-width: 360px;
+    margin: 2% auto;
+    overflow-x: hidden; }
+.signup-page .signup-box .msg {
+      color: #555;
+      margin-bottom: 30px;
+      text-align: center; 
+}
+   
+.signup-page .signup-box a {
+      font-size: 14px;
+      text-decoration: none;
+      color: #00BCD4; 
+}
+
+.signup-page .signup-box .logo {
+      margin-bottom: 20px; }
+      .signup-page .signup-box .logo a {
+        font-size: 36px;
+        display: block;
+        width: 100%;
+        text-align: center;
+        color: #fff; }
+      .signup-page .signup-box .logo small {
+        display: block;
+        width: 100%;
+        text-align: center;
+        color: #fff;
+        margin-top: -5px; 
+}
+
+/* END OF SIGNUP PAGE */
+
+/* FORGOT PAGE START */
+
+.fp-page {
+      background-color: #00BCD4;
+      padding-left: 0;
+      max-width: 360px;
+      margin: 5% auto;
+      overflow-x: hidden; }
+      .fp-page .fp-box .msg {
+        color: #555;
+        margin-bottom: 30px;
+        text-align: center; }
+      .fp-page .fp-box a {
+        font-size: 14px;
+        text-decoration: none;
+        color: #00BCD4; }
+      .fp-page .fp-box .logo {
+        margin-bottom: 20px; }
+        .fp-page .fp-box .logo a {
+          font-size: 36px;
+          display: block;
+          width: 100%;
+          text-align: center;
+          color: #fff; }
+        .fp-page .fp-box .logo small {
+          display: block;
+          width: 100%;
+          text-align: center;
+          color: #fff;
+          margin-top: -5px; }
+
+/* END OF FORGOT PAGE */
+
+.text-wrapper{
+      padding-top: 30px;
+      padding-bottom: 30px;
+}
+
+.members{
+  background: #ff9933;
+}
+
+#overlay {
+  position: fixed; /* Sit on top of the page content */
+  display: block; /* Hidden by default */
+  width: 100%; /* Full width (cover the whole page) */
+  height: 100%; /* Full height (cover the whole page) */
+  top: 0; 
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+  z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+  cursor: pointer; /* Add a pointer on hover */
+}
+
+.loader {
+  position: relative;
+  top: 200px;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+  text-align: center;
+  margin: auto;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* img{
+      background: #00BCD4;
+      color:white;
+      padding: 10px;
+      border-radius: 50%;
+    
+} */
+
+
+@media only screen and (min-width: 360px) {
+  .footer {
+   width: 50px;
+  }
+}

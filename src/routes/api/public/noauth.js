@@ -11,7 +11,7 @@ const router = new Router({ prefix: "/api/public" });
 
 router.get("/getsecurityquestion", async ctx => {
   try {
-    const { username } = ctx.request.body;
+    const { username } = ctx.request.query;
     const user = await new UserService().getByUsernameOrEmailOrPhone(username);
     if (!user) {
       throw new ValidationError("Username (or phone or email) is incorrect.");

@@ -1,0 +1,67 @@
+@font-face {
+    font-family: 'Lufthansa Head Bold';
+    src: url('./../fonts/lufthansahead-bold-webfont.woff2') format('woff2'), url('./../fonts/lufthansahead-bold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'lufthansa_headlight';
+    src: url('./../fonts/lufthansahead-light-webfont.woff2') format('woff2'), url('./../fonts/lufthansahead-light-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'lufthansa_headthin';
+    src: url('./../fonts/lufthansahead-thin-webfont.woff2') format('woff2'), url('./../fonts/lufthansahead-thin-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'lufthansa_office_headbold';
+    src: url('./../fonts/lufthansaofficehead-bold-webfont.woff2') format('woff2'), url('./../fonts/lufthansaofficehead-bold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'lufthansa_office_headregular';
+    src: url('./../fonts/lufthansaofficehead-webfont.woff2') format('woff2'), url('./../fonts/lufthansaofficehead-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'lufthansa_office_textbold';
+    src: url('./../fonts/lufthansaofficetext-bold-webfont.woff2') format('woff2'), url('./../fonts/lufthansaofficetext-bold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'lufthansa_office_textregular';
+    src: url('./../fonts/lufthansaofficetext-webfont.woff2') format('woff2'), url('./../fonts/lufthansaofficetext-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'lufthansa_textbold';
+    src: url('./../fonts/lufthansatext-bold-webfont.woff2') format('woff2'), url('./../fonts/lufthansatext-bold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'lufthansa_textlight';
+    src: url('./../fonts/lufthansatext-light-webfont.woff2') format('woff2'), url('./../fonts/lufthansatext-light-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'lufthansa_textregular';
+    src: url('./../fonts/lufthansatext-regular-webfont.woff2') format('woff2'), url('./../fonts/lufthansatext-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}

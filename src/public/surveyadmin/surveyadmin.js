@@ -37,12 +37,14 @@ function getSurveyRunInfo() {
 }
 
 function updateAnsweredQuestionsList(newQuestionId) {
-  let list = localStorage.getItem("answeredquestionlist");
-  if (list) {
-    localStorage.setItem("answeredquestionlist", `${list}${newQuestionId},`);
-  } else {
-    localStorage.setItem("answeredquestionlist", `${newQuestionId},`);
-  }
+  //TODO: If you so desire, use this to update count or list of answered question.
+  // Note that the code commented out is not tested and probably buggy.
+  // let list = localStorage.getItem("answeredquestionlist");
+  // if (list) {
+  //   localStorage.setItem("answeredquestionlist", `${list}${newQuestionId},`);
+  // } else {
+  //   localStorage.setItem("answeredquestionlist", `${newQuestionId},`);
+  // }
 }
 
 function onReceiveNextQuestion(surveyquestion) {

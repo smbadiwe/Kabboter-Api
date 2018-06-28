@@ -26,7 +26,7 @@ export default class QuizService extends BaseEntityService {
    * @param {*} payload
    */
   async create(userId, payload) {
-    const existing = await this.getBy({ title: payload.title });
+    const existing = await this.getFirst({ title: payload.title });
     if (existing) throw new RequestError(`A quiz with the title ${payload.title} already exists`);
 
     const quiz = {
@@ -48,7 +48,7 @@ export default class QuizService extends BaseEntityService {
    * @param {*} payload
    */
   async createBatch(userId, payload) {
-    const existing = await this.getBy({ title: payload.title });
+    const existing = await this.getFirst({ title: payload.title });
     if (existing) throw new RequestError(`A quiz with the title ${payload.title} already exists`);
 
     const quiz = {
@@ -87,7 +87,7 @@ export default class QuizService extends BaseEntityService {
   }
 
   async update(payload) {
-    const existing = await this.getBy({ title: payload.title });
+    const existing = await this.getFirst({ title: payload.title });
     if (existing && existing.id !== payload.id)
       throw new RequestError(`A quiz with the title ${payload.title} already exists`);
 

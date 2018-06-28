@@ -15,17 +15,16 @@ const socket = io("/quizplayer", getSocketOptions());
 
 /**
  * playerInfo = {
-                    pin: quizPin,
-                    userInfo: {
-                        lastname: lastname,
-                        firstname: firstname,
-                        email: email,
-                        phone: phone
-                    }
-                };
+        pin: pin,
+        username: username,
+        lastname: lastname,
+        firstname: firstname,
+        email: email,
+        phone: phone
+    };
  * @param {*} playerInfo 
  */
-function onGetQuizPin(playerInfo) {
+function onGetPlayPin(playerInfo) {
   socket.emit("authenticate", playerInfo, error => {
     alert(error);
     return false;
@@ -48,7 +47,7 @@ function onAuthSuccess(playerInfo) {
   console.log(playerInfo);
 
   localStorage.setItem("quizPlayerInfo", JSON.stringify(playerInfo));
-  showAnswerQuizViewOnnAuthSuccess();
+  showAnswerQuizViewOnnAuthSuccess(playerInfo);
 }
 
 function onDisconnect(reason) {
@@ -83,7 +82,6 @@ function submitAnswer(answerInfo) {
     quizId: quizquestion.quizId,
     quizQuestionId: quizquestion.id,
     points: quizquestion.points,
-    userId: userId,
     choice: answerInfo.choice,
     correct: isCorrect
   };
@@ -125,14 +123,14 @@ function getBonus(maxBonus, maxTimeCount, timeCount, answeredCorrectly = true) {
   return Math.ceil(bonus);
 }
 
-socket.on("receive-next-question", onReceiveNextQuestion);
+socket.on("receive-next-question", onPlayerReceiveNextQuestion);
 
 socket.on("answer-submitted", onAnswerSubmitted);
 
-socket.on("get-quizrun-info", onGetQuizRunInfo);
+socket.on("get-quizrun-info", onGetPlayerGameRunInfo);
 
 socket.on("error", callbackOnQuizPlayerError);
 
 socket.on("disconnect", onDisconnect);
 
-socket.on("aoth-success", onAuthSuccess);
+socket.on("auth-success", onAuthSuccess);

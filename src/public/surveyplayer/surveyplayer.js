@@ -13,20 +13,47 @@ function onAnswerSubmitted(feedback) {
 
 const socket = io("/surveyplayer", getSocketOptions());
 
-function onGetSurveyPin(pin) {
-  // Set the PIN somewhere the player can see it.
-  localStorage.setItem("surveypin", pin);
-
-  const userInfo = getUserInfo();
-  const auth = { pin: pin, userInfo: userInfo };
-  socket.emit("authenticate", auth, error => {
+/**
+ * playerInfo = {
+        pin: pin,
+        username: username,
+        lastname: lastname,
+        firstname: firstname,
+        email: email,
+        phone: phone
+    };
+ * @param {*} playerInfo 
+ */
+function onGetPlayPin(playerInfo) {
+  socket.emit("authenticate", playerInfo, error => {
     alert(error);
     return false;
   });
 }
 
+/**
+ * playerInfo: {
+ *  pin: xxx,
+ *  id: userId,
+ *  lastname: xxx,
+ *  firstname: xxx,
+ *  username: xxx
+ * }
+ * @param {*} playerInfo
+ */
+function onAuthSuccess(playerInfo) {
+  // Show the view where user can answer the questions.
+  console.log("onAuthSuccess called with feedback: ");
+  console.log(playerInfo);
+
+  localStorage.setItem("surveyPlayerInfo", JSON.stringify(playerInfo));
+  showAnswerSurveyViewOnnAuthSuccess(playerInfo);
+}
+
 function onDisconnect(reason) {
   console.log("onDisconnect: reason - " + reason);
+  localStorage.removeItem("surveyPlayerInfo");
+  localStorage.removeItem("surveyquestion");
   // Tell admin that someone just disconnected
   // io.of("/surveyadmin").emit("someone-just-left", socket.id, callbackOnSurveyPlayerError);
   // localStorage.removeItem("surveypin");
@@ -45,24 +72,22 @@ function onDisconnect(reason) {
  * @param {*} answerInfo
  */
 function submitAnswer(answerInfo) {
-  const pin = localStorage.getItem("surveypin");
+  const surveyPlayerInfo = JSON.parse(localStorage.getItem("surveyPlayerInfo"));
   const surveyquestion = JSON.parse(localStorage.getItem("surveyquestion"));
-  //TODO: get the user info server sent you at login wherever you kept it.
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-  const userId = userInfo.i;
   const answerToSubmit = {
-    pin: pin,
+    userId: surveyPlayerInfo.id,
+    pin: surveyPlayerInfo.pin,
     surveyId: surveyquestion.surveyId,
     surveyQuestionId: surveyquestion.id,
     points: surveyquestion.points,
-    userId: userId
+    choice: answerInfo.choice
   };
   answerToSubmit.bonus = getBonus(
     surveyquestion.maxBonus,
     surveyquestion.timeLimit,
     answerInfo.timeCount,
-    false
+    true
   );
   socket.emit("submit-answer", answerToSubmit, callbackOnSurveyPlayerError);
 }
@@ -96,14 +121,14 @@ function getBonus(maxBonus, maxTimeCount, timeCount, answeredCorrectly = true) {
   return Math.ceil(bonus);
 }
 
-socket.on("receive-next-question", onReceiveNextQuestion);
+socket.on("receive-next-question", onPlayerReceiveNextQuestion);
 
 socket.on("answer-submitted", onAnswerSubmitted);
 
-socket.on("get-surveyrun-info", onGetSurveyRunInfo);
+socket.on("get-surveyrun-info", onGetPlayerGameRunInfo);
 
 socket.on("error", callbackOnSurveyPlayerError);
 
 socket.on("disconnect", onDisconnect);
 
-socket.on("aoth-success", onAuthSuccess);
+socket.on("auth-success", onAuthSuccess);

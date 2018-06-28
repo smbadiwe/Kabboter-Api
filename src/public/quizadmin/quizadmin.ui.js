@@ -1,3 +1,49 @@
+function startQuizAdmin(e) {
+  e.preventDefault();
+  const data = { quizId: $("#gamelist").val() };
+  console.log("calling startQuizAdmin with data: ");
+  console.log(data);
+  const baseUrl = window.location.origin;
+  $.ajax({
+    type: "POST",
+    url: baseUrl + "/api/user/quizruns/create",
+    data: data,
+    beforeSend: function(xhr) {
+      const authToken = "Bearer " + getAuthToken();
+      xhr.setRequestHeader("Authorization", authToken);
+    },
+    success: function(result) {
+      onGetQuizRunInfo(result);
+    },
+    error: function(error) {
+      console.log("Status: " + error.status + " Message: " + error.statusText);
+      console.log(error);
+    }
+  });
+}
+
+function onGetQuizRunInfo(info) {
+  // info = { id: <the quizRun id>, quizId: quizId, pin: pin, totalQuestions: totalQuestions };
+  console.log("onGetQuizRunInfo - info = ");
+  localStorage.setItem("quizruninfo", JSON.stringify(info));
+  $("div#step1").hide();
+  $("div#step2").show();
+  $("#unum").html(info.pin);
+  $("#nplayers").html(0);
+  $("#quiztitle").html(info.quiztitle);
+  $("#quizdescription").html(info.quizdescription);
+  $("#quizid").html(info.id);
+  $("#quiztotal").html(info.totalQuestions);
+
+  //  $("#quizinfo").html("PIN: " + info.pin + " Total Questions: " + info.totalQuestions);
+
+  // Finally
+  authenticateQuizAdmin();
+
+  // Redirect sloses our sockets. So, don't.
+  // window.location.href = "http://localhost:3000/quizadmin";
+}
+
 function setQuizQuestionPropsOnPage(quizquestion) {
   // This is a question object as defined in the API doc.
   //TODO: Render fields as you would like it.
@@ -20,7 +66,7 @@ function setQuizQuestionPropsOnPage(quizquestion) {
   }
 }
 
-function onGetQuizRunInfo(info) {
+function onGetAdminGameRunInfo(info) {
   // info = { id: <the quizRun id>, quizId: quizId, pin: pin, totalQuestions: totalQuestions };
   console.log("onGetQuizRunInfo - info = ");
   console.log(info);
@@ -30,10 +76,11 @@ function onGetQuizRunInfo(info) {
   $("div#step2").show();
 
   $("#quizinfo").html("PIN: " + info.pin + " Total Questions: " + info.totalQuestions);
+
   // Finally
   authenticateQuizAdmin();
 
-  // Redirect sloses our sockets. So, don't.
+  // Redirect closes our sockets. So, don't.
   // window.location.href = "http://localhost:3000/quizadmin";
 }
 
@@ -70,3 +117,7 @@ function callbackOnQuizAdminError(errorMessage) {
   //TODO: Whatever you want.
   $("#error").html(errorMessage);
 }
+
+$(function() {
+  loadGameDropdownList("/api/user/quizzes");
+});
