@@ -8,10 +8,7 @@ function startQuizAdmin(e) {
     type: "POST",
     url: baseUrl + "/api/user/quizruns/create",
     data: data,
-    beforeSend: function(xhr) {
-      const authToken = "Bearer " + getAuthToken();
-      xhr.setRequestHeader("Authorization", authToken);
-    },
+    beforeSend: setAuthToken,
     success: function(result) {
       onGetQuizRunInfo(result);
     },

@@ -3,13 +3,12 @@ function loadNextQuestion(e) {
   getNextQuestion();
   $("disquest").hide();
   $("populate").show();
-  // alert($('span#timeLimit').html());
+
   timeOut();
 }
 
 function showquest(e) {
   e.preventDefault();
-  console.log();
   $("div#step2").hide();
   $("#disquest").show();
 }
@@ -36,15 +35,12 @@ function loadGameDropdownList(apiEndpoint) {
   $.ajax({
     type: "GET",
     url: baseUrl + apiEndpoint,
-    beforeSend: function(xhr) {
-      const authToken = "Bearer " + getAuthToken();
-      xhr.setRequestHeader("Authorization", authToken);
-    },
+    beforeSend: setAuthToken,
     success: function(result) {
-      console.log("Result from " + baseUrl + apiEndpoint);
-      console.log(result);
       let options = "";
       if (result) {
+        console.log("Nomber of items gotten from " + baseUrl + apiEndpoint);
+        console.log(result.length);
         result.forEach(function(r) {
           options += '<option value="' + r.id + '">' + r.title + "</option>";
         });

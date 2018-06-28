@@ -1,4 +1,10 @@
-import { QuizRunService, QuizAnswerService, UserService } from "./";
+import {
+  QuizRunService,
+  QuizAnswerService,
+  UserService,
+  SurveyRunService,
+  SurveyAnswerService
+} from "./";
 import log from "../utils/log";
 import { validateInteger } from "../utils/ValidationErrors";
 
@@ -18,14 +24,14 @@ function joinQuizRoom(socket, quizpin) {
 
 /**
  *
- * @param {*} quizAdminIO
- * @param {*} quizPlayerIO
+ * @param {*} adminIO
+ * @param {*} playerIO
  * @param {*} data { pin: pin, userInfo: userInfo }
+ * @param {*} roomNo
  */
-function tellQuizAdminThatSomeoneJustJoined(quizAdminIO, quizPlayerIO, data) {
+function tellAdminThatSomeoneJustJoined(adminIO, playerIO, data, roomNo) {
   try {
-    const roomNo = getQuizRoomNo(data.pin);
-    quizPlayerIO.in(roomNo).clients((err, clients) => {
+    playerIO.in(roomNo).clients((err, clients) => {
       if (!err) {
         const nPlayers = clients.length;
         const topFive = clients.slice(0, 5);
@@ -36,7 +42,7 @@ function tellQuizAdminThatSomeoneJustJoined(quizAdminIO, quizPlayerIO, data) {
           newPlayer: data.userInfo,
           pin: data.pin
         };
-        quizAdminIO.in(roomNo).emit("when-someone-just-joined", payload);
+        adminIO.in(roomNo).emit("when-someone-just-joined", payload);
       } else {
         log.error(
           "Server Socket: Error on 'someone-just-joined' trying to get clients in room. Socket: %o: %s",
@@ -57,6 +63,14 @@ function tellQuizAdminThatSomeoneJustJoined(quizAdminIO, quizPlayerIO, data) {
 function validateQuizAnswerProps(data) {
   validateInteger(data.quizId, "quizId", true);
   validateInteger(data.quizQuestionId, "quizQuestionId", true);
+  validateInteger(data.points, "points");
+  validateInteger(data.userId, "userId", true);
+  validateInteger(data.bonus, "bonus");
+}
+
+function validateSurveyAnswerProps(data) {
+  validateInteger(data.surveyId, "surveyId", true);
+  validateInteger(data.surveyQuestionId, "surveyQuestionId", true);
   validateInteger(data.points, "points");
   validateInteger(data.userId, "userId", true);
   validateInteger(data.bonus, "bonus");
@@ -210,7 +224,7 @@ function setupQuizSockets(io) {
           // tell client auth is OK, hand it the user info
           socket.emit("auth-success", userInfo);
           // Tell admin someone just connected
-          tellQuizAdminThatSomeoneJustJoined(quizAdminIO, quizPlayerIO, userInfo);
+          tellAdminThatSomeoneJustJoined(quizAdminIO, quizPlayerIO, userInfo, roomNo);
           log.debug(
             `authenticated OK forplayer socket - ID "${socket.id}". Admin informed of new arrival`
           );
@@ -378,6 +392,7 @@ function setupSurveySockets(io) {
   surveyPlayerIO.on("connection", function(socket) {
     socket.authenticated = false;
 
+    /**
     //  data =  {
     //   pin: pin,
     //     username: username,
@@ -386,7 +401,8 @@ function setupSurveySockets(io) {
     //           email: email,
     //             phone: phone
     // };
-    socket.on("authenticate", (data, onError) => {
+     */
+    socket.on("authenticate", async (data, onError) => {
       try {
         //const token = data.token
         const roomNo = getSurveyRoomNo(data.pin);
@@ -399,20 +415,27 @@ function setupSurveySockets(io) {
         );
 
         if (surveyRooms.has(roomNo)) {
-          // You'll probably want to log the username or ID here instead. I don't
-          // use socket.id at all myself.
-          log.debug(`authenticated player socket - ID "${socket.id}"`);
-
           socket.authenticated = true;
-          socket.user = data.username;
+
+          // create user
+          log.debug("Creating player record for player: %o", data);
+          const userInfo = await new UserService().processPlayerRegistration(data);
+          userInfo.pin = data.pin; // the survey pin. Not part of player record, so, not set in 'processPlayerRegistration'
+
+          socket.user = userInfo;
+          log.debug(
+            `authenticated player socket - ID "${socket.id}" (${userInfo.firstname} ${
+              userInfo.lastname
+            })`
+          );
 
           // Join the room playing the game
           joinSurveyRoom(socket, roomNo);
 
-          // tell client auth is OK
-          socket.emit("auth-success", "OK");
+          // tell client auth is OK, hand it the user info
+          socket.emit("auth-success", userInfo);
           // Tell admin someone just connected
-          tellSurveyAdminThatSomeoneJustJoined(surveyAdminIO, surveyPlayerIO, data);
+          tellAdminThatSomeoneJustJoined(surveyAdminIO, surveyPlayerIO, userInfo, roomNo);
           log.debug(
             `authenticated OK forplayer socket - ID "${socket.id}". Admin informed of new arrival`
           );

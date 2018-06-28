@@ -28,6 +28,11 @@ function getAuthToken() {
   return localStorage.getItem("token");
 }
 
+function setAuthToken(xhr) {
+  const authToken = "Bearer " + getAuthToken();
+  xhr.setRequestHeader("Authorization", authToken);
+}
+
 function getSocketOptions() {
   // See https://github.com/socketio/socket.io-client/issues/1097 for explanations
   return {
