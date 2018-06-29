@@ -97,10 +97,7 @@ function startPlayerCountDown(maxCount = 20) {
   $("#timer").html(maxCount);
   $("#maxTimeCount").html(maxCount);
   const counter = setInterval(function() {
-    if (!answered || maxCount > 0) {
-      $("#timer").html(maxCount);
-      maxCount--;
-    } else {
+    if (answered || maxCount === 0) {
       clearInterval(counter);
       $("#timer").html("Time up!");
 
@@ -109,6 +106,9 @@ function startPlayerCountDown(maxCount = 20) {
       $("#option3").prop("disabled", true);
       $("#option4").prop("disabled", true);
       alert("Time up!");
+    } else {
+      $("#timer").html(maxCount);
+      maxCount--;
     }
   }, 1000);
 }
