@@ -56,6 +56,7 @@ function onGetPlayerGameRunInfo(data) {
   }
 }
 
+let answered = false;
 /**
  *
  * @param {*} question The question
@@ -69,6 +70,8 @@ function onPlayerReceiveNextQuestion(question, game) {
   console.log(question);
   if (question) {
     try {
+      answered = false;
+      $("#question").html(question.question);
       // Enable the buttons
       $("#option1").prop("disabled", false);
       $("#option2").prop("disabled", false);
@@ -111,6 +114,7 @@ function startPlayerCountDown(maxCount = 20) {
 }
 
 function submitAmswerChoice(event) {
+  answered = true;
   event.preventDefault();
   event.stopPropagation();
   const id = event.target.id;

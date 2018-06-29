@@ -29,6 +29,16 @@ function onWhenSomeoneJustLeft(payload) {
   updateSurveyAdminPageOnWhenSomeoneJustLeft(payload);
 }
 
+/**
+ * return data: {
+      surveyRunId: res,
+      surveyId: record.surveyId,
+      pin: pin,
+      totalQuestions: totalQuestions,
+      surveytitle: survey.title,
+      surveydescription: survey.description
+    }
+ */
 function getSurveyRunInfo() {
   const info = localStorage.getItem("surveyruninfo");
   if (!info) throw new Error("surveyruninfo not yet created");
@@ -39,12 +49,12 @@ function getSurveyRunInfo() {
 function updateAnsweredQuestionsList(newQuestionId) {
   //TODO: If you so desire, use this to update count or list of answered question.
   // Note that the code commented out is not tested and probably buggy.
-  // let list = localStorage.getItem("answeredquestionlist");
-  // if (list) {
-  //   localStorage.setItem("answeredquestionlist", `${list}${newQuestionId},`);
-  // } else {
-  //   localStorage.setItem("answeredquestionlist", `${newQuestionId},`);
-  // }
+  let list = sessionStorage.getItem("answeredquestionlist");
+  if (list) {
+    sessionStorage.setItem("answeredquestionlist", `${list}${newQuestionId},`);
+  } else {
+    sessionStorage.setItem("answeredquestionlist", `${newQuestionId},`);
+  }
 }
 
 function onReceiveNextQuestion(surveyquestion) {
@@ -52,7 +62,7 @@ function onReceiveNextQuestion(surveyquestion) {
     localStorage.setItem("surveyquestion", JSON.stringify(surveyquestion));
     updateAnsweredQuestionsList(surveyquestion.id);
   }
-  setSurveyQuestionPropsOnPage(surveyquestion);
+  setGameQuestionPropsOnPage(surveyquestion);
 }
 
 // Sockets now
@@ -73,12 +83,11 @@ function onDisconnect(reason) {
  * Call this function as soon as you can on page load.
  * The URL loading the page MUST pass pin via querystring, with key: 'pin'
  */
-function authenticateSurveyAdmin() {
+function authenticateSurveyAdmin(pin) {
   // Server sends this info on successful login, as a JSON: { token: ..., user: {...} }
   // I'm assuming you saved it somewhere in local storage, with key: userInfo.
   const userInfo = getUserInfo();
-  const surveyRunInfo = getSurveyRunInfo();
-  const auth = { pin: surveyRunInfo.pin, userInfo: userInfo };
+  const auth = { pin: pin, userInfo: userInfo };
   console.log("sending auth data for auth. data: ");
   console.log(auth);
   socket.emit("authenticate", auth, error => {
@@ -91,7 +100,17 @@ function authenticateSurveyAdmin() {
  */
 function getNextQuestion() {
   const surveyRunInfo = getSurveyRunInfo();
-  socket.emit("get-next-question", surveyRunInfo, callbackOnSurveyAdminError);
+  let answeredQuestionIds = [];
+  const ids = sessionStorage.getItem("answeredquestionlist");
+  if (ids) {
+    const idsSplit = ids.split(",");
+    idsSplit.forEach(i => {
+      if (i) {
+        answeredQuestionIds.push(+i);
+      }
+    });
+  }
+  socket.emit("get-next-question", surveyRunInfo, answeredQuestionIds, callbackOnSurveyAdminError);
 }
 
 // socket.on("get-surveyrun-info", onGetSurveyRunInfo);

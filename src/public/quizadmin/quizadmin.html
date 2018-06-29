@@ -41,7 +41,7 @@
                                 <a class="dropdown-item" href="#">View Profile</a>
                                 <a class="dropdown-item" href="#">Edit Profile</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">Logout</a>
+                                <a class="dropdown-item" href="#" onclick="logOut(event);">Logout</a>
                             </div>
                         </li>
                     </ul>
@@ -75,85 +75,99 @@
         <div id="step2" style="display:none">
             <div class="container mt-5">
                 <div class="text-center">
-                    <h1 class="font-weight-light text-brand-light" id="quiztitle"></h1>
-                    <p class="text-secondary col-md-8 offset-md-2" id='quizdescription'>
-
-                    </p>
-                </div>
-                <div class="row mt-4">
-                    <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1">
-                        <div class="alert alert-warning text-center font-weight-bold">Visit
-                            <a href="../quizplayer/quizplayer.html">kabooter.it</a> to join the game and insert the code below
-                            <h1 class="font-weight-bold pt-3 text-dark" id="unum"></h1>
-                        </div>
-                    </div>
-                    <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 text-center mt-3">
-                        <h4 class="text-secondary">Ready to play?</h4>
-                        <button id="gotoDummyBtn" onclick='showquest(event);'>Start</button>
-                        <hr class="mt-5">
-                    </div>
-                    <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 text-center mt-3">
-                        <h5>
-                            <strong id="nplayers"></strong> users currently playing</h5>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <div id="disquest" style="display:none">
-        <div class="container mt-5">
-            <div class="text-center">
-                <h1 class="font-weight-light text-brand-light">
-                    <span id='quiztitle'>
-                </h1>
-                <p class="text-secondary col-md-8 offset-md-2">
-                    <span id='quizdescription'></span>
-                </p>
-                <hr>
-            </div>
-            <div class="row mt-4">
-                <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 text-center mt-3">
-                    <h4 class="text-secondary">
-                        <strong>Question
-                            <span id="quizid"></span>
-                        </strong> of
-                        <span id="quiztotal"></span>
+                    <h4 class="font-weight-light text-brand-light">
+                        <span id='quiztitle'></span>
                     </h4>
-                    <p class="mt-4">
-                        <span id='quest'></span>
-                        <br>
-                        <span class="font-weight-bold text-brand-light font-small">
-                            <span id='timeLimit'></span> seconds</span>
+                    <p class="text-secondary col-md-8 offset-md-2">
+                        <span id='quizdescription'></span>
                     </p>
-                    <div class="row">
-                        <div class="col-md-6 my-2">
-                            <h5>A.
-                                <span id='opt1'></span>
-                            </h5>
+                    <p class="text-secondary col-md-8 offset-md-2">
+                        Total Questions:
+                        <b>
+                            <span id="gametotalqns"></span>
+                        </b>
+                    </p>
+                    <hr>
+                </div>
+                <div id="showpin">
+                    <div class="row mt-4">
+                        <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1">
+                            <div class="alert alert-warning text-center font-weight-bold">Visit
+                                <a href="../quizplayer/quizplayer.html">kabooter.it</a> to join the game and insert the code below
+                                <h1 class="font-weight-bold pt-3 text-dark" id="unum"></h1>
+                            </div>
                         </div>
-                        <div class="col-md-6 my-2">
-                            <h5>B.
-                                <span id='opt2'></span>
-                            </h5>
+                        <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 text-center mt-3">
+                            <h4 class="text-secondary">Ready to play?</h4>
+                            <button id="gotoDummyBtn" blass="btn btn-success" onclick='showquest(event);'>Start</button>
+                            <hr class="mt-5">
                         </div>
-                        <div class="col-md-6 my-2">
-                            <h5>C.
-                                <span id='opt3'></span>
-                            </h5>
-                        </div>
-                        <div class="col-md-6 my-2">
-                            <h5>D.
-                                <span id='opt4'></span>
-                            </h5>
+                        <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 text-center mt-3">
+                            <h5>
+                                <strong id="nplayers"></strong> users currently playing</h5>
                         </div>
                     </div>
-                    <a role="button" onclick='loadNextQuestion(event)' class="btn btn-brand my-4 px-4">Next</a>
+                </div>
+                <div id="disquest" style="display:none">
+                    <div id="timekeeper" class="text-center" style="display:none">
+                        <div class="col-6">Time alloted (sec):
+                            <h3 id="maxTimeCount" class="font-weight-bold text-brand-light font-small"></h3>
+                        </div>
+                        <div class="col-6">Time remaining (sec):
+                            <h2 id="timer" style="font-size:x-large; font-weight: bold">
+                            </h2>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 text-center mt-3">
+                            <h4 class="text-secondary">
+                                <strong>Question
+                                    <span id="gamenum">0</span>
+                                </strong> of
+                                <span id="gametotal"></span>
+                            </h4>
+                            <h1 class="mt-4">
+                                <span id='quest'></span>
+                            </h1>
+                            <div class="row">
+                                <div class="col-md-6 my-2">
+                                    <h5>A.
+                                        <span id='opt1'></span>
+                                    </h5>
+                                </div>
+                                <div class="col-md-6 my-2">
+                                    <h5>B.
+                                        <span id='opt2'></span>
+                                    </h5>
+                                </div>
+                                <div class="col-md-6 my-2">
+                                    <h5>C.
+                                        <span id='opt3'></span>
+                                    </h5>
+                                </div>
+                                <div class="col-md-6 my-2">
+                                    <h5>D.
+                                        <span id='opt4'></span>
+                                    </h5>
+                                </div>
+                            </div>
+                            <button onclick='loadNextQuestion(event)' class="btn btn-brand my-4 px-4">Next</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="timeout" style="display:none">
+                    <div class="container mt-5">
+                        <div class="text-center">
+                            <h1 class="font-weight-light text-brand-light">Welldone! Wait while Next question is loading</h1>
+                            <button onclick='loadNextQuestion(event)' class="btn btn-brand font-small">Go to next question</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
     </div>
+
     <div id="results" style="display:none">
         <div class="container mt-5">
             <div class="text-center">
@@ -189,19 +203,6 @@
                     </table>
                 </div>
             </div>
-        </div>
-
-    </div>
-
-    <div id="timeout" style="display:none">
-
-        <div class="container mt-5">
-
-            <div class="text-center">
-                <h1 class="font-weight-light text-brand-light">Welldone! Wait while Next question is loading</h1>
-                <a role="button" onclick='loadNextQuestion(event)' class="btn btn-brand font-small">Go to next question</a>
-            </div>
-
         </div>
 
     </div>

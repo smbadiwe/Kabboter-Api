@@ -123,4 +123,34 @@ export default class QuizQuestionService extends BaseEntityService {
         "creditResources"
       );
   }
+
+  async getOneUnansweredQuestion(quizId, answeredQuestionIds) {
+    if (!quizId) throw new Required("quizId");
+    const unanswered = await this.connector
+      .table(this.tableName)
+      .where({ quizId: quizId })
+      .andWhereNot({ disabled: true })
+      .modify(queryBuilder => {
+        if (answeredQuestionIds && answeredQuestionIds.length > 0) {
+          queryBuilder.whereNotIn("id", answeredQuestionIds);
+        }
+      })
+      .first(
+        "id",
+        "question",
+        "timeLimit",
+        "quizId",
+        "correctOptions",
+        "option1",
+        "option2",
+        "option3",
+        "option4",
+        "maxBonus",
+        "points",
+        "introLink",
+        "creditResources"
+      );
+
+    return unanswered;
+  }
 }

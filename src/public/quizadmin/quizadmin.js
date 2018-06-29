@@ -29,6 +29,16 @@ function onWhenSomeoneJustLeft(payload) {
   updateQuizAdminPageOnWhenSomeoneJustLeft(payload);
 }
 
+/**
+ * return data: {
+      quizRunId: res,
+      quizId: record.quizId,
+      pin: pin,
+      totalQuestions: totalQuestions,
+      quiztitle: quiz.title,
+      quizdescription: quiz.description
+    }
+ */
 function getQuizRunInfo() {
   const info = localStorage.getItem("quizruninfo");
   if (!info) throw new Error("quizruninfo not yet created");
@@ -39,12 +49,12 @@ function getQuizRunInfo() {
 function updateAnsweredQuestionsList(newQuestionId) {
   //TODO: If you so desire, use this to update count or list of answered question.
   // Note that the code commented out is not tested and probably buggy.
-  // let list = localStorage.getItem("answeredquestionlist");
-  // if (list) {
-  //   localStorage.setItem("answeredquestionlist", `${list}${newQuestionId},`);
-  // } else {
-  //   localStorage.setItem("answeredquestionlist", `${newQuestionId},`);
-  // }
+  let list = sessionStorage.getItem("answeredquestionlist");
+  if (list) {
+    sessionStorage.setItem("answeredquestionlist", `${list}${newQuestionId},`);
+  } else {
+    sessionStorage.setItem("answeredquestionlist", `${newQuestionId},`);
+  }
 }
 
 function onReceiveNextQuestion(quizquestion) {
@@ -52,7 +62,7 @@ function onReceiveNextQuestion(quizquestion) {
     localStorage.setItem("quizquestion", JSON.stringify(quizquestion));
     updateAnsweredQuestionsList(quizquestion.id);
   }
-  setQuizQuestionPropsOnPage(quizquestion);
+  setGameQuestionPropsOnPage(quizquestion);
 }
 
 // Sockets now
@@ -73,12 +83,11 @@ function onDisconnect(reason) {
  * Call this function as soon as you can on page load.
  * The URL loading the page MUST pass pin via querystring, with key: 'pin'
  */
-function authenticateQuizAdmin() {
+function authenticateQuizAdmin(pin) {
   // Server sends this info on successful login, as a JSON: { token: ..., user: {...} }
   // I'm assuming you saved it somewhere in local storage, with key: userInfo.
   const userInfo = getUserInfo();
-  const quizRunInfo = getQuizRunInfo();
-  const auth = { pin: quizRunInfo.pin, userInfo: userInfo };
+  const auth = { pin: pin, userInfo: userInfo };
   console.log("sending auth data for auth. data: ");
   console.log(auth);
   socket.emit("authenticate", auth, error => {
@@ -91,7 +100,17 @@ function authenticateQuizAdmin() {
  */
 function getNextQuestion() {
   const quizRunInfo = getQuizRunInfo();
-  socket.emit("get-next-question", quizRunInfo, callbackOnQuizAdminError);
+  let answeredQuestionIds = [];
+  const ids = sessionStorage.getItem("answeredquestionlist");
+  if (ids) {
+    const idsSplit = ids.split(",");
+    idsSplit.forEach(i => {
+      if (i) {
+        answeredQuestionIds.push(+i);
+      }
+    });
+  }
+  socket.emit("get-next-question", quizRunInfo, answeredQuestionIds, callbackOnQuizAdminError);
 }
 
 // socket.on("get-quizrun-info", onGetQuizRunInfo);

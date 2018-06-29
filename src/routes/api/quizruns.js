@@ -64,7 +64,7 @@ function launchSocketIO(quizRunInfo) {
     });
 
     // data = { quizRunId: 2, quizId: 3 }
-    socket.on("get-next-question", async (data, onError) => {
+    socket.on("get-next-question", async (data, answeredQuestionIds, onError) => {
       try {
         const question = await new QuizRunService().getNextQuestionToBeAnswered(
           data.quizRunId,

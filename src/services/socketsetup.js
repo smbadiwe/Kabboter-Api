@@ -3,7 +3,9 @@ import {
   QuizAnswerService,
   UserService,
   SurveyRunService,
-  SurveyAnswerService
+  SurveyAnswerService,
+  QuizQuestionService,
+  SurveyQuestionService
 } from "./";
 import log from "../utils/log";
 import { validateInteger } from "../utils/ValidationErrors";
@@ -106,12 +108,12 @@ function setupQuizSockets(io) {
     // });
 
     // data = { quizRunId: 2, pin: pin, quizId: 3 }
-    socket.on("get-next-question", async (data, onError) => {
+    socket.on("get-next-question", async (data, answeredQuestionIds, onError) => {
       try {
         log.debug(`admin socket.on("get-next-question" called. data = %o`, data);
-        const question = await new QuizRunService().getNextQuestionToBeAnswered(
-          data.quizRunId,
-          data.quizId
+        const question = await new QuizQuestionService().getOneUnansweredQuestion(
+          data.quizId,
+          answeredQuestionIds
         );
         // send question to both moderators and players
         log.debug(`send question to both moderators and players. data = %o`, question);
@@ -317,12 +319,12 @@ function setupSurveySockets(io) {
     // });
 
     // data = { surveyRunId: 2, pin: pin, surveyId: 3 }
-    socket.on("get-next-question", async (data, onError) => {
+    socket.on("get-next-question", async (data, answeredQuestionIds, onError) => {
       try {
         log.debug(`admin socket.on("get-next-question" called. data = %o`, data);
-        const question = await new SurveyRunService().getNextQuestionToBeAnswered(
-          data.surveyRunId,
-          data.surveyId
+        const question = await new SurveyuestionService().getOneUnansweredQuestion(
+          data.surveyId,
+          answeredQuestionIds
         );
         // send question to both moderators and players
         log.debug(`send question to both moderators and players. data = %o`, question);

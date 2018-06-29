@@ -10,7 +10,7 @@ export default class QuizRunService extends BaseEntityService {
     log.setNamespace("QuizRunService");
   }
 
-  async getNextQuestionToBeAnswered(quizRunId, quizId) {
+  async getNextQuestionToBeAnswered(quizRunId, quizId, answeredQuestionIds) {
     if (!quizRunId) throw new Required("quizRunId");
     if (!quizId) throw new Required("quizId");
     const quizQns = await new QuizQuestionService().getBy({

@@ -98,4 +98,31 @@ export default class SurveyQuestionService extends BaseEntityService {
         "creditResources"
       );
   }
+
+  async getOneUnansweredQuestion(surveyId, answeredQuestionIds) {
+    if (!surveyId) throw new Required("surveyId");
+    const unanswered = await this.connector
+      .table(this.tableName)
+      .where({ surveyId: surveyId })
+      .andWhereNot({ disabled: true })
+      .modify(queryBuilder => {
+        if (answeredQuestionIds && answeredQuestionIds.length > 0) {
+          queryBuilder.whereNotIn("id", answeredQuestionIds);
+        }
+      })
+      .first(
+        "id",
+        "question",
+        "timeLimit",
+        "surveyId",
+        "option1",
+        "option2",
+        "option3",
+        "option4",
+        "introLink",
+        "creditResources"
+      );
+
+    return unanswered;
+  }
 }
