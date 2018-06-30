@@ -27,14 +27,6 @@
     </div>
 </nav>
 <script>
-    function logout(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        localStorage.removeItem("token");
-        localStorage.removeItem("userInfo");
-        window.location.href = "/"; // window.location.origin;
-    }
-
     document.getElementById("profileLink").href = "/pages/profile.html";
     document.getElementById("editProfileLink").href = "/pages/settings.html";
     // document.getElementById("profileLink").href = window.location.origin + "/pages/profile.html";

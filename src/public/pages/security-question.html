@@ -27,7 +27,7 @@
                                 </p>
                             </div>
                             <div class="form-group">
-                                <label for="email">Answer</label>
+                                <label for="ans">Answer</label>
                                 <input type="text" class="form-control" id="ans">
                             </div>
                             <a role="button" href="javascript:void();" id='verify' class="btn btn-brand px-4 mt-3">Verify</a>
@@ -65,42 +65,33 @@
 
         $('#verify').click(function (e) {
             e.preventDefault();
-            var getUrlParameter = function getUrlParameter(sParam) {
-                var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-                    sURLVariables = sPageURL.split('&'),
-                    sParameterName,
-                    i;
-                for (i = 0; i < sURLVariables.length; i++) {
-                    sParameterName = sURLVariables[i].split('=');
-                    if (sParameterName[0] === sParam) {
-                        return sParameterName[1] === undefined ? true : sParameterName[1];
-                    }
-                }
-            };
             var username = getUrlParameter('username');
             var securityquestion = $('#sq').html();
             var securityanswer = $('#ans').val();
-            var myUrl = window.location.origin + '/api/public/validatesecurityquestion';
+            if (!securityanswer) {
+                $('#result').html("Security answer is required");
+            } else {
 
-            $.ajax({
-                url: myUrl,
-                type: 'post',
-                data: {
-                    username: username,
-                    securityquestion: securityquestion,
-                    securityanswer: securityanswer
-                },
-                dataType: 'json',
-                async: false,
-                error: function (data) {
-                    $('#result').html(data.responseText);
-                    console.log(data);
-                },
-                success: function (data) {
-                    console.log(data);
-                    window.location = 'reset-password.html?username=' + username;
-                }
-            });
+                var myUrl = window.location.origin + '/api/public/validatesecurityquestion';
+
+                $.ajax({
+                    url: myUrl,
+                    type: 'post',
+                    data: {
+                        username: username,
+                        securityquestion: securityquestion,
+                        securityanswer: securityanswer
+                    },
+                    error: function (data) {
+                        $('#result').html(data.responseText);
+                        console.log(data);
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        window.location = '/pages/reset-password.html?username=' + username;
+                    }
+                });
+            }
         });
 
 

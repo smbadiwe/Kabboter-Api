@@ -64,3 +64,13 @@ function getUrlParameter(sParam) {
     }
   }
 }
+
+function logout(event) {
+  if (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+  localStorage.removeItem("token");
+  localStorage.removeItem("userInfo");
+  window.location.href = "/"; // window.location.origin;
+}
