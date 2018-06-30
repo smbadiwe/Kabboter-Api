@@ -1,6 +1,6 @@
 import Router from "koa-router";
 import { apiSuccess } from "../../../utils";
-import { ValidationError } from "../../../utils/ValidationErrors";
+import { ValidationError, RequestError } from "../../../utils/ValidationErrors";
 import { UserService } from "../../../services";
 import knex from "../../../db/connection";
 import * as knexfile from "../../../db/knexfile";
@@ -15,6 +15,12 @@ router.get("/getsecurityquestion", async ctx => {
     const user = await new UserService().getByUsernameOrEmailOrPhone(username);
     if (!user) {
       throw new ValidationError("Username (or phone or email) is incorrect.");
+    }
+    if (!user.securityquestion) {
+      throw new RequestError(
+        "You did not setup a security question before now, and there's no way to help you reset password without it. Please contact Admin. They may be able to help.",
+        403
+      );
     }
     const res = {
       username: username,

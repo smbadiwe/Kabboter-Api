@@ -30,8 +30,8 @@
                                 <label for="email">Answer</label>
                                 <input type="text" class="form-control" id="ans">
                             </div>
-                            <a role="button" href="javascript:history.go(-1);" class="btn btn-brand-light px-4 mt-2">Back</a>
-                            <a href id='verify' class="btn btn-brand px-4 mt-3">Verify</a>
+                            <a role="button" href="javascript:void();" id='verify' class="btn btn-brand px-4 mt-3">Verify</a>
+                            <a role="button" href="javascript:history.go(-1);" class="btn px-4 mt-3">Back</a>
                         </form>
                     </div>
                 </div>
@@ -43,21 +43,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
         $(function () {
-            var getUrlParameter = function getUrlParameter(sParam) {
-                var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-                    sURLVariables = sPageURL.split('&'),
-                    sParameterName,
-                    i;
-                for (i = 0; i < sURLVariables.length; i++) {
-                    sParameterName = sURLVariables[i].split('=');
-                    if (sParameterName[0] === sParam) {
-                        return sParameterName[1] === undefined ? true : sParameterName[1];
-                    }
-                }
-            };
             var username = getUrlParameter('username');
             var myUrl = window.location.origin + '/api/public/getsecurityquestion?username=' + username;
-
 
             $.ajax({
                 url: myUrl,
@@ -65,8 +52,8 @@
                 dataType: 'json',
                 async: false,
                 error: function (data) {
-                    $('#result').html(data.responseText);
-                    console.log(data);
+                    alert(data.responseText);
+                    window.location.href = "/";
                 },
                 success: function (data) {
                     console.log(data);
