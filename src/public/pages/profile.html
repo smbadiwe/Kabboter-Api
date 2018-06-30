@@ -1,119 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Game App</title>
-        <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
-        <link rel="stylesheet" href="../css/styles.css" type="text/css">
-    </head>
-    <body>
-        <div class="app">
-            <nav class="navbar navbar-expand-lg navbar-dark bg-dark dashboard-header">
-                <div class="container">
-                    <a class="navbar-brand" href="#">Kabooter</a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                            aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
 
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav mr-auto"></ul>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Game App</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/styles.css" type="text/css">
+</head>
 
-                        <ul class="navbar-nav">
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
-                                   aria-expanded="false">
-                                    Hi, <span id='dis-name'></span>
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="profile.html">View Profile</a>
-                                    <a class="dropdown-item" href="settings.html">Edit Profile</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="../index.html">Logout</a>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
+<body>
+    <div class="app">
+        <div id="myNavBar"> </div>
+        <div class="container mt-5">
+            <h1 class="font-weight-light text-center text-secondary">Your Profile</h1>
+            <div class="row mt-5 my-card">
+                <div class="col-md-8 border-right py-4 text-center">
+                    <img src="http://www.upplanet.com/bighero/outlay-demo/img/customer_avatar.png" width="150" alt="profile avatar" class="img-thumbnail">
+                    <h5 class="pt-3">
+                        <span id='lastname'></span>
+                        <span id='firstname'>
+                    </h5>
+                    <p>
+                        <span id='username'></span>
+                    </p>
+                    <p>
+                        <span id='email'></span>
+                    </p>
+                    <p>
+                        <span id='phone'></span>
+                    </p>
+                    <p>
+                        <span id='country'></span>
+                    </p>
+                    <a href="" id='edit' role="button" class="btn btn-brand-light px-4">Edit Profile</a>
                 </div>
-            </nav>
-            <div class="container mt-5">
-                <h1 class="font-weight-light text-center text-secondary">Your Profile</h1>
-                <div class="row mt-5 my-card">
-                    <div class="col-md-8 border-right py-4 text-center">
-                        <img src="http://www.upplanet.com/bighero/outlay-demo/img/customer_avatar.png" width="150" alt="profile avatar" class="img-thumbnail">
-                        <h5 class="pt-3"><span id='lastname'></span> <span id='firstname'></h5>
-                        <p><span id='username'></span></p>
-                        <p><span id='email'></span></p>
-                        <p><span id='phone'></span></p>
-                        <p><span id='country'></span></p>
-                        <a href="" id='edit' role="button" class="btn btn-brand-light px-4">Edit Profile</a>
-                    </div>
-                    <div class="col-md-4 text-center dashboard-header text-white p-3 d-flex flex-column justify-content-center">
-                        <div>
-                            <h4 class="font-weight-light border-bottom pb-3">Your Summary</h4>
-                            <div class="row">
-                                <div class="col-6">
-                                    <h1 class="font-large"><span id='nquiz'></span></h1>
-                                    Quizzes
-                                </div>
-                                <div class="col-6">
-                                    <h1 class="font-large"><span id='npoll'></span></h1>
-                                    Polls
-                                </div>
+                <div class="col-md-4 text-center dashboard-header text-white p-3 d-flex flex-column justify-content-center">
+                    <div>
+                        <h4 class="font-weight-light border-bottom pb-3">Your Summary</h4>
+                        <div class="row">
+                            <div class="col-6">
+                                <h1 class="font-large">
+                                    <span id='nquiz'></span>
+                                </h1>
+                                Quizzes
+                            </div>
+                            <div class="col-6">
+                                <h1 class="font-large">
+                                    <span id='npoll'></span>
+                                </h1>
+                                Polls
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <script src="js/app.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script>
-            $(function () {
-                $('#dis-name').html(localStorage.getItem('username'));
-                var token = localStorage.getItem("token");
-                var myUrl = 'https://kabooterapi.azurewebsites.net/api/user/profile';
-                var proxy = 'https://cors-anywhere.herokuapp.com/';
-                $.ajax({
-                    headers: {
-                        Authorization: 'Bearer ' + token
-                    },
-                    url: proxy + myUrl,
-                    type: 'get',
-                    dataType: 'json',
-                    error: function (data) {
-                        console.log(data);
-                        $('#result').append('Error Fetching File');
-                    },
-                    success: function (data) {
-                        var id = data.id;
-                        sessionStorage.setItem('firstname', data.firstname);
-                        sessionStorage.setItem('lastname', data.lastname);
-                        sessionStorage.setItem('phone', data.phone);
-                        sessionStorage.setItem('organization', data.organization);
-                        sessionStorage.setItem('email', data.email);
-                        sessionStorage.setItem('country', data.country);
-                        $('#firstname').html(data.firstname);
-                        $('#lastname').html(data.lastname);
-                        $('#email').html(data.email);
-                        $('#phone').html(data.phone);
-                        $('#username').html(data.username);
-                        $('#country').html(data.country);
-                        $('#nquiz').html(data.nQuizzes);
-                        $('#npoll').html(data.nSurveys);
-                        $('#country').html(data.country);
-                        $('#edit').click(function (e) {
-                            e.preventDefault();
-                            window.location = 'settings.html?id=' + id;
-                        });
-                    }
-                });
+    </div>
+    <script src="../js/app.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        $(function () {
+            loadNavBar();
+            var token = localStorage.getItem("token");
+            var myUrl = window.location.origin + '/api/user/profile';
+
+            $.ajax({
+                headers: {
+                    Authorization: 'Bearer ' + token
+                },
+                url: myUrl,
+                type: 'get',
+                dataType: 'json',
+                error: function (data) {
+                    console.log(data);
+                    $('#result').append('Error Fetching File');
+                },
+                success: function (data) {
+                    var id = data.id;
+                    sessionStorage.setItem('userData', JSON.stringify(data));
+                    $('#firstname').html(data.firstname);
+                    $('#lastname').html(data.lastname);
+                    $('#email').html(data.email);
+                    $('#phone').html(data.phone);
+                    $('#username').html(data.username);
+                    $('#country').html(data.country);
+                    $('#nquiz').html(data.nQuizzes);
+                    $('#npoll').html(data.nSurveys);
+                    $('#country').html(data.country);
+                    $('#edit').click(function (e) {
+                        e.preventDefault();
+                        window.location = 'settings.html?id=' + id;
+                    });
+                }
             });
-        </script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-    </body>
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+</body>
+
 </html>

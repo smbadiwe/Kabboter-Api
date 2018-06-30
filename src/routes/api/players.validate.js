@@ -28,7 +28,7 @@ export function validateMemberOnAdd(payload, updating = false) {
   if (!validator.isEmpty(email)) {
     if (!validator.isLength(email, { min: 1, max: 60 }))
       throw new valError.InvalidLength("email", 0, 60);
-    if (!validator.isEmail(email)) throw new valError.InvalidEmail("email");
+    if (!validator.isEmail(email)) throw new valError.InvalidEmail("email - " + email);
     validator.trim(email);
   }
   //=========== Sanitize ===========

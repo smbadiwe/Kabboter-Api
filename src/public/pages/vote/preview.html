@@ -80,13 +80,13 @@
                 var id = getUrlParameter('pollId');
                 var title = getUrlParameter('title');
                 var desc = getUrlParameter('desc');
-                var myUrl = 'https://kabooterapi.azurewebsites.net/api/user/surveys/my/' + id + '?wq=y';
-                var proxy = 'https://cors-anywhere.herokuapp.com/';
+                var myUrl = window.location.origin + '/api/user/surveys/my/' + id + '?wq=y';
+                
                 $.ajax({
                     headers: {
                         Authorization: 'Bearer ' + token
                     },
-                    url: proxy + myUrl,
+                    url: myUrl,
                     type: 'get',
 //                    data: {
 //                        wq: 'y'
@@ -155,13 +155,13 @@
                 var title = getUrlParameter('title');
                 var desc = getUrlParameter('desc');
                 var token = localStorage.getItem("token");
-                var myUrl = 'https://kabooterapi.azurewebsites.net/api/user/surveyquestions/delete/'+did;
-                var proxy = 'https://cors-anywhere.herokuapp.com/';
+                var myUrl = window.location.origin + '/api/user/surveyquestions/delete/'+did;
+                
                 $.ajax({
                     headers: {
                         Authorization: 'Bearer ' + token
                     },
-                    url: proxy + myUrl,
+                    url: myUrl,
                     type: 'post',
                     dataType: 'json',
                     error: function (data) {

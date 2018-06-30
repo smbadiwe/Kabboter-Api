@@ -1,89 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Game App</title>
-        <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
-        <link rel="stylesheet" href="../css/styles.css" type="text/css">
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Game App</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/styles.css" type="text/css">
+</head>
 
-    <body>
-        <div class="app">
-<!--            <nav class="navbar navbar-expand-lg navbar-dark bg-dark dashboard-header">
-                <div class="container">
-                    <a class="navbar-brand" href="#">Kabooter</a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav mr-auto"></ul>
-
-                        <ul class="navbar-nav">
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
-                                    aria-expanded="false">
-                                    Hi, <span id='dis-name'></span>
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="profile.html">View Profile</a>
-                                    <a class="dropdown-item" href="settings.html">Edit Profile</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="../index.html">Logout</a>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </nav>-->
-            <div class="container mt-5">
-                <h1 class="font-weight-light text-center text-secondary">Validate Security Question</h1>
-                <div class="row mt-5">
-                    <div class="col-md-8 offset-md-2 p-5 my-card">
-                        <div>
-                            <form>
-                                <div class="form-group">
-                                    <label for="email">Question</label>
-                                    <p><span id='sq'>what is your favorite football</span>?</p>
-                                </div>
-                                <div class="form-group">
-                                    <label for="email">Answer</label>
-                                    <input type="text" class="form-control" id="ans">
-                                </div>
-                                <a href="profile.html" id='save' class="btn btn-brand px-4 mt-3">Verify</a>
-                            </form>
-                        </div>
+<body>
+    <div class="app">
+        <div class="container mt-5">
+            <h1 class="font-weight-light text-center text-secondary">Validate Security Question</h1>
+            <div class="row mt-5">
+                <div class="col-md-8 offset-md-2 p-5 my-card">
+                    <div>
+                        <form>
+                            <div class="form-group">
+                                <label for="email">Question</label>
+                                <p>
+                                    <span id='sq'>what is your favorite football</span>?</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Answer</label>
+                                <input type="text" class="form-control" id="ans">
+                            </div>
+                            <a href="profile.html" id='save' class="btn btn-brand px-4 mt-3">Verify</a>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-        <script src="js/app.js"></script>
-        <!-- jQuery library -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script>
-            $(function () {
-                $('#dis-name').html(localStorage.getItem('username'));
-                $('#save').click(function (e) {
-                    e.preventDefault();
-                    var token = localStorage.getItem("token");
-                    var old = $('#old').val();
-                    var new1 = $('#new1').val();
-                    var new2 = $('#new2').val();
-                    var myUrl = 'https://kabooterapi.azurewebsites.net/api/user/changepassword';
-                    var proxy = 'https://cors-anywhere.herokuapp.com/';
-                    if(new1 !== new2){
-                        $('#pser').html('Password doesn"t match' )
-                    }else{
-                        $.ajax({
-                         headers: {
+    </div>
+    <script src="../js/app.js"></script>
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        $(function () {
+            $('#dis-name').html(localStorage.getItem('username'));
+            $('#save').click(function (e) {
+                e.preventDefault();
+                var token = localStorage.getItem("token");
+                var old = $('#old').val();
+                var new1 = $('#new1').val();
+                var new2 = $('#new2').val();
+                var myUrl = window.location.origin + '/api/user/changepassword';
+
+                if (new1 !== new2) {
+                    $('#pser').html('Password doesn"t match')
+                } else {
+                    $.ajax({
+                        headers: {
                             Authorization: 'Bearer ' + token
                         },
-                        url: proxy + myUrl,
+                        url: myUrl,
                         type: 'post',
                         data: {
                             oldPwd: old,
@@ -99,15 +72,15 @@
                             window.location = 'profile.html';
                         }
                     });
-                    }
-                });
+                }
             });
-        </script>
-        <!-- Popper JS -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+        });
+    </script>
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
 
-        <!-- Latest compiled JavaScript -->
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-    </body>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+</body>
 
 </html>

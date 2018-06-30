@@ -42,10 +42,10 @@
                                 <!-- <button type="submit" class="btn btn-brand mt-4 py-2 btn-block">Proceed to Dashboard</button> !use this for production-->
                                 <div class="row pt-2">
                                     <span class="col-lg-5 text-center text-lg-left font-small">
-                                        <a href="#" id="registerBtn">I'm new here</a>
+                                        <a href="#" id="registerBtn">Sign up</a>
                                     </span>
                                     <span class="col-lg-7 text-center text-lg-right font-small">
-                                        <a href="#" id="forgotPasswordBtn">Can't remember my password</a>
+                                        <a href="#" id="forgotPasswordBtn">Forgot password</a>
                                     </span>
                                 </div>
                             </form>
@@ -60,48 +60,38 @@
                             <span id='r_result'></span>
                             <form action="" class="col-lg-10 offset-md-1">
                                 <div class="form-group">
-                                    <label for="name">First Name</label>
                                     <input type="text" id="r-firstname" placeholder="First name" name="name" class="form-control" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="name">Last Name</label>
                                     <input type="text" id='r-lastname' placeholder="Last name" name="name" class="form-control" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="username">Username</label>
                                     <input type="text" id='r-username' placeholder="Username" name="email" class="form-control" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="email">Email Address</label>
                                     <input type="email" id='r-email' name="email" placeholder="Email address" class="form-control" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="phone">Phone</label>
                                     <input type="text" id='r-phone' name="email" placeholder="Phone number" class="form-control" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="sec-que">Security Question</label>
-                                    <div>
-                                        <select id='sec-que' class="form-control select">
-                                            <option value='What is your favorite Food?'>What is your favorite food?</option>
-                                            <option value='Which football team do you support?'>Which football team do you support?</option>
-                                            <option value='How many languages do you speak?'>How many languages do you speak?</option>
-                                            <option value='Who is your best musician?'>Who is your best musician?</option>
-                                            <option value='What is the brand of your first car?'>What is the brand of your first car?</option>
-                                        </select>
-                                    </div>
+                                    <select id='sec-que' class="form-control select">
+                                        <option value="" disabled selected>Select a security question...</option>
+                                        <option value='What is your favorite Food?'>What is your favorite food?</option>
+                                        <option value='Which football team do you support?'>Which football team do you support?</option>
+                                        <option value='How many languages do you speak?'>How many languages do you speak?</option>
+                                        <option value='Who is your best musician?'>Who is your best musician?</option>
+                                        <option value='What is the brand of your first car?'>What is the brand of your first car?</option>
+                                    </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="answer">Answer</label>
                                     <input type="text" id='ans' name="answer" placeholder='Enter answer to security question' class="form-control" required>
                                 </div>
                                 <div class="form-group">
-                                    <label>Password</label>
                                     <input type="password" id='r-pass' placeholder="Enter password" class="form-control" required>
                                     <span id='passerr'></span>
                                 </div>
                                 <div class="form-group">
-                                    <label>Confirm Password</label>
                                     <input type="password" id='r-cpass' placeholder="Re-enter password" class="form-control" required>
                                 </div>
                                 <a id='register' href="" class="btn btn-brand mt-4 py-2 btn-block">Register</a>
@@ -129,6 +119,11 @@
                                 <!-- <button type="submit" class="btn btn-brand mt-4 py-2 btn-block">Proceed to Dashboard</button> !use this for production-->
                             </form>
                         </div>
+                        <div class="row pt-2">
+                            <span class="col-12 text-center font-small">
+                                <a href="#" onclick="showLoginForm();">Back to login</a>
+                            </span>
+                        </div>
                     </div>
                     <p class="mt-5 text-center">
                         <i>Powered by
@@ -155,12 +150,12 @@
         $(function () {
             $('#sub-login').click(function (e) {
                 e.preventDefault();
-                var myUrl = 'https://kabooterapi.azurewebsites.net/api/public/login';
-                var proxy = 'https://cors-anywhere.herokuapp.com/';
+                var myUrl = window.location.origin + '/api/public/login';
+
                 var username = $('#username').val();
                 var pass = $('#pass').val();
                 $.ajax({
-                    url: proxy + myUrl,
+                    url: myUrl,
                     type: 'post',
                     data: {
                         username: username,
@@ -172,22 +167,16 @@
                         $('#result').html(`<div class="alert alert-warning">` + data.responseText + `</div`);
                     },
                     success: function (data) {
-                        $('#result').html(`<div class="success alert-success">` + 'Authentication Successful' + `</div`);
-                        localStorage.setItem('userInfo', data);
-                        localStorage.setItem('username', data.user.u);
+                        localStorage.setItem('userInfo', JSON.stringify(data.user));
                         localStorage.setItem("token", data.token);
-                        var delay = 3000;
-                        var URL = 'pages/dashboard.html';
-                        setTimeout(function () {
-                            window.location = URL;
-                        }, delay);
+                        window.location = 'pages/dashboard.html';
                     }
                 });
             });
             $('#register').click(function (e) {
                 e.preventDefault();
-                var myUrl = 'https://kabooterapi.azurewebsites.net/api/public/register';
-                var proxy = 'https://cors-anywhere.herokuapp.com/';
+                var myUrl = window.location.origin + '/api/public/register';
+
                 var firstname = $('#r-firstname').val();
                 var lastname = $('#r-lastname').val();
                 var email = $('#r-email').val();
@@ -202,7 +191,7 @@
                     $('#passerr').html(`<div class="alert alert-warning">Password does\'nt match</div>`);
                 } else {
                     $.ajax({
-                        url: proxy + myUrl,
+                        url: myUrl,
                         type: 'post',
                         data: {
                             firstname: firstname,
@@ -221,17 +210,10 @@
                             $('#r_result').html(`<div class="alert alert-warning">` + data.responseText + `</div`);
                         },
                         success: function (data) {
-                            console.log();
-                            $('#r_result').html(`<div class="success alert-success">` + 'Registration Successful' + `</div`);
-                            alert('User created Successfully!');
-                            localStorage.setItem('userInfo', data);
-                            localStorage.setItem('username', data.u);
+                            // On success, we log user in automatically.
+                            localStorage.setItem('userInfo', JSON.stringify(data.user));
                             localStorage.setItem("token", data.token);
-                            var delay = 2000;
-                            var URL = 'index.html';
-                            setTimeout(function () {
-                                window.location = URL;
-                            }, delay);
+                            window.location = 'pages/dashboard.html';
                         }
                     });
                 }

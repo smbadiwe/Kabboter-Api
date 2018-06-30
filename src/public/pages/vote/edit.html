@@ -1,287 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Game App</title>
-        <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
-        <link rel="stylesheet" href="../../css/styles.css" type="text/css">
-    </head>
-    <body>
-        <div class="app">
-            <nav class="navbar navbar-expand-lg navbar-dark bg-brand dashboard-header">
-                <div class="container">
-                    <a class="navbar-brand" href="../dashboard.html">Kabooter</a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                            aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
 
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav mr-auto"></ul>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Game App</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/styles.css" type="text/css">
+</head>
 
-                        <ul class="navbar-nav">
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
-                                   aria-expanded="false">
-                                    Hi, <span id='dis-name'></span>
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="#">View Profile</a>
-                                    <!--<a class="dropdown-item" href="#">Edit Profile</a>-->
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="#">Logout</a>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-            <div class="container mt-5">
-                <div class="text-center">
-                    <h1 class="font-weight-light text-secondary">Create Poll</h1>
-                    <h4 class="text-brand-light pt-3 font-weight-light"><span id='poll-title'></span></h4>
-                    <p class="text-secondary col-md-8 offset-md-2">
-                        <span id='poll-description'></span>
-                    </p>
-                </div>
-                <div class="row mt-5">
-                    <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 my-card p-5">
-                        <form>
-                            <div class="form-group">
-                                <label>Polls</label>
-                                <input type="text"  id="poll" class="form-control">
-                            </div>
-                            <div class="row pt-3">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="option1">Poll 1</label>
-                                        <input type="text" id="option1" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="option2">Poll 2</label>
-                                        <input type="text" id="option2" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="option3">Poll 3</label>
-                                        <input type="text" id="option3" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="option4">Poll 4</label>
-                                        <input type="text" id="option4" class="form-control">
-                                    </div>
+<body>
+    <div class="app">
+        <div id="myNavBar"> </div>
+        <div class="container mt-5">
+            <div class="text-center">
+                <h1 class="font-weight-light text-secondary">Create Poll</h1>
+                <h4 class="text-brand-light pt-3 font-weight-light">
+                    <span id='poll-title'></span>
+                </h4>
+                <p class="text-secondary col-md-8 offset-md-2">
+                    <span id='poll-description'></span>
+                </p>
+            </div>
+            <div class="row mt-5">
+                <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 my-card p-5">
+                    <form>
+                        <div class="form-group">
+                            <label>Polls</label>
+                            <input type="text" id="poll" class="form-control">
+                        </div>
+                        <div class="row pt-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="option1">Poll 1</label>
+                                    <input type="text" id="option1" class="form-control">
                                 </div>
                             </div>
-                            <div class="form-group pt-3">
-                                <label >Time Limit</label>
-                                <select class="form-control" id="time">
-                                    <option selected value="5">5 sec </option> 
-                                    <option value="10">10 sec</option>
-                                    <option value="15">15 sec</option>
-                                    <option value="20">20 sec</option>
-                                    <option value="25">25 sec</option>
-                                    <option value="30">30 sec</option>
-                                    <option value="35">35 sec</option>
-                                    <option value="40">40 sec</option>
-                                    <option value="45">45 sec</option>
-                                    <option value="50">50 sec</option>
-                                    <option value="55">55 sec</option>
-                                    <option value="60">60 sec</option>
-                                </select>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="option2">Poll 2</label>
+                                    <input type="text" id="option2" class="form-control">
+                                </div>
                             </div>
-                            <a role="button" href="javascript:history.go(-1);" class="btn btn-brand-light px-4 mt-2">Back</a>
-                            <a role="button" href="" id='save' class="btn btn-brand-light px-4 mt-3">Save and Continue</a>
-                        </form>
-                    </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="option3">Poll 3</label>
+                                    <input type="text" id="option3" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="option4">Poll 4</label>
+                                    <input type="text" id="option4" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group pt-3">
+                            <label>Time Limit</label>
+                            <select class="form-control" id="time">
+                                <option selected value="5">5 sec </option>
+                                <option value="10">10 sec</option>
+                                <option value="15">15 sec</option>
+                                <option value="20">20 sec</option>
+                                <option value="25">25 sec</option>
+                                <option value="30">30 sec</option>
+                                <option value="35">35 sec</option>
+                                <option value="40">40 sec</option>
+                                <option value="45">45 sec</option>
+                                <option value="50">50 sec</option>
+                                <option value="55">55 sec</option>
+                                <option value="60">60 sec</option>
+                            </select>
+                        </div>
+                        <a role="button" href="javascript:history.go(-1);" class="btn btn-brand-light px-4 mt-2">Back</a>
+                        <a role="button" href="" id='save' class="btn btn-brand-light px-4 mt-3">Save and Continue</a>
+                    </form>
                 </div>
             </div>
         </div>
-        <script src="../../js/app.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <!--        <script>
-                    $(function () {
-                        var getUrlParameter = function getUrlParameter(sParam) {
-                            var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-                                    sURLVariables = sPageURL.split('&'),
-                                    sParameterName,
-                                    i;
-                            for (i = 0; i < sURLVariables.length; i++) {
-                                sParameterName = sURLVariables[i].split('=');
-        
-                                if (sParameterName[0] === sParam) {
-                                    return sParameterName[1] === undefined ? true : sParameterName[1];
-                                }
-                            }
-                        };
-                        
-                         var poll_title = getUrlParameter('title');
-                         var poll_desc = getUrlParameter('desc');
-                        $('#dis-name').html(localStorage.getItem('username'));
-                        $('#poll-title').html(getUrlParameter('title'));
-                        $('#poll-description').html(getUrlParameter('desc'));
-                        $('#save').click(function (e) {
-                            e.preventDefault();
-                            var token = localStorage.getItem("token");
-                            var myUrl = 'https://kabooterapi.azurewebsites.net/api/user/surveyquestions/create';
-                            var proxy = 'https://cors-anywhere.herokuapp.com/';
-                            var id = getUrlParameter('id');
-                            var title = $('#poll_title').val();
-                            var time = $('#time').val();
-                            var option1 = $('#option1').val();
-                            var option2 = $('#option2').val();
-                            var option3 = $('#option3').val();
-                            var option4 = $('#option4').val();
-                            $.ajax({
-                                headers: {
-                                    Authorization: 'Bearer ' + token
-                                },
-                                url: proxy + myUrl,
-                                type: 'post',
-                                data: {
-                                    question: title,
-                                    timeLimit: time,
-                                    surveyId: id,
-                                    option1: option1,
-                                    option2: option2,
-                                    option3: option3,
-                                    option4: option4
-                                },
-                                dataType: 'json',
-                                async: false,
-                                error: function (data) {
-                                    console.log(data);
-                                    $('#resul').html(data.responseText);
-                                },
-                                success: function (data) {
-                                    $('#resul').html(data.responseText);
-                                    console.log(data);
-                                    window.location = 'preview.html?id=' + id + '&title='+poll_title+'&desc='+poll_desc;
-                                }
-                            });
-                        });
-                    });
-                </script>-->
+    </div>
+    <script src="../../js/app.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        $(function () {
+            loadNavBar();
+            var getUrlParameter = function getUrlParameter(sParam) {
+                var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+                    sURLVariables = sPageURL.split('&'),
+                    sParameterName,
+                    i;
+                for (i = 0; i < sURLVariables.length; i++) {
+                    sParameterName = sURLVariables[i].split('=');
+                    if (sParameterName[0] === sParam) {
+                        return sParameterName[1] === undefined ? true : sParameterName[1];
+                    }
+                }
+            };
+            var poll_title = getUrlParameter('title');
+            var poll_desc = getUrlParameter('desc');
+            var question_id = getUrlParameter('questionId');
+            var token = localStorage.getItem("token");
+            var myUrl = window.location.origin + '/api/user/surveyquestions/' + question_id;
 
-        <script>
-            $(function () {
-                var getUrlParameter = function getUrlParameter(sParam) {
-                    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-                            sURLVariables = sPageURL.split('&'),
-                            sParameterName,
-                            i;
-                    for (i = 0; i < sURLVariables.length; i++) {
-                        sParameterName = sURLVariables[i].split('=');
-                        if (sParameterName[0] === sParam) {
-                            return sParameterName[1] === undefined ? true : sParameterName[1];
-                        }
-                    }
-                };
-                var poll_title = getUrlParameter('title');
-                var poll_desc = getUrlParameter('desc');
-                var question_id = getUrlParameter('questionId');
-                var token = localStorage.getItem("token");
-                var myUrl = 'https://kabooterapi.azurewebsites.net/api/user/surveyquestions/' + question_id;
-                var proxy = 'https://cors-anywhere.herokuapp.com/';
-                $('#dis-name').html(localStorage.getItem('username'));
-                $('#poll-title').html(getUrlParameter('title'));
-                $('#poll-description').html(getUrlParameter('desc'));
-                $.ajax({
-                    headers: {
-                        Authorization: 'Bearer ' + token
-                    },
-                    url: proxy + myUrl,
-                    type: 'get',
-                    dataType: 'json',
-                    error: function (data) {
-                        console.log(data);
-                        $('#result').append('Error Fetching File');
-                    },
-                    success: function (data) {
-                        console.log(data);
-                        $('#poll').val(data.question);
-                        $('#option1').val(data.option1);
-                        $('#option2').val(data.option2);
-                        $('#option3').val(data.option3);
-                        $('#option4').val(data.option4);
-//                        console.log(data);
-                    }
-                });
+            $('#poll-title').html(getUrlParameter('title'));
+            $('#poll-description').html(getUrlParameter('desc'));
+            $.ajax({
+                headers: {
+                    Authorization: 'Bearer ' + token
+                },
+                url: myUrl,
+                type: 'get',
+                dataType: 'json',
+                error: function (data) {
+                    console.log(data);
+                    $('#result').append('Error Fetching File');
+                },
+                success: function (data) {
+                    console.log(data);
+                    $('#poll').val(data.question);
+                    $('#option1').val(data.option1);
+                    $('#option2').val(data.option2);
+                    $('#option3').val(data.option3);
+                    $('#option4').val(data.option4);
+                    //                        console.log(data);
+                }
             });
-        </script>
-        <script>
-            $('#save').click(function (e) {
-                e.preventDefault();
-                var getUrlParameter = function getUrlParameter(sParam) {
-                    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-                            sURLVariables = sPageURL.split('&'),
-                            sParameterName,
-                            i;
-                    for (i = 0; i < sURLVariables.length; i++) {
-                        sParameterName = sURLVariables[i].split('=');
-                        if (sParameterName[0] === sParam) {
-                            return sParameterName[1] === undefined ? true : sParameterName[1];
-                        }
+        });
+    </script>
+    <script>
+        $('#save').click(function (e) {
+            e.preventDefault();
+            var getUrlParameter = function getUrlParameter(sParam) {
+                var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+                    sURLVariables = sPageURL.split('&'),
+                    sParameterName,
+                    i;
+                for (i = 0; i < sURLVariables.length; i++) {
+                    sParameterName = sURLVariables[i].split('=');
+                    if (sParameterName[0] === sParam) {
+                        return sParameterName[1] === undefined ? true : sParameterName[1];
                     }
-                };
-                var token = localStorage.getItem("token");
-                var myUrl = 'https://kabooterapi.azurewebsites.net/api/user/surveyquestions/update';
-                var proxy = 'https://cors-anywhere.herokuapp.com/';
-                var id = getUrlParameter('questionId');
-                var pollId = getUrlParameter('pollId');
-                var quiz_title = getUrlParameter('title');
-                var quiz_desc = getUrlParameter('desc');
-                var title = $('#poll').val();
-                var time = $('#time').val();
-                var basepoint = $('#basepoint').val();
-                var maxpoint = $('#maxbonus').val();
-                var option1 = $('#option1').val();
-                var option2 = $('#option2').val();
-                var option3 = $('#option3').val();
-                var option4 = $('#option4').val();
-                var correct = $('input[name=inlineRadioOptions]:checked', '#myForm').val();
-                $.ajax({
-                    headers: {
-                        Authorization: 'Bearer ' + token
-                    },
-                    url: proxy + myUrl,
-                    type: 'post',
-                    data: {
-                        id: id,
-                        question: title,
-                        timeLimit: time,
-                        surveyId: pollId,
-                        option1: option1,
-                        option2: option2,
-                        option3: option3,
-                        option4: option4,
-                        correctOptions: correct,
-                        points: basepoint,
-                        maxBonus: maxpoint
-                    },
-                    dataType: 'json',
-                    async: false,
-                    error: function (data) {
-                        console.log(data);
-                        $('#result').html(data.responseText);
-                    },
-                    success: function (data) {
-                        alert('Survey updated successfully!!');
-                        console.log(data);
-                        window.location = 'preview.html?pollId=' + pollId + '&title=' + quiz_title + '&desc=' + quiz_desc;
-                    }
-                });
+                }
+            };
+            var token = localStorage.getItem("token");
+            var myUrl = window.location.origin + '/api/user/surveyquestions/update';
+
+            var id = getUrlParameter('questionId');
+            var pollId = getUrlParameter('pollId');
+            var quiz_title = getUrlParameter('title');
+            var quiz_desc = getUrlParameter('desc');
+            var title = $('#poll').val();
+            var time = $('#time').val();
+            var basepoint = $('#basepoint').val();
+            var maxpoint = $('#maxbonus').val();
+            var option1 = $('#option1').val();
+            var option2 = $('#option2').val();
+            var option3 = $('#option3').val();
+            var option4 = $('#option4').val();
+            var correct = $('input[name=inlineRadioOptions]:checked', '#myForm').val();
+            $.ajax({
+                headers: {
+                    Authorization: 'Bearer ' + token
+                },
+                url: myUrl,
+                type: 'post',
+                data: {
+                    id: id,
+                    question: title,
+                    timeLimit: time,
+                    surveyId: pollId,
+                    option1: option1,
+                    option2: option2,
+                    option3: option3,
+                    option4: option4,
+                    correctOptions: correct,
+                    points: basepoint,
+                    maxBonus: maxpoint
+                },
+                dataType: 'json',
+                async: false,
+                error: function (data) {
+                    console.log(data);
+                    $('#result').html(data.responseText);
+                },
+                success: function (data) {
+                    alert('Survey updated successfully!!');
+                    console.log(data);
+                    window.location = 'preview.html?pollId=' + pollId + '&title=' + quiz_title + '&desc=' + quiz_desc;
+                }
             });
-        </script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-    </body>
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+</body>
 
 </html>

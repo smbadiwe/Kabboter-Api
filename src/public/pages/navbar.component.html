@@ -1,0 +1,46 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-brand dashboard-header">
+    <div class="container">
+        <a class="navbar-brand" href="#">Kabooter</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto"></ul>
+
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        Hi,
+                        <span id='dis-name'></span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" id="profileLink" href="#">View Profile</a>
+                        <a class="dropdown-item" id="editProfileLink" href="#">Edit Profile</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="javascript:void();" onclick="logout(event);">Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<script>
+    function logout(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        localStorage.removeItem("token");
+        localStorage.removeItem("userInfo");
+        window.location.href = "/"; // window.location.origin;
+    }
+
+    document.getElementById("profileLink").href = "/pages/profile.html";
+    document.getElementById("editProfileLink").href = "/pages/settings.html";
+    // document.getElementById("profileLink").href = window.location.origin + "/pages/profile.html";
+    //     document.getElementById("editProfileLink").href = window.location.origin + "/pages/settings.html";
+    const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+    if (userInfo) {
+        $('#dis-name').html(`${userInfo.f} ${userInfo.l}`);
+    }
+</script>
