@@ -6,13 +6,13 @@ function setQuizQuestionPropsOnPage(quizquestion) {
   if (quizquestion) {
     const oldQn = $("#questions").html();
     try {
-//      $("#questions").html(JSON.stringify(quizquestion));
-      $('#quest').html(JSON.stringify(quizquestion.question));
-      $('#opt1').html(JSON.stringify(quizquestion.option1));
-      $('#opt2').html(JSON.stringify(quizquestion.option2));
-      $('#opt3').html(JSON.stringify(quizquestion.option3));
-      $('#opt4').html(JSON.stringify(quizquestion.option4));
-      $('#timeLimit').html(JSON.stringify(quizquestion.timeLimit));
+      //      $("#questions").html(JSON.stringify(quizquestion));
+      $("#quest").html(JSON.stringify(quizquestion.question));
+      $("#opt1").html(JSON.stringify(quizquestion.option1));
+      $("#opt2").html(JSON.stringify(quizquestion.option2));
+      $("#opt3").html(JSON.stringify(quizquestion.option3));
+      $("#opt4").html(JSON.stringify(quizquestion.option4));
+      $("#timeLimit").html(JSON.stringify(quizquestion.timeLimit));
       localStorage.setItem(quizquestion.timeLimit);
       $("#error").html("");
       $("#feedback").html("");
@@ -31,23 +31,22 @@ function onGetQuizRunInfo(info) {
   // info = { id: <the quizRun id>, quizId: quizId, pin: pin, totalQuestions: totalQuestions };
   console.log("onGetQuizRunInfo - info = ");
   console.log(info);
-//  localStorage.setItem("quizruninfo", JSON.stringify(info));
-    localStorage.setItem("quiztitle" JSON.stringify(info.quiztitle));
-    localStorage.setItem("quizdescription" JSON.stringify(info.quizdescription));
-    localStorage.setItem("quizid" JSON.stringify(info.id));
-    localStorage.setItem("quizpin" JSON.stringify(info.pin));
-    localStorage.setItem("quiztotal" JSON.stringify(info.totalQuestions));
-  $('#unum').html(info.pin);
-  $('#quiztitle').html(info.quiztitle);
-  $('#quizdescription').html(info.quizdescription);
-  $('#quizid').html(info.id);
-  $('#quiztotal').html(info.totalQuestions);
+  //  localStorage.setItem("quizruninfo", JSON.stringify(info));
+  localStorage.setItem("quiztitle", JSON.stringify(info.quiztitle));
+  localStorage.setItem("quizdescription", JSON.stringify(info.quizdescription));
+  localStorage.setItem("quizid", JSON.stringify(info.id));
+  localStorage.setItem("quizpin", JSON.stringify(info.pin));
+  localStorage.setItem("quiztotal", JSON.stringify(info.totalQuestions));
+  $("#unum").html(info.pin);
+  $("#quiztitle").html(info.quiztitle);
+  $("#quizdescription").html(info.quizdescription);
+  $("#quizid").html(info.id);
+  $("#quiztotal").html(info.totalQuestions);
   $("div#step1").hide();
   $("div#step2").show();
 
-//  $("#quizinfo").html("PIN: " + info.pin + " Total Questions: " + info.totalQuestions);
-  
-  
+  //  $("#quizinfo").html("PIN: " + info.pin + " Total Questions: " + info.totalQuestions);
+
   // Finally
   authenticateQuizAdmin();
 
@@ -71,7 +70,7 @@ function updateQuizAdminPageOnWhenSomeoneJustJoined(data) {
   // You get the total number of players still connecting
   // and a list of the top 5 to display on page.
   $("#stats").html(JSON.stringify(data));
-  $('#nplayers').html(JSON.stringify(data.nPlayers));
+  $("#nplayers").html(JSON.stringify(data.nPlayers));
 }
 
 function updateQuizAdminPageOnWhenSomeoneJustLeft(data) {
@@ -79,7 +78,7 @@ function updateQuizAdminPageOnWhenSomeoneJustLeft(data) {
   // You get the total number of players still connecting
   // and a list of the top 5 to display on page.
   $("#stats").html(JSON.stringify(data));
-  $('#nplayers').html(JSON.stringify(data.nPlayers));
+  $("#nplayers").html(JSON.stringify(data.nPlayers));
 }
 
 function callbackOnQuizAdminError(errorMessage) {
