@@ -1,6 +1,6 @@
 import Router from "koa-router";
 import { QuizService } from "../../services";
-import { validateQuizProps } from "./quizzes.validate";
+import { validateQuizProps, validateQuizBatchCreateProps } from "./quizzes.validate";
 import { validateInteger } from "../../utils/ValidationErrors";
 
 const router = new Router({ prefix: "/api/user/quizzes" });

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Game App</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="../../css/styles.css" type="text/css">
+    </head>
+    <body>
+        <div class="app">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-brand dashboard-header">
+                <div class="container">
+                    <a class="navbar-brand" href="../dashboard.html">Kabooter</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mr-auto"></ul>
+                        <ul class="navbar-nav">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+                                   aria-expanded="false">
+                                    Hi, <span id='dis-name'></span>
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="#">View Profile</a>
+                                    <!--<a class="dropdown-item" href="#">Edit Profile</a>-->
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#">Logout</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <div class="container mt-5">
+                <h1 class="font-weight-light text-center text-secondary">Create Vote</h1>
+                <div class="row mt-5">
+                    <div class="col-md-8 offset-md-2 my-card p-5">
+                        <form>
+                            <div class="form-group">
+                                <label for="poll-title">Name your Poll</label>
+                                <input type="text" name="poll-title" id="poll-title" class="form-control">
+                            </div>
+                            <div class="form-group pt-3">
+                                <label for="poll-description">Describe poll in few words</label>
+                                <textarea class="form-control" id="poll-description" rows="2"></textarea>
+                            </div>
+                            <a role="button" href="javascript:history.go(-1);" class="btn btn-brand-light px-4 mt-2">Back</a>
+                            <a role="button" href="" id='upload-poll' class="btn btn-brand-light px-4 mt-2">import Polls</a>
+                            <a role="button" href='' id='create-poll' class="btn btn-brand-light px-4 mt-2">Save and Continue</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="../../js/app.js"></script>
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script>
+            $(function () {
+                $('#dis-name').html(localStorage.getItem('username'));
+                $('#create-poll').click(function (e) {
+                    e.preventDefault();
+                    var token = localStorage.getItem("token");
+                    var myUrl = 'https://kabooterapi.azurewebsites.net/api/user/surveys/create';
+                    var proxy = 'https://cors-anywhere.herokuapp.com/';
+                    var title = $('#poll-title').val();
+                    var description = $('#poll-description').val();
+                    $.ajax({
+                        headers: {
+                            Authorization: 'Bearer ' + token
+                        },
+                        url: proxy + myUrl,
+                        type: 'post',
+                        data: {
+                            title: title,
+                            description: description
+                        },
+                        dataType: 'json',
+                        async: false,
+                        error: function (data) {
+                            $('#resul').html(data.responseText);
+                        },
+                        success: function (data) {
+                            $('#resul').html(data.responseText);
+                            window.location = 'preview.html?pollId=' + data.id + '&title=' + title + '&desc=' + description;
+                        }
+                    });
+                });
+            });
+
+            $('#upload-poll').click(function (e) {
+                e.preventDefault();
+                var title = $('#poll-title').val();
+                var description = $('#poll-description').val();
+                window.location = 'import.html?title=' + title + '&desc=' + description;
+            });
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    </body>
+</html>

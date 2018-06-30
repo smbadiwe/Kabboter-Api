@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Game App</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="../css/styles.css" type="text/css">
+    </head>
+
+    <body>
+        <div class="app">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-brand dashboard-header">
+                <div class="container">
+                    <a class="navbar-brand" href="#">Kabooter</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mr-auto"></ul>
+
+                        <ul class="navbar-nav">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                    Hi,  <span id='dis-name'></span>
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="profile.html">View Profile</a>
+                                    <!--<a class="dropdown-item" href="settings.html">Edit Profile</a>-->
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="../index.html">Logout</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <div class="container mt-5">
+                <h1 class="font-weight-light text-center text-secondary">Select a Kaboot</h1>
+                <div class="row mt-5 my-card">
+                    <div class="col-md-8 border-right">
+                        <div class="row">
+                            <div class="col-md-6 p-5 text-center">
+                                <img src="../assets/img/svg/exam.svg" width="80" alt="">
+                                <p class="pt-3 text-secondary">Allows Users Create Quiz questions and desirable answers for questions.</p>
+                                <a role="button" href="quiz/create.html" class="btn btn-brand text-white btn-block">Create Quiz</a>
+                            </div>
+                            <div class="col-md-6 p-5 text-center">
+                                <img src="../assets/img/svg/science.svg" width="80" alt="">
+                                <p class="pt-3 text-secondary">Allows Users Create Polls with desirable options for players to select.</p>
+                                <a href="../pages/vote/create.html" class="btn btn-brand text-white btn-block">Create Polls</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-center dashboard-header text-white p-3">
+                        <div class="pt-4">
+                            <h4 class="font-weight-light border-bottom pb-3">Summary</h4>
+                            <div class="row">
+                                <div class="col-4">
+                                    <h1 class="font-large font-extra-bold"><span id='nquiz'></span></h1>
+                                    Quizzes
+                                </div>
+                                <div class="col-4">
+                                    <h1 class="font-large font-extra-bold"><span id='npoll'></span></h1>
+                                    Polls
+                                </div>
+                                <div class="col-4">
+                                    <h1 class="font-large font-extra-bold"><span id='aquiz'></span></h1>
+                                    Answered Quiz
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="../js/app.js"></script>
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script>
+            $(function () {                
+                $('#dis-name').html(localStorage.getItem('username'));
+                var token = localStorage.getItem("token");
+                var myUrl = 'https://kabooter-207805.appspot.com/api/user/profile';
+                var proxy = 'https://cors-anywhere.herokuapp.com/';
+                $.ajax({
+                    headers: {
+                        Authorization: 'Bearer ' + token
+                    },
+                    url: proxy + myUrl,
+                    type: 'get',
+                    dataType: 'json',
+                    error: function (data) {
+                        $('#result').append('Error Fetching File');
+                    },
+                    success: function (data) {s
+                        $('#nquiz').html(data.nQuizzes);
+                        $('#npoll').html(data.nSurveys);
+                        $('#aquiz').html(data.nQuizAnswered);
+                    }
+                });
+            });
+        </script>
+
+        <!-- Popper JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    </body>
+
+</html>

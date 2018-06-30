@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Game App</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="../css/styles.css" type="text/css">
+    </head>
+    <body>
+        <div class="app">
+            <div class="container mt-5">
+                <h1 class="font-weight-light text-center text-secondary">Validate Security Question</h1>
+                <div class="row mt-5">
+                    <div class="col-md-8 offset-md-2 p-5 my-card">
+                        <div>
+                            <form>
+                                <div id="result"></div>
+                                <div class="form-group">
+                                    <label for="email">Question</label>
+                                    <p><span id='sq'></span></p>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Answer</label>
+                                    <input type="text" class="form-control" id="ans">
+                                </div>
+                                <a role="button" href="javascript:history.go(-1);" class="btn btn-brand-light px-4 mt-2">Back</a>
+                                <a href id='verify' class="btn btn-brand px-4 mt-3">Verify</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="js/app.js"></script>
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script>
+            $(function(){
+                var getUrlParameter = function getUrlParameter(sParam) {
+                                        var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+                                                sURLVariables = sPageURL.split('&'),
+                                                sParameterName,
+                                                i;
+                                        for (i = 0; i < sURLVariables.length; i++) {
+                                            sParameterName = sURLVariables[i].split('=');
+                                            if (sParameterName[0] === sParam) {
+                                                return sParameterName[1] === undefined ? true : sParameterName[1];
+                                            }
+                                        }
+                                    };
+                  var username = getUrlParameter('username');
+                  var myUrl = 'https://kabooterapi.azurewebsites.net/api/public/getsecurityquestion?username='+username;
+                  var proxy = 'https://cors-anywhere.herokuapp.com/';
+                  
+                  $.ajax({
+                        url: proxy + myUrl,
+                        type: 'get',
+                        dataType: 'json',
+                        async: false,
+                        error: function (data) {
+                            $('#result').html(data.responseText);
+                            console.log(data);
+                        },
+                        success: function (data) {
+                            console.log(data);
+                            $('#sq').html(data.securityquestion);
+                        }
+                    });
+                });
+            
+            
+              $('#verify').click(function (e) {
+                    e.preventDefault();
+                    var getUrlParameter = function getUrlParameter(sParam) {
+                                        var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+                                                sURLVariables = sPageURL.split('&'),
+                                                sParameterName,
+                                                i;
+                                        for (i = 0; i < sURLVariables.length; i++) {
+                                            sParameterName = sURLVariables[i].split('=');
+                                            if (sParameterName[0] === sParam) {
+                                                return sParameterName[1] === undefined ? true : sParameterName[1];
+                                            }
+                                        }
+                                    };
+                    var username = getUrlParameter('username');
+                    var securityquestion = $('#sq').html();
+                    var securityanswer = $('#ans').val();
+                    var myUrl = 'https://kabooterapi.azurewebsites.net/api/public/validatesecurityquestion';
+                    var proxy = 'https://cors-anywhere.herokuapp.com/';
+                    $.ajax({
+                        url: proxy + myUrl,
+                        type: 'post',
+                        data: {
+                            username: username,
+                            securityquestion: securityquestion,
+                            securityanswer: securityanswer
+                        },
+                        dataType: 'json',
+                        async: false,
+                        error: function (data) {
+                            $('#result').html(data.responseText);
+                            console.log(data);
+                        },
+                        success: function (data) {
+                            console.log(data);
+                            window.location = 'reset-password.html?username='+username;
+                        }
+                    });
+                });
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            $(function () {
+                $('#dis-name').html(localStorage.getItem('username'));
+                $('#save').click(function (e) {
+                    e.preventDefault();
+                    var token = localStorage.getItem("token");
+                    var old = $('#old').val();
+                    var new1 = $('#new1').val();
+                    var new2 = $('#new2').val();
+                    var myUrl = 'https://kabooterapi.azurewebsites.net/api/user/changepassword';
+                    var proxy = 'https://cors-anywhere.herokuapp.com/';
+                    if(new1 !== new2){
+                        $('#pser').html('Password doesn"t match' )
+                    }else{
+                        $.ajax({
+                         headers: {
+                            Authorization: 'Bearer ' + token
+                        },
+                        url: proxy + myUrl,
+                        type: 'post',
+                        data: {
+                            oldPwd: old,
+                            newPwd: new2,
+                        },
+                        dataType: 'json',
+                        async: false,
+                        error: function (data) {
+                            console.log(data);
+                            $('#result').append('Error Fetching File');
+                        },
+                        success: function (data) {
+                            window.location = 'profile.html';
+                        }
+                    });
+                    }
+                });
+            });
+        </script>
+        <!-- Popper JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    </body>
+
+</html>

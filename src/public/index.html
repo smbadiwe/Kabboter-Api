@@ -5,23 +5,244 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Welcome</title>
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <title>Game App</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body>
-    <a href="./quizadmin/quizadmin.html">
-        Launch a quiz (Admin)</a>
-    <br />
-    <a href="./surveyadmin/surveyadmin.html">
-        Launch a Survey (Admin)</a>
-    <br />
-    <a href="./quizplayer/quizplayer.html">
-        Launch a quiz (Client)</a>
-    <br />
-    <a href="./surveyplayer/surveyplayer.html">
-        Launch a Survey (Client)</a>
-    <br />
+    <div class="landing">
+        <div class="row">
+            <div class="col-lg-5 form d-flex flex-column justify-content-center">
+                <div class="container">
+                    <p class="pb-5 text-center">
+                        <span class="text-secondary">Welcome to</span>
+                        <br>
+                        <img src="assets/img/logo.png" class="pb-3 pt-2" width="200" alt="">
+                    </p>
+                    <div id="login">
+                        <h1 class="text-center">
+                            <span class="text-secondary">Login.</span>
+                        </h1>
+                        <hr class="pb-3">
+                        <div class="row">
+                            <div id="result" class="col-lg-10 offset-md-1"></div>
+                            <form action="" class="col-lg-10 offset-md-1">
+                                <div class="form-group">
+                                    <label for="email">User Detail</label>
+                                    <input type="text" id='username' placeholder='Enter username, phone number or email address' name="email" class="form-control"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Password</label>
+                                    <input type="password" id='pass' name="password" placeholder="Enter password" class="form-control" required>
+                                </div>
+                                <a id='sub-login' href="" class="btn btn-brand mt-4 py-2 btn-block">Proceed to Dashboard</a>
+                                <!-- <button type="submit" class="btn btn-brand mt-4 py-2 btn-block">Proceed to Dashboard</button> !use this for production-->
+                                <div class="row pt-2">
+                                    <span class="col-lg-5 text-center text-lg-left font-small">
+                                        <a href="#" id="registerBtn">I'm new here</a>
+                                    </span>
+                                    <span class="col-lg-7 text-center text-lg-right font-small">
+                                        <a href="#" id="forgotPasswordBtn">Can't remember my password</a>
+                                    </span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div id="signup">
+                        <h1 class="text-center">
+                            <span class="text-secondary">Sign Up.</span>
+                        </h1>
+                        <hr>
+                        <div class="row">
+                            <span id='r_result'></span>
+                            <form action="" class="col-lg-10 offset-md-1">
+                                <div class="form-group">
+                                    <label for="name">First Name</label>
+                                    <input type="text" id="r-firstname" placeholder="First name" name="name" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="name">Last Name</label>
+                                    <input type="text" id='r-lastname' placeholder="Last name" name="name" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="username">Username</label>
+                                    <input type="text" id='r-username' placeholder="Username" name="email" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email Address</label>
+                                    <input type="email" id='r-email' name="email" placeholder="Email address" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Phone</label>
+                                    <input type="text" id='r-phone' name="email" placeholder="Phone number" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="sec-que">Security Question</label>
+                                    <div>
+                                        <select id='sec-que' class="form-control select">
+                                            <option value='What is your favorite Food?'>What is your favorite food?</option>
+                                            <option value='Which football team do you support?'>Which football team do you support?</option>
+                                            <option value='How many languages do you speak?'>How many languages do you speak?</option>
+                                            <option value='Who is your best musician?'>Who is your best musician?</option>
+                                            <option value='What is the brand of your first car?'>What is the brand of your first car?</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="answer">Answer</label>
+                                    <input type="text" id='ans' name="answer" placeholder='Enter answer to security question' class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Password</label>
+                                    <input type="password" id='r-pass' placeholder="Enter password" class="form-control" required>
+                                    <span id='passerr'></span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Confirm Password</label>
+                                    <input type="password" id='r-cpass' placeholder="Re-enter password" class="form-control" required>
+                                </div>
+                                <a id='register' href="" class="btn btn-brand mt-4 py-2 btn-block">Register</a>
+                                <!-- <button type="submit" class="btn btn-brand mt-4 py-2 btn-block">Proceed to Dashboard</button> !use this for production-->
+                                <div class="row pt-2">
+                                    <span class="col-12 text-center font-small">
+                                        <a href="#" id="loginBtn">I'm a returning user</a>
+                                    </span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div id="forgot-password">
+                        <h1 class="text-center">
+                            <span class="text-secondary">Reset Password.</span>
+                        </h1>
+                        <hr class="pb-3">
+                        <div class="row">
+                            <form action="" class="col-lg-10 offset-md-1">
+                                <div class="form-group">
+                                    <label for="name">Enter either your email,phone or username that you used to register.</label>
+                                    <input type="text" id="user-detail" name="name" class="form-control" required>
+                                </div>
+                                <a href id='reset' class="btn btn-brand mt-4 py-2 btn-block">Reset Password</a>
+                                <!-- <button type="submit" class="btn btn-brand mt-4 py-2 btn-block">Proceed to Dashboard</button> !use this for production-->
+                            </form>
+                        </div>
+                    </div>
+                    <p class="mt-5 text-center">
+                        <i>Powered by
+                            <a href="http://www.raoatech.com">Raoatech</a>
+                        </i>
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-7 illustration d-flex flex-column justify-content-center align-items-center">
+                <p class="py-3">
+                    <img src="assets/img/svg/trophy.svg" width="200" style="transform: rotate(-10deg)" alt="">
+                </p>
+                <h4 class="text-center">Create your Quizzes and
+                    <br> Polls with ease</h4>
+                <footer>
+                    <img src="assets/img/footer.png" width="100%" alt="">
+                </footer>
+            </div>
+        </div>
+    </div>
+    <script src="js/app.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        $(function () {
+            $('#sub-login').click(function (e) {
+                e.preventDefault();
+                var myUrl = 'https://kabooterapi.azurewebsites.net/api/public/login';
+                var proxy = 'https://cors-anywhere.herokuapp.com/';
+                var username = $('#username').val();
+                var pass = $('#pass').val();
+                $.ajax({
+                    url: proxy + myUrl,
+                    type: 'post',
+                    data: {
+                        username: username,
+                        password: pass
+                    },
+                    dataType: 'json',
+                    async: false,
+                    error: function (data) {
+                        $('#result').html(`<div class="alert alert-warning">` + data.responseText + `</div`);
+                    },
+                    success: function (data) {
+                        $('#result').html(`<div class="success alert-success">` + 'Authentication Successful' + `</div`);
+                        localStorage.setItem('userInfo', data);
+                        localStorage.setItem('username', data.user.u);
+                        localStorage.setItem("token", data.token);
+                        var delay = 3000;
+                        var URL = 'pages/dashboard.html';
+                        setTimeout(function () {
+                            window.location = URL;
+                        }, delay);
+                    }
+                });
+            });
+            $('#register').click(function (e) {
+                e.preventDefault();
+                var myUrl = 'https://kabooterapi.azurewebsites.net/api/public/register';
+                var proxy = 'https://cors-anywhere.herokuapp.com/';
+                var firstname = $('#r-firstname').val();
+                var lastname = $('#r-lastname').val();
+                var email = $('#r-email').val();
+                var phone = $('#r-phone').val();
+                var username = $('#r-username').val();
+                var pass = $('#r-pass').val();
+                var cpass = $('#r-cpass').val();
+                var sec_que = $('#sec-que').val();
+                var ans = $('#ans').val();
+
+                if (pass !== cpass) {
+                    $('#passerr').html(`<div class="alert alert-warning">Password does\'nt match</div>`);
+                } else {
+                    $.ajax({
+                        url: proxy + myUrl,
+                        type: 'post',
+                        data: {
+                            firstname: firstname,
+                            lastname: lastname,
+                            email: email,
+                            phone: phone,
+                            username: username,
+                            password: pass,
+                            securityanswer: ans,
+                            securityquestion: sec_que
+                        },
+                        dataType: 'json',
+                        async: false,
+                        error: function (data) {
+                            console.log(data);
+                            $('#r_result').html(`<div class="alert alert-warning">` + data.responseText + `</div`);
+                        },
+                        success: function (data) {
+                            console.log();
+                            $('#r_result').html(`<div class="success alert-success">` + 'Registration Successful' + `</div`);
+                            alert('User created Successfully!');
+                            localStorage.setItem('userInfo', data);
+                            localStorage.setItem('username', data.u);
+                            localStorage.setItem("token", data.token);
+                            var delay = 2000;
+                            var URL = 'index.html';
+                            setTimeout(function () {
+                                window.location = URL;
+                            }, delay);
+                        }
+                    });
+                }
+            });
+            $('#reset').click(function (e) {
+                e.preventDefault();
+                var username = $('#user-detail').val();
+                window.location = 'pages/security-question.html?username=' + username;
+            });
+        });
+    </script>
 </body>
 
 </html>

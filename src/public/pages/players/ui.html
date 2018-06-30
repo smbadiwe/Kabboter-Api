@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Quiz Player - Start</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+</head>
+<body>
+    <div id="step1">
+        Quiz PIN:
+        <input id="quizpin" placeholder="Enter PIN" />
+        <button id="startBtn" onclick="startQuizPlayer(event);">Start Quiz</button>
+    </div>
+    <div id="step2" hidden="hidden">
+        <section>
+            <section>
+                <hi>Question</hi>
+                <span id="questions"></span>
+            </section>
+            <section>
+                <hi>Error</hi>
+                <span id="error" style="color: red;"></span>
+            </section>
+            <section>
+                <hi>Feedback</hi>
+                <span id="feedback"></span>
+            </section>
+            <section>
+                <hi>Stats</hi>
+                <span id="stats"></span>
+            </section>
+            <section>
+                <hi>Dashboard</hi>
+                <span id="dashboard"></span>
+            </section>
+        </section>
+        <section>
+            <button id="option1" onclick="submitQuizAmswerChoice(event);" disabled="disabled">
+                Option 1</button>
+            <button id="option2" onclick="submitQuizAmswerChoice(event);" disabled="disabled">
+                Option 2</button>
+            <button id="option3" onclick="submitQuizAmswerChoice(event);" disabled="disabled">
+                Option 3</button>
+            <button id="option4" onclick="submitQuizAmswerChoice(event);" disabled="disabled">
+                Option 4</button>
+        </section>
+    </div>
+    <script src="/general.js"></script>
+    <script src="/quizplayer.ui.js"></script>
+    <script src="/quizplayer.js"></script>
+    <script>
+        function startQuizPlayer(e) {
+            e.preventDefault();
+            const quizPin = $("#quizpin").val();
+            if (!quizPin) {
+                alert("Quiz PIN not set.");
+                return;
+            }
+            console.log("calling onGetQuizPin: PIN = " + quizPin);
+            onGetQuizPin(quizPin);
+        }
+    </script>
+</body>
+
+</html>

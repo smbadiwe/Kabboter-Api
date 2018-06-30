@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Game App</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="../css/styles.css" type="text/css">
+    </head>
+    <body>
+        <div class="app">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-brand dashboard-header">
+                <div class="container">
+                    <a class="navbar-brand" href="./dashboard.html">Kabooter</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mr-auto"></ul>
+                        <ul class="navbar-nav">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                    Hi, Dare
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="#">View Profile</a>
+                                    <a class="dropdown-item" href="#">Edit Profile</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#">Logout</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <div class="container mt-5">
+                <div class="text-center">
+                    <h1 class="font-weight-light text-brand-light">List of Audience</h1>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 my-card py-4">
+                        <table class="table table-hover table-borderless">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col" class="font-bold">#</th>
+                                    <th scope="col" class="font-bold">Name</th>
+                                    <th scope="col" class="font-bold">Username</th>
+                                    <th scope="col" class="font-bold">Email</th>
+                                    <th scope="col" class="font-bold">Phone</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr id="ls">
+                                    <th scope="row">1</th>
+                                    <td>Test</td>
+                                    <td>tes2343</td>
+                                    <td>test@gmail.com</td>
+                                    <td>12345678</td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="../js/app.js"></script>
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>  
+        <script>
+            $(function () {                
+                $('#dis-name').html(localStorage.getItem('username'));
+                var token = localStorage.getItem("token");
+                var myUrl = 'https://kabooterapi.azurewebsites.nets/api/user/quizzes/my?wq=y';
+                var proxy = 'https://cors-anywhere.herokuapp.com/';
+                $.ajax({
+                    headers: {
+                        Authorization: 'Bearer ' + token
+                    },
+                    url: proxy + myUrl,
+                    type: 'get',
+                    dataType: 'json',
+                    error: function (data) {
+                        $('#result').append('Error Fetching File');
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        var qqd = 1;
+                        $.each(data, function (key, val) {
+                            var ls = $('#ls')
+                            
+                            ls.append(`
+                                <th scope="row">`+ parseInt(qqd++)+`. ` +`</th>
+                                    <td>` +val.name+`</td>
+                                    <td>` +val.username+`</td>
+                                    <td>`+data.email+`</td>
+                                    <td>`+data.phone+`</td>
+                                    <td><a href="vote-details.html" class="btn btn-brand px-2 mt-2">View details</a>\n\
+                                    </td></th>`);
+                           
+                        });
+                    }
+                });
+            });
+        </script> 
+        <script src="../js/export.js"></script>
+        <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.flash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+        <script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    </body>
+
+</html>

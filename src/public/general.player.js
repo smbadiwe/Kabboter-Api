@@ -71,6 +71,7 @@ function onPlayerReceiveNextQuestion(question, game) {
   if (question) {
     try {
       answered = false;
+      $("div#youranswer").hide();
       $("#question").html(question.question);
       // Enable the buttons
       $("#option1").prop("disabled", false);

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Game App</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="../../css/styles.css" type="text/css">
+    </head>
+    <body>
+        <div class="app">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-brand dashboard-header">
+                <div class="container">
+                    <a class="navbar-brand" href="../dashboard.html">Kabooter</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mr-auto"></ul>
+                        <ul class="navbar-nav">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+                                   aria-expanded="false">
+                                    Hi, <span id='dis-name'></span>
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="#">View Profile</a>
+                                    <!--<a class="dropdown-item" href="#">Edit Profile</a>-->
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#">Logout</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <div class="container mt-5">
+                <div class="text-center">
+                    <h1 class="font-weight-light text-brand-light"><span id='quiz-title'></span></h1>
+                    <p class="text-secondary col-md-8 offset-md-2">
+                        <span id='quiz-description'></span>
+                    </p>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 my-card p-4">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <a role="button" href="https://kabooterapi.azurewebsites.net/login.html" 
+                                           class="btn btn-success btn-sm btn-block">Try out Quiz</a>
+                                    </div>
+                                    <div class="col-6">
+                                        <a role="button" id='edit_questions' href="" class="btn btn-info btn-sm btn-block">Edit Questions</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row my-3">
+                    <a role="button" href="javascript:history.go(-1);"class="btn btn-brand-light px-4 mt-2">Back</a>
+                    <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 mt-3">
+                        <a role="button" href="../dashboard.html" class="btn btn-brand-light btn-block p-2">Submit Quiz</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="js/app.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script>
+            $(function () {
+                var getUrlParameter = function getUrlParameter(sParam) {
+                    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+                            sURLVariables = sPageURL.split('&'),
+                            sParameterName,
+                            i;
+
+                    for (i = 0; i < sURLVariables.length; i++) {
+                        sParameterName = sURLVariables[i].split('=');
+
+                        if (sParameterName[0] === sParam) {
+                            return sParameterName[1] === undefined ? true : sParameterName[1];
+                        }
+                    }
+                };
+                $('#dis-name').html(localStorage.getItem('username'));
+                $('#quiz-title').html(getUrlParameter('title'));
+                $('#quiz-description').html(getUrlParameter('desc'));
+                var id = getUrlParameter('id');
+                var quiz_title = getUrlParameter('title');
+                var quiz_desc = getUrlParameter('desc');
+                $('#edit_questions').click(function (e) {
+                    e.preventDefault();
+                    window.location = 'preview.html?id=' + id + '&title=' + quiz_title + '&desc=' + quiz_desc;
+                });
+            });
+        </script> 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    </body>
+</html>
