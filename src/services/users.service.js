@@ -71,7 +71,8 @@ export default class UserService extends BaseEntityService {
       country: payload.country
     };
     if (payload.securityanswer) {
-      updateValues.securityanswer = payload.securityanswer;
+      updateValues.securityquestion = payload.securityquestion;
+      updateValues.securityanswer = hashSync(payload.securityanswer, genSaltSync());
     }
     await this.update(updateValues);
   }

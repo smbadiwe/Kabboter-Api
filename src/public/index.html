@@ -166,7 +166,7 @@
                     dataType: 'json',
                     async: false,
                     error: function (data) {
-                        $('#result').html(`<div class="alert alert-warning">` + data.responseText + `</div`);
+                        $('#result').html(`<div class="alert alert-warning">${data.responseText}</div`);
                     },
                     success: function (data) {
                         localStorage.setItem('userInfo', JSON.stringify(data.user));
