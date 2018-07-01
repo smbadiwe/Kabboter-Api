@@ -1,14 +1,25 @@
 import validator from "validator";
 import * as valError from "../../utils/ValidationErrors";
 
-export function validateMemberOnAdd(payload, updating = false) {
+export function validateUserOnAdd(payload, updating = false) {
   if (!payload) throw new valError.NoDataReceived();
 
   if (updating) valError.validateInteger(payload.id, "id");
 
-  const { email, lastname, firstname, phone } = payload;
+  const {
+    email,
+    lastname,
+    firstname,
+    phone,
+    securityquestion,
+    securityanswer,
+    country,
+    organization
+  } = payload;
 
   // Required
+  if (validator.isEmpty(securityquestion)) throw new valError.Required("securityquestion");
+  if (validator.isEmpty(country)) throw new valError.Required("country");
   if (validator.isEmpty(lastname)) throw new valError.Required("lastname");
   if (validator.isEmpty(firstname)) throw new valError.Required("firstname");
   if (validator.isEmpty(phone) && validator.isEmpty(email))

@@ -56,7 +56,10 @@ export default class UserService extends BaseEntityService {
   async updateUserProfile(userId, payload) {
     const user = await this.getById(userId);
     if (!user) throw new RequestError("Invalid user id");
-
+    // if security question has changed, then answer must be supplied
+    if (user.securityquestion !== payload.securityquestion) {
+      if (!payload.securityanswer) throw new Required("securityquestion");
+    }
     const updateValues = {
       id: user.id,
       email: payload.email,
@@ -64,9 +67,12 @@ export default class UserService extends BaseEntityService {
       lastname: payload.lastname,
       firstname: payload.firstname,
       organization: payload.organization,
-      usertype: payload.usertype,
+      usertype: payload.usertype || Enums.UserType.SocialUser,
       country: payload.country
     };
+    if (payload.securityanswer) {
+      updateValues.securityanswer = payload.securityanswer;
+    }
     await this.update(updateValues);
   }
 

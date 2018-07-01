@@ -74,3 +74,22 @@ function logout(event) {
   localStorage.removeItem("userInfo");
   window.location.href = "/"; // window.location.origin;
 }
+
+function getSecurityQuestions() {
+  return [
+    "What is your favorite food?",
+    "Which football team do you support?",
+    "How many languages do you speak?",
+    "Who is your best musician?",
+    "What is the brand of your first car?"
+  ];
+}
+
+function getSecurityQuestionsForDropdown() {
+  const questions = getSecurityQuestions();
+  let options = '<option value="" disabled selected>Select a security question...</option>';
+  for (const qn of questions) {
+    options += `<option value="${qn}">${qn}</option>`;
+  }
+  return options;
+}
