@@ -55,27 +55,32 @@
                                                     </tr>
                                                 </thead>-->
                     <!--</table>-->
-                    <table id="example" class="table table-hover table-borderless">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th scope="col" class="font-bold">#</th>
-                                <th scope="col" class="font-bold">Title</th>
-                                <th scope="col" class="font-bold">Description</th>
-                                <th scope="col" class="font-bold"></th>
-                            </tr>
-                        </thead>
-                        <tbody id='ls'>
-                            <!--                        <tr >
-                                                            <th scope="row">1</th>
-                                                            <td>Pilots</td>
-                                                            <td>a poll on list of best pilots</td>
-                                                            <td>10</td>
-                                                            <td><a href="../pages/quiz/overview.html" class="btn btn-brand px-2 mt-2">Play game</a>&nbsp;
-                                                                <a href="../pages/quiz/preview.html" class="btn btn-brand px-2 mt-2">View details</a>
-                                                            </td>
-                        </tr> -->
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+
+                            <table id="example" class="table table-hover table-borderless">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col" class="font-bold">#</th>
+                                            <th scope="col" class="font-bold">Title</th>
+                                            <th scope="col" class="font-bold">Description</th>
+                                            <th scope="col" class="font-bold"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id='ls'>
+                                        <!--                        <tr >
+                                                                        <th scope="row">1</th>
+                                                                        <td>Pilots</td>
+                                                                        <td>a poll on list of best pilots</td>
+                                                                        <td>10</td>
+                                                                        <td><a href="../pages/quiz/overview.html" class="btn btn-brand px-2 mt-2">Play game</a>&nbsp;
+                                                                            <a href="../pages/quiz/preview.html" class="btn btn-brand px-2 mt-2">View details</a>
+                                                                        </td>
+                                    </tr> -->
+                                    </tbody>
+                                </table>
+
+                    </div>
+                  
                 </div>
             </div>
         </div>
@@ -86,6 +91,7 @@
     <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
     <script>
         $(function () {
+        
             loadNavBar();
             var token = localStorage.getItem("token");
             var myUrl = window.location.origin + '/api/user/quizzes?wq=y';
@@ -106,10 +112,10 @@
                 },
                 success: function (data) {
                     console.log(data);
-                    //                        $('#example').DataTable({
-                    //                            destroy: true,
-                    //                            
-                    //                        });
+                    $('#example').DataTable({
+                        destroy: true,
+                        
+                    });
 
                     var qd = 1;
                     $.each(data, function (key, val) {
@@ -117,9 +123,9 @@
                         ls.append(`<tr >
                                     <td scope="row">`+ parseInt(qd++) + `</td>
                                     <td>` + val.title + `</td>
-                                    <td>`+ data.description + `</td>
-                                    <td><a href="/quizplayer/quizplayer.html" class="btn btn-brand px-2 mt-2">Play game</a>&nbsp;
-                                        <a href="" onclick="editId(`+ val.id + `)" class="btn btn-brand px-2 mt-2">View details</a>
+                                    <td>`+ val.description + `</td>
+                                    <td><a href="/quizplayer/quizplayer.html" class="btn btn-brand btn-sm">Play game</a>&nbsp;
+                                        <a href="" onclick="editId(`+ val.id + `)" class="btn btn-brand btn-sm">View details</a>
                                     </td> </tr>`);
                     });
                 }
