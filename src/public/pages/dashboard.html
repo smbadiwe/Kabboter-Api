@@ -35,7 +35,7 @@
                     <div class="pt-4">
                         <h4 class="font-weight-light border-bottom pb-3">Summary</h4>
                         <div class="row">
-                            <div class="col-4">
+                            <div class="col-6">
                                 <h1 class="font-large font-extra-bold">
                                     <span id='nquiz'></span>
                                 </h1>
@@ -43,7 +43,7 @@
                                 <br>
                                 <a role="button" href="quiz/quiz.html" class="btn btn-brand btn-sm btn-block">View details</a>
                             </div>
-                            <div class="col-4">
+                            <div class="col-6">
                                 <h1 class="font-large font-extra-bold">
                                     <span id='npoll'></span>
                                 </h1>
@@ -51,11 +51,41 @@
                                 <br>
                                 <a role="button" href="vote/vote.html" class="btn btn-brand btn-sm btn-block">View details</a>
                             </div>
-                            <div class="col-4">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-5 my-card">
+                <div class="col-md-8 border-right">
+                    <div class="row">
+                        <div class="col-md-6 p-5 text-center">
+                            <img src="../assets/img/svg/exam.svg" width="80" alt="">
+                            <p class="pt-3 text-secondary">Launch a quiz as the moderator so others can join and play.</p>
+                            <a role="button" href="../quizadmin/quizadmin.html" class="btn btn-brand text-white btn-block">Play Quiz</a>
+                        </div>
+                        <div class="col-md-6 p-5 text-center">
+                            <img src="../assets/img/svg/science.svg" width="80" alt="">
+                            <p class="pt-3 text-secondary">Launch a poll as the moderator so others can join and play.</p>
+                            <a href="../surveyadmin/surveyadmin.html" class="btn btn-brand text-white btn-block">Play Polls</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center dashboard-header text-white p-3">
+                    <div class="pt-4">
+                        <h4 class="font-weight-light border-bottom pb-3">Summary</h4>
+                        <div class="row">
+                            <div class="col-6">
                                 <h1 class="font-large font-extra-bold">
                                     <span id='aquiz'></span>
                                 </h1>
                                 Answered Quiz
+                                <button class="btn btn-brand btn-sm btn-block">View details</button>
+                            </div>
+                            <div class="col-6">
+                                <h1 class="font-large font-extra-bold">
+                                    <span id='apoll'></span>
+                                </h1>
+                                Answered Polls
                                 <button class="btn btn-brand btn-sm btn-block">View details</button>
                             </div>
                         </div>
@@ -80,7 +110,6 @@
                 },
                 url: myUrl,
                 type: 'get',
-                dataType: 'json',
                 error: function (data) {
                     $('#result').append('Error Fetching File');
                 },
@@ -88,6 +117,7 @@
                     $('#nquiz').html(data.nQuizzes);
                     $('#npoll').html(data.nSurveys);
                     $('#aquiz').html(data.nQuizAnswered);
+                    $('#apoll').html(data.nSurveyAnswered);
                 }
             });
         });

@@ -161,7 +161,9 @@ export default class UserService extends BaseEntityService {
       firstname: user.firstname,
       organization: user.organization,
       usertype: user.usertype,
-      country: user.country
+      country: user.country,
+      securityquestion: user.securityquestion,
+      securityanswer: user.securityanswer
     };
     result.nQuizzes = await new QuizService().getUserQuizCount(uid);
     result.nSurveys = await new SurveyService().getUserSurveyCount(uid);

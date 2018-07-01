@@ -22,7 +22,7 @@ export async function up(knex) {
       t.string("phone");
       t.string("securityquestion");
       t.string("securityanswer");
-      t.string("country");
+      t.string("country", 2);
     });
 }
 
