@@ -108,6 +108,8 @@ export default class QuizService extends BaseEntityService {
    * @param {*} userId
    */
   async getUserQuizCount(userId) {
+    if (!userId) return null;
+
     return await this.getCount({ userId: userId });
   }
 

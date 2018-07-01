@@ -146,6 +146,7 @@ export default class UserService extends BaseEntityService {
   }
 
   async getUserProfile(uid) {
+    log.debug("getUserProfile - uid = %d", uid);
     const user = await this.getById(uid);
     if (!user) throw new RequestError("Invalid user id");
     if (user.disabled)

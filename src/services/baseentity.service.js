@@ -117,9 +117,9 @@ export class BaseEntityService {
         .table(this.tableName)
         .where(equalityConditions)
         .count({ total: ["*"] });
+    } else {
+      count = await this.connector.table(this.tableName).count({ total: ["*"] });
     }
-
-    count = await this.connector.table(this.tableName).count({ total: ["*"] });
     return count[0].total;
   }
 

@@ -38,7 +38,7 @@
   },
   "scripts": {
     "start": "npm run build && npm run serve",
-    "start-dev": "set DEBUG=Kabooter:* && nodemon src/index.js --exec babel-node",
+    "start-dev": "set DEBUG=Kabooter:*,knex:* && nodemon src/index.js --exec babel-node",
     "start-debug": "set DEBUG=Kabooter:* && npm start",
     "copy-files": "powershell -ExecutionPolicy ByPass -File copy-files-and-azure-configs.ps1",
     "build": "babel src -d dist --copy-files && npm run copy-files",
