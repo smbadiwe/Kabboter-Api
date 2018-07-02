@@ -15,13 +15,13 @@
 <body>
     <div class="app">
         <div id="myNavBar"> </div>
-        <div class="container mt-5">
+        <div class="container mt-6">
             <div class="text-center">
                 <a role="button" href="javascript:history.go(-1);" class="btn btn-brand-light px-4 mt-3">Back</a>
                 <h1 class="font-weight-light text-brand-light">Quizzes</h1>
             </div>
-            <div class="row mt-4">
-                <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 my-card py-4">
+            <div class="row mt-6">
+                <div class=" col-sm-12 my-card py-2">
                     <div id="result" class="alert alert-danger" style="display: none">
                     </div>
                     <div class="table-responsive">
@@ -32,6 +32,7 @@
                                     <th scope="col" class="font-bold">#</th>
                                     <th scope="col" class="font-bold">Title</th>
                                     <th scope="col" class="font-bold">Description</th>
+                                    <th scope="col" class="font-bold"></th>
                                     <th scope="col" class="font-bold"></th>
                                 </tr>
                             </thead>
@@ -77,13 +78,13 @@
                     var qd = 1;
                     var rows = "";
                     $.each(data, function (key, val) {
-                        rows += (`<tr >
-                                    <td scope="row">`+ parseInt(qd++) + `</td>
+                        rows += (`<tr>
+                                    <td scope="row">`+ (qd++) + `</td>
                                     <td>` + val.title + `</td>
                                     <td>`+ val.description + `</td>
-                                    <td><a href="/quizadmin/quizadmin.html?quizId=${val.id}" class="btn btn-brand btn-sm">Play game</a>&nbsp;
-                                        <a href="" onclick="editId(`+ val.id + `)" class="btn btn-brand btn-sm">View details</a>
-                                    </td> </tr>`);
+                                    <td><a href="/quizadmin/quizadmin.html?quizId=${val.id}" class="btn btn-brand btn-sm">Play game</a>&nbsp;</td>
+                                    <td><a href="" onclick="editId(`+ val.id + `)" class="btn btn-brand btn-sm">View details</a></td>
+                                </tr>`);
                     });
                     $('#ls').html(rows);
                 }
