@@ -5,6 +5,11 @@
 function startQuizAdmin(e) {
   e.preventDefault();
   const data = { quizId: $("#gamelist").val() };
+  if (!data.quizId) {
+    $("#result").show();
+    $("#result").html("Select quiz");
+    return false;
+  }
   console.log("calling startQuizAdmin with data: ");
   console.log(data);
   const baseUrl = window.location.origin;

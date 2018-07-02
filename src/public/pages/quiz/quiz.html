@@ -21,7 +21,7 @@
                 <h1 class="font-weight-light text-brand-light">Quizzes</h1>
             </div>
             <div class="row mt-6">
-                <div class=" col-sm-12 my-card py-2">
+                <div class="col-sm-12 my-card py-2">
                     <div id="result" class="alert alert-danger" style="display: none">
                     </div>
                     <div class="table-responsive">
@@ -51,6 +51,9 @@
     <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
     <script>
+        function editId(val) {
+            window.location = `addedit.html?id=${val}`;
+        }
         $(function () {
 
             loadNavBar();
@@ -82,8 +85,8 @@
                                     <td scope="row">`+ (qd++) + `</td>
                                     <td>` + val.title + `</td>
                                     <td>`+ val.description + `</td>
-                                    <td><a href="/quizadmin/quizadmin.html?quizId=${val.id}" class="btn btn-brand btn-sm">Play game</a>&nbsp;</td>
-                                    <td><a href="" onclick="editId(`+ val.id + `)" class="btn btn-brand btn-sm">View details</a></td>
+                                    <td><a href="/quizadmin/quizadmin.html?quizId=${val.id}" class="btn btn-brand btn-sm">Play game</a></td>
+                                    <td><a href="addedit.html?id=${val.id}" class="btn btn-brand btn-sm">View details</a></td>
                                 </tr>`);
                     });
                     $('#ls').html(rows);

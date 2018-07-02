@@ -5,6 +5,11 @@
 function startSurveyAdmin(e) {
   e.preventDefault();
   const data = { surveyId: $("#gamelist").val() };
+  if (!data.surveyId) {
+    $("#result").show();
+    $("#result").html("Select vote");
+    return false;
+  }
   console.log("calling startSurveyAdmin with data: ");
   console.log(data);
   const baseUrl = window.location.origin;
