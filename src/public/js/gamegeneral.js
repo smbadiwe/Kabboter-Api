@@ -56,7 +56,7 @@ function saveOrUpdateGame(e, recordType) {
   const isQuiz = recordType === "quiz";
   var myUrl = window.location.origin + `/api/user/${isQuiz ? "quizzes" : "votes"}/create`;
 
-  var id = getUrlParameter(idParam);
+  var id = getUrlParameter("id");
   if (id > 0) {
     postData.id = id;
     myUrl = myUrl.replace("create", "update");
