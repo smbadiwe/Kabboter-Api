@@ -54,5 +54,6 @@ export function validateInteger(integer, param = null, strictlyPositive = false)
 
   if (isNaN(integer)) throw new ValidationError(`${param} is not a number`);
 
+  integer = +integer;
   if (strictlyPositive && integer < 1) throw new PositiveNumber(`${param}`);
 }

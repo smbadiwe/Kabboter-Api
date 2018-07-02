@@ -7,13 +7,15 @@ import {
   NoDataReceived,
   ValidationError
 } from "../../utils/ValidationErrors";
-import { isArray, isObject } from "../../utils";
+import { isArray } from "../../utils";
 import { validateSurveyQuestionProps } from "./surveyquestions.validate";
 
 export function validateSurveyProps(payload, updating = false) {
   if (!payload) throw new NoDataReceived();
-  if (updating) validateInteger(payload.id, "id");
-
+  if (updating) {
+    validateInteger(payload.id, "id");
+    payload.id = +payload.id;
+  }
   if (!payload.title) throw new Required("title");
   if (payload.introLink && !validator.isURL(payload.introLink))
     throw new RequestError("Invalid URL provided for introLink");

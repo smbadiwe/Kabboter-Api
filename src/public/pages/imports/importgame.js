@@ -24,6 +24,7 @@ $(function() {
       $restart = $form.find(".box__restart"),
       droppedFiles = false,
       showFiles = function(files) {
+        droppedFiles = files;
         let labelText = "";
         if (files.length > 1) {
           labelText = ($input.attr("data-multiple-caption") || "").replace("{count}", files.length);
@@ -59,8 +60,7 @@ $(function() {
           $form.removeClass("is-dragover");
         })
         .on("drop", function(e) {
-          droppedFiles = e.originalEvent.dataTransfer.files; // the files that were dropped
-          showFiles(droppedFiles);
+          showFiles(e.originalEvent.dataTransfer.files); // the files that were dropped
         });
     }
 

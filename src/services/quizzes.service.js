@@ -88,9 +88,11 @@ export default class QuizService extends BaseEntityService {
 
   async update(payload) {
     const existing = await this.getFirst({ title: payload.title });
-    if (existing && existing.id !== payload.id)
+    if (existing && existing.id !== payload.id) {
+      log.debug("Running quizservice.update. payload = %o", payload);
+      log.debug("Running quizservice.update. existing = %o", existing);
       throw new RequestError(`A quiz with the title ${payload.title} already exists`);
-
+    }
     const quiz = {
       id: payload.id,
       title: payload.title,

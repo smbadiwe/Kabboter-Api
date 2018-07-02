@@ -11,8 +11,10 @@ import { validateQuizQuestionProps } from "./quizquestions.validate";
 
 export function validateQuizProps(payload, updating = false) {
   if (!payload) throw new NoDataReceived();
-  if (updating) validateInteger(payload.id, "id");
-
+  if (updating) {
+    validateInteger(payload.id, "id");
+    payload.id = +payload.id;
+  }
   if (!payload.title) throw new Required("title");
   if (payload.introLink && !validator.isURL(payload.introLink))
     throw new RequestError("Invalid URL provided for introLink");
