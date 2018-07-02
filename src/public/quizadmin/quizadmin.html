@@ -8,7 +8,7 @@
     <title>Game App</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../../css/styles.css" type="text/css">
+    <link rel="stylesheet" href="../css/styles.css" type="text/css">
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
@@ -221,6 +221,10 @@
     <script>
         $(function () {
             loadNavBar();
+            const quizId = getUrlParameter("quizId");
+            if (quizId) {
+                $("#gamelist").val(quizId);
+            }
         });
     </script>
 </body>

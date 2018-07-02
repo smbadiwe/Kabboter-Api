@@ -75,16 +75,17 @@
                     });
 
                     var qd = 1;
+                    var rows = "";
                     $.each(data, function (key, val) {
-                        var ls = $('#ls');
-                        ls.append(`<tr >
+                        rows += (`<tr >
                                     <td scope="row">`+ parseInt(qd++) + `</td>
                                     <td>` + val.title + `</td>
                                     <td>`+ val.description + `</td>
-                                    <td><a href="/quizadmin/quizadmin.html" class="btn btn-brand btn-sm">Play game</a>&nbsp;
+                                    <td><a href="/quizadmin/quizadmin.html?quizId=${val.id}" class="btn btn-brand btn-sm">Play game</a>&nbsp;
                                         <a href="" onclick="editId(`+ val.id + `)" class="btn btn-brand btn-sm">View details</a>
                                     </td> </tr>`);
                     });
+                    $('#ls').html(rows);
                 }
             });
         });
