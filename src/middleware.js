@@ -84,6 +84,9 @@ async function authorizeRequest(ctx, next) {
     url.startsWith("/api/") &&
     !url.startsWith("/api/public/") &&
     !url.endsWith(".js") &&
+    !url.endsWith(".woff") &&
+    !url.endsWith(".woff2") &&
+    !url.endsWith(".csv") &&
     !url.endsWith(".css");
 
   if (verifyAuth) {
