@@ -5,6 +5,7 @@ function loadGameRecord(recordType, idParam = "id") {
     id = +id;
     var myUrl = window.location.origin + `/api/user/${isQuiz ? "quizzes" : "votes"}/${id}`;
 
+    $("#pageHeading").html(`Update ${isQuiz ? "Quiz" : "Vote"} record`);
     var token = localStorage.getItem("token");
     $.ajax({
       headers: {
@@ -24,7 +25,6 @@ function loadGameRecord(recordType, idParam = "id") {
         $("#credits").val(data.creditResources);
         $("#audience").val(data.audience);
         $("#visibleTo").val(data.visibleTo);
-        $("#pageHeading").html(`Update ${isQuiz ? "Quiz" : "Vote"} record`);
       }
     });
   } else {
