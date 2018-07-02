@@ -22,43 +22,45 @@
             </div>
             <div class="row mt-4">
                 <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 my-card py-4">
+                    <div id="result" class="alert alert-danger" style="display: none">
+                    </div>
                     <div class="table-responsive">
-                            <table id="example" class="table table-hover table-borderless">
-                                    <thead class="thead-dark">
-                                        <tr>
-                                            <th scope="col" class="font-bold">#</th>
-                                            <th scope="col" class="font-bold">Title</th>
-                                            <th scope="col" class="font-bold">Description</th>
-                                            <!--                                    <th scope="col" class="font-bold">No. of audience</th>-->
-                                            <th scope="col" class="font-bold"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="ls">
-                                        
-                                            <!--                                    <th scope="row">1</th>
+                        <table id="example" class="table table-hover table-borderless">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col" class="font-bold">#</th>
+                                    <th scope="col" class="font-bold">Title</th>
+                                    <th scope="col" class="font-bold">Description</th>
+                                    <!--                                    <th scope="col" class="font-bold">No. of audience</th>-->
+                                    <th scope="col" class="font-bold"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="ls">
+
+                                <!--                                    <th scope="row">1</th>
                                                 <td>Pilots</td>
                                                 <td>a poll on list of best pilots</td>
                                                 <td>50</td>
                                                 <td><a href="vote-details.html" class="btn btn-brand px-2 mt-2">View details</a></td>-->
-                                      
-                                    </tbody>
-                                </table>
+
+                            </tbody>
+                        </table>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
     </div>
-    <script src="../../js/app.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="../../js/app.js"></script>
     <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
-  
+
     <script>
         $(function () {
             loadNavBar();
             var token = localStorage.getItem("token");
-            var myUrl = window.location.origin + 's/api/user/surveys?wq=y';
+            var myUrl = window.location.origin + '/api/user/surveys/my';
 
             $.ajax({
                 headers: {
@@ -68,21 +70,22 @@
                 type: 'get',
                 dataType: 'json',
                 error: function (data) {
-                    $('#result').append('Error Fetching File');
+                    $("#result").show();
+                    $('#result').append('Error retrieving votes. ' + data.statusText);
                 },
                 success: function (data) {
                     console.log(data);
-            
+
                     var qqd = 1;
                     $.each(data, function (key, val) {
                         var ls = $('#ls')
 
                         ls.append(`
                         <tr>
-                                <td>`+ parseInt(qqd++) + `. ` + `</td>
+                                <td>`+ (qqd++) + `. ` + `</td>
                                     <td>` + val.title + `</td>
                                     <td>`+ val.description + `</td>
-                                    <td><a href="https://kabooterapi.azurewebsites.net/login.html" class="btn btn-brand px-2 mt-2 btn-sm">Play game</a>&nbsp;
+                                    <td><a href="/quizadmin/quizadmin.html" class="btn btn-brand px-2 mt-2 btn-sm">Play game</a>&nbsp;
                                         <a href="" onclick="editId(`+ val.id + `)" class="btn btn-brand px-2 mt-2 btn-sm">View details</a>
                                     </td> </tr>`);
 
@@ -92,7 +95,7 @@
         });
     </script>
     <script src="../../js/export.js"></script>
-    
+
     <!--<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>-->
     <script src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.flash.min.js"></script>
