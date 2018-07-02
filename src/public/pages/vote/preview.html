@@ -64,14 +64,14 @@
                     $('#result').append('Error Fetching File');
                 },
                 success: function (data) {
-                    $('#add-poll').html('<a href="poll.html?pollId=' + data[0].id + '&title=' + title +
+                    $('#add-poll').html('<a href="poll.html?pollId=' + data.id + '&title=' + title +
                         '&desc=' + desc + '" id="add-poll" role="button" class="btn btn-dark px-4">Add Question to Poll</a>');
                     $('#publish-poll').html('<a role="button" href="overview.html?id=' + id + '&title=' + title + '&desc=' + desc + '" id="publish-poll" class="btn btn-brand-light btn-block p-2">Publish Poll</a>');
                     console.log(data);
-                    $('#title').html(data[0].title);
-                    $('#description').html(data[0].description);
+                    $('#title').html(data.title);
+                    $('#description').html(data.description);
                     var qid = 1;
-                    $.each(data[0].questions, function (key, val) {
+                    $.each(data.questions, function (key, val) {
                         var ls = $('#ls')
                         ls.append(`
                             <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 my-card p-5 mt-3">
