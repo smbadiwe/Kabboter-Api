@@ -101,6 +101,7 @@ export default class QuizService extends BaseEntityService {
       creditResources: payload.creditResources
     };
     await super.update(quiz);
+    return { id: quiz.id };
   }
 
   /**
@@ -138,7 +139,7 @@ export default class QuizService extends BaseEntityService {
         "introLink",
         "creditResources"
       );
-    if (quizzes) {
+    if (quizzes && quizzes.length > 0) {
       log.debug("quizzes from db");
       log.debug(quizzes);
 

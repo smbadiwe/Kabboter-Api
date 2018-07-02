@@ -62,21 +62,21 @@ router.get("/my", async ctx => {
   }
 });
 
-router.get("/my/:id", async ctx => {
-  try {
-    validateInteger(ctx.params.id, "id");
-    const wq = ctx.request.query.wq;
-    const withoutQuestions = !wq || wq !== "y";
-    const userId = ctx.request.user.id;
-    const res = await new QuizService().getBy(
-      { userId: userId, id: ctx.params.id },
-      withoutQuestions
-    );
-    ctx.body = res;
-  } catch (e) {
-    ctx.throw(e.status || 500, e);
-  }
-});
+// router.get("/my/:id", async ctx => {
+//   try {
+//     validateInteger(ctx.params.id, "id");
+//     const wq = ctx.request.query.wq;
+//     const withoutQuestions = !wq || wq !== "y";
+//     const userId = ctx.request.user.id;
+//     const res = await new QuizService().getBy(
+//       { userId: userId, id: ctx.params.id },
+//       withoutQuestions
+//     );
+//     ctx.body = res;
+//   } catch (e) {
+//     ctx.throw(e.status || 500, e);
+//   }
+// });
 
 router.get("/", async ctx => {
   try {
@@ -93,7 +93,7 @@ router.get("/:id", async ctx => {
     const wq = ctx.request.query.wq;
     const withoutQuestions = !wq || wq !== "y";
     const res = await new QuizService().getBy({ id: ctx.params.id }, withoutQuestions);
-    ctx.body = res;
+    ctx.body = res[0];
   } catch (e) {
     ctx.throw(e.status || 500, e);
   }

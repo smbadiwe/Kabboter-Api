@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Game App</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/styles.css" type="text/css">
+</head>
+
+<body>
+    <div class="app">
+        <div id="myNavBar"> </div>
+        <div class="container mt-3">
+            <h1 id="pageHeading" class="font-weight-light text-center text-secondary">Create Quiz</h1>
+            <h4 id="" class="font-weight-light text-center text-secondary" style="display: none">Or
+                <a href="../imports/importgame.html">Click here to import quiz and its questions</a> faster</h4>
+            <div class="row mt-3">
+                <div class="col-md-12 my-card p-5">
+                    <form>
+                        <div id="result" class="alert alert-danger" style="display: none"></div>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Name your Quiz</label>
+                                    <input type="text" name="title" id="title" class="form-control" placeholder="Quiz title">
+                                </div>
+                                <div class="form-group pt-3">
+                                    <label>Describe quiz in few words</label>
+                                    <textarea class="form-control" id="description" rows="2" placeholder="Description"></textarea>
+                                </div>
+                                <div class="form-group pt-3">
+                                    <label>Audience</label>
+                                    <select id="audience" class="form-control select">
+                                        <option value="1">Social</option>
+                                        <option value="2">School</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Introductory link</label>
+                                    <input type="text" id="introLink" class="form-control" placeholder="Video link introducing the quiz">
+                                </div>
+                                <div class="form-group pt-3">
+                                    <label>Credits</label>
+                                    <textarea class="form-control" id="creditResources" rows="2" placeholder="You may use this spece to acknowledge the sources of your questions."></textarea>
+                                </div>
+                                <div class="form-group pt-3">
+                                    <label>Visible to</label>
+                                    <select id="visibleTo" class="form-control select">
+                                        <option value="1">Everyone</option>
+                                        <option value="2">Only me</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" id='create-quiz' class="btn btn-brand-light btn-lg" value='Save and Continue'>
+                            <a role="button" href="javascript:history.go(-1);" class="btn">Back</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="../../js/app.js"></script>
+    <script src="../../js/gamegeneral.js"></script>
+    <script>
+        $(function () {
+            loadNavBar();
+
+            loadGameRecord("quiz");
+
+            $('#create-quiz').click(function (e) {
+                saveOrUpdateGame(e, "quiz");
+            });
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+</body>
+
+</html>

@@ -6,6 +6,7 @@ import {
   RequestError,
   NoDataReceived
 } from "../../utils/ValidationErrors";
+import { isArray } from "../../utils";
 import { validateQuizQuestionProps } from "./quizquestions.validate";
 
 export function validateQuizProps(payload, updating = false) {

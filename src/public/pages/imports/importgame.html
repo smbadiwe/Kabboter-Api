@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Game App</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/styles.css" type="text/css">
+    <script src="../../js/papaparse.min.js"></script>
+    <style>
+        .container {
+            text-align: center;
+            width: 100%;
+        }
+
+        .container h1 {
+            font-size: 42px;
+            font-weight: 300;
+            color: #0f3c4b;
+            margin-bottom: 40px;
+        }
+
+        .container h1 a:hover,
+        .container h1 a:focus {
+            color: #39bfd3;
+        }
+
+        .container nav {
+            margin-bottom: 40px;
+        }
+
+        .container nav a {
+            border-bottom: 2px solid #c8dadf;
+            display: inline-block;
+            padding: 4px 8px;
+            margin: 0 5px;
+        }
+
+        .container nav a.is-selected {
+            font-weight: 700;
+            color: #39bfd3;
+            border-bottom-color: currentColor;
+        }
+
+        .container nav a:not( .is-selected):hover,
+        .container nav a:not( .is-selected):focus {
+            border-bottom-color: #0f3c4b;
+        }
+
+        .container footer {
+            color: #92b0b3;
+            margin-top: 40px;
+        }
+
+        .container footer p+p {
+            margin-top: 1em;
+        }
+
+        .container footer a:hover,
+        .container footer a:focus {
+            color: #39bfd3;
+        }
+
+        .box {
+            font-size: 1.25rem;
+            /* 20 */
+            background-color: #c8dadf;
+            position: relative;
+            padding: 40px 20px;
+        }
+
+        .box.has-advanced-upload {
+            outline: 2px dashed #92b0b3;
+            outline-offset: -10px;
+
+            -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
+            transition: outline-offset .15s ease-in-out, background-color .15s linear;
+        }
+
+        .box.is-dragover {
+            outline-offset: -20px;
+            outline-color: #c8dadf;
+            background-color: #fff;
+        }
+
+        .box__dragndrop,
+        .box__icon {
+            display: none;
+        }
+
+        .box.has-advanced-upload .box__dragndrop {
+            display: inline;
+        }
+
+        .box.has-advanced-upload .box__icon {
+            width: 100%;
+            height: 80px;
+            fill: #92b0b3;
+            display: block;
+            margin-bottom: 40px;
+        }
+
+        .box.is-uploading .box__input,
+        .box.is-success .box__input,
+        .box.is-error .box__input {
+            visibility: hidden;
+        }
+
+        .box__uploading,
+        .box__success,
+        .box__error {
+            display: none;
+        }
+
+        .box.is-uploading .box__uploading,
+        .box.is-success .box__success,
+        .box.is-error .box__error {
+            display: block;
+            position: absolute;
+            top: 50%;
+            right: 0;
+            left: 0;
+
+            -webkit-transform: translateY( -50%);
+            transform: translateY( -50%);
+        }
+
+        .box__uploading {
+            font-style: italic;
+        }
+
+        .box__success {
+            -webkit-animation: appear-from-inside .25s ease-in-out;
+            animation: appear-from-inside .25s ease-in-out;
+        }
+
+        @-webkit-keyframes appear-from-inside {
+            from {
+                -webkit-transform: translateY( -50%) scale( 0);
+            }
+            75% {
+                -webkit-transform: translateY( -50%) scale( 1.1);
+            }
+            to {
+                -webkit-transform: translateY( -50%) scale( 1);
+            }
+        }
+
+        @keyframes appear-from-inside {
+            from {
+                transform: translateY( -50%) scale( 0);
+            }
+            75% {
+                transform: translateY( -50%) scale( 1.1);
+            }
+            to {
+                transform: translateY( -50%) scale( 1);
+            }
+        }
+
+        .box__restart {
+            font-weight: 700;
+        }
+
+        .box__restart:focus,
+        .box__restart:hover {
+            color: #39bfd3;
+        }
+
+        .js .box__file {
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            position: absolute;
+            z-index: -1;
+        }
+
+        .js .box__file+label {
+            max-width: 80%;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            cursor: pointer;
+            display: inline-block;
+            overflow: hidden;
+        }
+
+        .js .box__file+label:hover strong,
+        .box__file:focus+label strong,
+        .box__file.has-focus+label strong {
+            color: #39bfd3;
+        }
+
+        .js .box__file:focus+label,
+        .js .box__file.has-focus+label {
+            outline: 1px dotted #000;
+            outline: -webkit-focus-ring-color auto 5px;
+        }
+
+        .js .box__file+label * {
+            /* pointer-events: none; */
+            /* in case of FastClick lib use */
+        }
+
+        .no-js .box__file+label {
+            display: none;
+        }
+
+        .no-js .box__button {
+            display: block;
+        }
+
+        .box__button {
+            font-weight: 700;
+            color: #e5edf1;
+            background-color: #39bfd3;
+            display: block;
+            padding: 8px 16px;
+            margin: 40px auto 0;
+        }
+
+        .box__button:hover,
+        .box__button:focus {
+            background-color: #0f3c4b;
+        }
+    </style>
+    <!-- remove this if you use Modernizr 
+    <script>(function (e, t, n) { var r = e.querySelectorAll("html")[0]; r.className = r.className.replace(/(^|\s)no-js(\s|$)/, "$1js$2") })(document, window, 0);</script>
+-->
+</head>
+
+<body>
+    <div class="app">
+        <div id="myNavBar"> </div>
+        <div class="container mt-5">
+            <h1 class="font-weight-light text-center text-secondary">Import Quiz or Vote Data</h1>
+            <div id="step1" class="row mt-5">
+                <div class="col-md-8 offset-md-2 my-card p-5">
+                    <div>
+                        <p>Use this wizard to upload quiz or vote data, including the questions and answers. The uploaded file
+                            should be a CSV document. We have provided templates to help you format the file accordingly.
+                        </p>
+                        <p>If you're uploading quiz,
+                            <a href="quiz-upload-sample-file.csv" download>use this quiz sample file</a> as guide and edit accordingly
+                            <b>WITHOUT MODIFYING THE COLUMN HEADERS</b>
+                        </p>
+                        <p>If you're uploading quiz,
+                            <a href="vote-upload-sample-file.csv" download>use this vote sample file</a> as guide and edit accordingly
+                            <b>WITHOUT MODIFYING THE COLUMN HEADERS</b>
+                        </p>
+                        <p>When you're ready, click on the
+                            <b>Proceed</b> button to continue.</p>
+                    </div>
+                    <div class="form-group">
+                        <a href id='proceed' class="btn btn-brand mt-4 py-2 btn-block">Proceed</a>
+                    </div>
+                </div>
+            </div>
+            <div id="step2" class="row mt-5" style="display: none">
+                <div class="col-md-8 offset-md-2 my-card p-5">
+                    <form>
+                        <div class="form-group">
+                            <div class="form-check-inline">
+                                <label class="form-check-label">
+                                    <input type="radio" class="form-check-input" name="optradio" value="quiz">
+                                    <b>Uploading Quiz data</b>
+                                </label>
+                            </div>
+                            <div class="form-check-inline">
+                                <label class="form-check-label">
+                                    <input type="radio" class="form-check-input" name="optradio" value="survey">
+                                    <b>Uploading Vote data</b>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="box">
+                            <div class="box__input">
+                                <svg class="box__icon" xmlns="http://www.w3.org/2000/svg" width="50" height="43" viewBox="0 0 50 43">
+                                    <path d="M48.4 26.5c-.9 0-1.7.7-1.7 1.7v11.6h-43.3v-11.6c0-.9-.7-1.7-1.7-1.7s-1.7.7-1.7 1.7v13.2c0 .9.7 1.7 1.7 1.7h46.7c.9 0 1.7-.7 1.7-1.7v-13.2c0-1-.7-1.7-1.7-1.7zm-24.5 6.1c.3.3.8.5 1.2.5.4 0 .9-.2 1.2-.5l10-11.6c.7-.7.7-1.7 0-2.4s-1.7-.7-2.4 0l-7.1 8.3v-25.3c0-.9-.7-1.7-1.7-1.7s-1.7.7-1.7 1.7v25.3l-7.1-8.3c-.7-.7-1.7-.7-2.4 0s-.7 1.7 0 2.4l10 11.6z"
+                                    />
+                                </svg>
+                                <input type="file" id="csv-file" class="box__file" data-multiple-caption="{count} files selected" hidden/>
+                                <label for="file">
+                                    <strong>Choose a file</strong>
+                                    <span class="box__dragndrop"> or drag it here</span>.</label>
+                                <div class="form-group">
+                                    <a id="back" href class="btn btn-default px-4 mt-3">Back</a>
+                                    <button id="saveBtn" class="btn btn-brand-light px-4 mt-3 box__button">Upload</button>
+                                </div>
+                            </div>
+                            <div class="box__uploading">Uploading&hellip;</div>
+                            <div class="box__success">Done!
+                                <a href="javascript:void();" class="box__restart" role="button">Upload more?</a>
+                            </div>
+                            <div class="box__error">Error!
+                                <span></span>.
+                                <a href="javascript:void();" class="box__restart" role="button">Try again!</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="../../js/app.js"></script>
+    <script>
+        $(function () {
+            loadNavBar();
+
+            function isAdvancedUpload() {
+                var div = document.createElement('div');
+                return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window;
+            }
+            $("#proceed").click(function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $("#step1").hide();
+                $("#step2").show();
+            });
+
+            $("#back").click(function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $("#step2").hide();
+                $("#step1").show();
+            });
+
+            $('.box').each(function () {
+                var $form = $(this),
+                    $input = $form.find('input[type="file"]'),
+                    $label = $form.find('label'),
+                    $errorMsg = $form.find('.box__error span'),
+                    $restart = $form.find('.box__restart'),
+                    droppedFiles = false,
+                    showFiles = function (files) {
+                        $label.text(files.length > 1 ? ($input.attr('data-multiple-caption') || '').replace('{count}', files.length) : files[0].name);
+                    };
+
+                // letting the server side to know we are going to make an Ajax request
+                $form.append('<input type="hidden" name="ajax" value="1" />');
+
+                // on file select
+                $input.on('change', function (e) {
+                    showFiles(e.target.files);
+                });
+
+                // drag&drop files if the feature is available
+                if (isAdvancedUpload) {
+                    $form
+                        .addClass('has-advanced-upload') // letting the CSS part to know drag&drop is supported by the browser
+                        .on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
+                            // preventing the unwanted behaviours
+                            e.preventDefault();
+                            e.stopPropagation();
+                        })
+                        .on('dragover dragenter', function () //
+                        {
+                            $form.addClass('is-dragover');
+                        })
+                        .on('dragleave dragend drop', function () {
+                            $form.removeClass('is-dragover');
+                        })
+                        .on('drop', function (e) {
+                            droppedFiles = e.originalEvent.dataTransfer.files; // the files that were dropped
+                            showFiles(droppedFiles);
+                        });
+                }
+
+
+                // if the form was submitted
+
+                $("#saveBtn").on('click', function (e) {
+                    // preventing the duplicate submissions if the current one is in progress
+                    if ($form.hasClass('is-uploading')) return false;
+                    const recordType = $("input[name='optradio']:checked").val();
+                    if (!recordType) {
+                        alert("Tell the system whether you're uploading quiz or vote data");
+                        return false;
+                    }
+                    if (!droppedFiles) {
+                        alert("No file selected");
+                        return false;
+                    }
+                    if (isAdvancedUpload) // ajax file upload for modern browsers
+                    {
+                        e.preventDefault();
+
+                        const file = droppedFiles[0];
+                        $form.addClass('is-uploading').removeClass('is-error');
+
+                        const quizOrSurvey = {};
+                        const questions = [];
+                        const columns = [];
+
+                        let rowNumber = 0;
+                        try {
+                            Papa.parse(file, {
+                                step: function (row, parser) {
+                                    const rowData = row.data[0];
+                                    switch (rowNumber) {
+                                        case 0: // Quiz Columns
+                                        case 3: // Question Columns
+                                            for (let column of rowData) {
+                                                if (column) {
+                                                    column = column.replace(/\s/g, "");
+                                                    columns.push(column);
+                                                }
+                                            }
+                                            break;
+                                        case 1: // set quiz columns
+                                            for (let i = 0; i < columns.length; i++) {
+                                                quizOrSurvey[columns[i]] = rowData[i];
+                                            }
+                                            break;
+                                        case 2: // reset columns to switch to question columns
+                                            columns.length = 0;
+                                            break;
+                                        default:
+                                            let isValidRow = false;
+                                            for (const field of rowData) {
+                                                if (field) {
+                                                    isValidRow = true;
+                                                    break;
+                                                }
+                                            }
+                                            if (isValidRow) {
+                                                const question = {};
+                                                for (let i = 0; i < columns.length; i++) {
+                                                    question[columns[i]] = rowData[i];
+                                                }
+                                                questions.push(question);
+                                            }
+                                            break;
+                                    }
+                                    rowNumber++;
+                                },
+                                error: function (error, file) {
+                                    console.log("From Error: Error occurred while papa-parsing...");
+                                    console.log(error);
+                                    $form.removeClass('is-uploading');
+                                    $form.addClass('is-error');
+                                    $errorMsg.text(error.message);
+                                },
+                                complete: function (results) {
+                                    try {
+                                        quizOrSurvey.questions = questions;
+                                        console.log("Complete: POSTing " + recordType);
+                                        console.log(quizOrSurvey);
+
+                                        var myUrl = `/api/user/${recordType === "quiz" ? "quizzes" : "surveys"}/batchcreate`;
+                                        myUrl = window.location.origin + myUrl;
+                                        var token = localStorage.getItem("token");
+                                        $.ajax({
+                                            headers: {
+                                                Authorization: 'Bearer ' + token
+                                            },
+                                            url: myUrl,
+                                            type: 'post',
+                                            data: quizOrSurvey,
+                                            // cache: false,
+                                            // contentType: false,
+                                            // processData: false,
+                                            complete: function () {
+                                                $form.removeClass('is-uploading');
+                                            },
+                                            error: function (data) {
+                                                console.log(data);
+                                                $form.removeClass('is-uploading');
+                                                $form.addClass('is-error');
+                                                $errorMsg.text(data.responseText);
+                                            },
+                                            success: function (data) {
+                                                $form.addClass('is-success');
+                                                console.log(data);
+                                                window.location = `../${recordType === "quiz" ? "quiz" : "vote"}/addedit.html?id=${data.id}`;
+                                            }
+                                        });
+                                    } catch (error) {
+                                        console.log("From Error: Error occurred while papa-parsing...");
+                                        console.log(error);
+                                        $form.removeClass('is-uploading');
+                                        $form.addClass('is-error');
+                                        $errorMsg.text(error.message);
+                                    }
+                                }
+                            });
+                        } catch (e) {
+                            console.log("Error occurred while papa-parsing...");
+                            console.log(e);
+                            $form.removeClass('is-uploading');
+                            $form.addClass('is-error');
+                            $errorMsg.text(e.message);
+                        }
+                    }
+                    else // fallback Ajax solution upload for older browsers
+                    {
+                        alert("Browser not supported");
+                    }
+                });
+
+
+                // restart the form if has a state of error/success
+
+                $restart.on('click', function (e) {
+                    e.preventDefault();
+                    $form.removeClass('is-error is-success');
+                    $input.trigger('click');
+                });
+
+                // Firefox focus bug fix for file input
+                $input
+                    .on('focus', function () { $input.addClass('has-focus'); })
+                    .on('blur', function () { $input.removeClass('has-focus'); });
+            });
+        });
+    </script>
+</body>
+
+</html>

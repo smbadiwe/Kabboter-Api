@@ -17,17 +17,40 @@
         <div class="container mt-5">
             <div class="text-center">
                 <h1 class="font-weight-light text-brand-light">
-                    <span id='quiz-title'></span>
+                    <span id='title'></span>
                 </h1>
                 <p class="text-secondary col-md-8 offset-md-2">
-                    <span id='quiz-description'></span>
+                    <span id='description'></span>
                 </p>
                 <span id="add-questions"></span>
-                <!--<a href="" id='add-questions' role="button" class="btn btn-dark px-4">Add Question to Quiz</a>-->
+            </div>
+            <div id="result" class="alert alert-danger" style="display: none">
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Intro link</label>
+                        <span id="introLink" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Credits</label>
+                        <span id="credits" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Audience</label>
+                        <span id="audience" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Visible to</label>
+                        <span id="visibleTo" />
+                    </div>
+                </div>
             </div>
             <div class="row mt-4" id='ls'></div>
             <div class="row my-3">
-                
+
                 <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 mt-3">
                     <a role="button" href="javascript:history.go(-1);" class="btn btn-brand-light  ">Back</a>
                     <a role="button" href='' style="float: right;" id='publish-quiz' class="btn btn-brand-light ">Publish Quiz</a>
@@ -35,19 +58,15 @@
             </div>
         </div>
     </div>
-    <script src="../../js/app.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="../../js/app.js"></script>
     <script> 
         $(document).ready(function () {
             loadNavBar();
-            $('#quiz-title').text(getUrlParameter('title'));
-            $('#quiz-description').text(getUrlParameter('desc'));
+
             var token = localStorage.getItem("token");
             var id = getUrlParameter('quizId');
-            var title = getUrlParameter('title');
-            var desc = getUrlParameter('desc');
-            var myUrl = window.location.origin + '/api/user/quizzes/my/' + id + '?wq=y';
-
+            var myUrl = window.location.origin + '/api/user/quizzes/' + id + '?wq=y';
 
             $.ajax({
                 headers: {
@@ -55,44 +74,53 @@
                 },
                 url: myUrl,
                 type: 'get',
-                //                    data: {
-                //                        wq: 'y'
-                //                    },
-                dataType: 'json',
                 error: function (data) {
                     console.log(data);
                     $('#result').append('Error Fetching File');
                 },
                 success: function (data) {
-                    console.log(data)
+                    $("#title").html(data.title);
+                    $("#description").html(data.description);
+                    $("#introLink").html(data.introLink);
+                    $("#credits").html(data.creditResources);
+                    const audience = {
+                        1: "Social",
+                        2: "School"
+                    };
+                    //Object.freeze(audience);
+                    const visibleTo = {
+                        1: "Everyone",
+                        2: "OnlyMe"
+                    };
+                    $("#audience").html(audience[data.audience]);
+                    $("#visibleTo").html(visibleTo[data.visibleTo]);
+
                     $('#add-questions').html('<a href="questions.html?quizId=' + data[0].id + '&title=' + title +
                         '&desc=' + desc + '" id="add-questions" role="button" class="btn btn-dark px-4">Add Question to Quiz</a>');
                     $('#publish-quiz').html('<a role="button" href="overview.html?id=' + id + '&title=' + title + '&desc=' + desc + '" id="publish-quiz" class="btn btn-brand-light btn-block p-2">Publish Quiz</a>');
-                    console.log(data);
-                    $('#title').html(data[0].title);
-                    $('#description').html(data[0].description);
+
                     var qid = 1;
+                    var rows = "";
+                    $.each(data.questions, function (key, val) {
 
-                    $.each(data[0].questions, function (key, val) {
-                        var ls = $('#ls')
-
-                        ls.append(`
+                        rows += (`
                             <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 my-card p-5 mt-3">
                                             <div class="row">
                                                 <div class="col-12">
                                                     <div class="row d-flex align-items-center">
-                                                        <div class="col-9">
-                                                            <h5>`+ parseInt(qid++) + `. ` + val.question + `?</h5>
-                                                        </div>
-                                                        <div class="col-3 text-right">
-                                                            <span class="font-small text-secondary">`+ val.timeLimit + ` seconds</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mt-3">
                                                         <div class="col-6">
+                                                            <h5>`+ (qid++) + `. ` + val.question + `?</h5>
+                                                        </div>
+                                                        <div class="col-1">
+                                                            <span class="font-small text-secondary">`+ val.correctOptions + `</span>
+                                                        </div>
+                                                        <div class="col-1 text-right">
+                                                            <span class="font-small text-secondary">`+ val.timeLimit + ` sec</span>
+                                                        </div>
+                                                        <div class="col-2">
                                                             <button class="btn btn-danger btn-sm btn-block" onclick="deleteId(`+ val.id + `)">Delete</a>
                                                         </div>
-                                                        <div class="col-6">
+                                                        <div class="col-2">
                                                             <button class="btn btn-info btn-sm btn-block" onclick="editId(`+ val.id + `)">Edit</button>
                                                         </div>
                                                     </div>
@@ -101,6 +129,8 @@
                                         </div>`);
 
                     });
+
+                    $('#ls').append(rows);
                 }
             });
 
@@ -109,20 +139,6 @@
     </script>
     <script>
         function deleteId(val) {
-            var getUrlParameter = function getUrlParameter(sParam) {
-                var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-                    sURLVariables = sPageURL.split('&'),
-                    sParameterName,
-                    i;
-
-                for (i = 0; i < sURLVariables.length; i++) {
-                    sParameterName = sURLVariables[i].split('=');
-
-                    if (sParameterName[0] === sParam) {
-                        return sParameterName[1] === undefined ? true : sParameterName[1];
-                    }
-                }
-            };
             var did = val;
             var id = getUrlParameter('quizId');
             var title = getUrlParameter('title');
@@ -148,20 +164,6 @@
     </script>
     <script>
         function editId(val) {
-            var getUrlParameter = function getUrlParameter(sParam) {
-                var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-                    sURLVariables = sPageURL.split('&'),
-                    sParameterName,
-                    i;
-
-                for (i = 0; i < sURLVariables.length; i++) {
-                    sParameterName = sURLVariables[i].split('=');
-
-                    if (sParameterName[0] === sParam) {
-                        return sParameterName[1] === undefined ? true : sParameterName[1];
-                    }
-                }
-            };
             var title = getUrlParameter('title');
             var desc = getUrlParameter('desc');
             var quizId = getUrlParameter('quizId');
