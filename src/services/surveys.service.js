@@ -74,8 +74,6 @@ export default class SurveyService extends BaseEntityService {
         option2: q.option2,
         option3: q.option3,
         option4: q.option4,
-        points: q.points,
-        maxBonus: q.maxBonus,
         introLink: q.introLink,
         creditResources: q.creditResources
       };

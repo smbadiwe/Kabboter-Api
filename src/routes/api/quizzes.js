@@ -40,6 +40,15 @@ router.post("/update", async ctx => {
   }
 });
 
+router.get("/published", async ctx => {
+  try {
+    const res = await new QuizService().getBy({ published: true });
+    ctx.body = res;
+  } catch (e) {
+    ctx.throw(e.status || 500, e);
+  }
+});
+
 router.post("/publish", async ctx => {
   try {
     const payload = ctx.request.body;

@@ -103,5 +103,5 @@ function callbackOnQuizAdminError(errorMessage) {
 }
 
 $(function() {
-  loadGameDropdownList("/api/user/quizzes");
+  loadGameDropdownList("quizzes");
 });

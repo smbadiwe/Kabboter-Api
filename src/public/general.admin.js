@@ -60,22 +60,23 @@ function startAdminCountDown(maxCount = 20) {
 
 /**
  * Call for the relevant list of games (quizzes or surveys) and render result to a dropdownlist.
- * @param {*} apiEndpoint
+ * @param {*} recordType "quizzes" or "surveys"
  */
-function loadGameDropdownList(apiEndpoint) {
+function loadGameDropdownList(recordType) {
   $("div#step2").hide();
   $("div#disquest").hide();
   $("div#scoreboard").hide();
   $("div#results").hide();
   const baseUrl = window.location.origin;
+  const url = baseUrl + `/api/user/${recordType}/published`;
   $.ajax({
     type: "GET",
-    url: baseUrl + apiEndpoint,
+    url: url,
     beforeSend: setAuthToken,
     success: function(result) {
       let options = "";
       if (result) {
-        console.log("Number of items gotten from " + baseUrl + apiEndpoint);
+        console.log("Number of items gotten from " + url);
         console.log(result.length);
         result.forEach(function(r) {
           options += '<option value="' + r.id + '">' + r.title + "</option>";

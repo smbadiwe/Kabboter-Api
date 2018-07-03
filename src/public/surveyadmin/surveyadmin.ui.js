@@ -103,5 +103,5 @@ function callbackOnSurveyAdminError(errorMessage) {
 }
 
 $(function() {
-  loadGameDropdownList("/api/user/surveys");
+  loadGameDropdownList("surveys");
 });
