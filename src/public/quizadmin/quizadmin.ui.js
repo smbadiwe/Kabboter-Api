@@ -103,5 +103,6 @@ function callbackOnQuizAdminError(errorMessage) {
 }
 
 $(function() {
+  $("#playGameUrl").html(window.location.origin + "/playvote");
   loadGameDropdownList("quizzes");
 });

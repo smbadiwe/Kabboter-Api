@@ -123,7 +123,7 @@ function saveOrUpdateGame(e, recordType) {
     audience: audience
   };
   const isQuiz = recordType === "quiz";
-  var myUrl = window.location.origin + `/api/user/${isQuiz ? "quizzes" : "votes"}/create`;
+  var myUrl = window.location.origin + `/api/user/${isQuiz ? "quizzes" : "surveys"}/create`;
 
   var id = getUrlParameter("id");
   if (id > 0) {
