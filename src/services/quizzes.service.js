@@ -106,6 +106,16 @@ export default class QuizService extends BaseEntityService {
     return { id: quiz.id };
   }
 
+  async publish(id) {
+    await super.update({ id: id, published: true });
+    return { id: id };
+  }
+
+  async unpublish(id) {
+    await super.update({ id: id, published: false });
+    return { id: id };
+  }
+
   /**
    * Returns the number of quizzes set up by the user with the given id
    * @param {*} userId

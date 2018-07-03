@@ -16,7 +16,9 @@ export default class SurveyService extends BaseEntityService {
         "The survey you want to delete has been played and the scores exist. You can no longer delete it."
       );
 
-    await new SurveyQuestionService().deletePermanently({ surveyId: id });
+    await new SurveyQuestionService().deletePermanently({
+      surveyId: id
+    });
     await super.deleteRecord(id);
   }
 
@@ -100,6 +102,16 @@ export default class SurveyService extends BaseEntityService {
       creditResources: payload.creditResources
     };
     await super.update(survey);
+  }
+
+  async publish(id) {
+    await super.update({ id: id, published: true });
+    return { id: id };
+  }
+
+  async unpublish(id) {
+    await super.update({ id: id, published: false });
+    return { id: id };
   }
 
   /**

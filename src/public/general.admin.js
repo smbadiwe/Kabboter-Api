@@ -75,7 +75,7 @@ function loadGameDropdownList(apiEndpoint) {
     success: function(result) {
       let options = "";
       if (result) {
-        console.log("Nomber of items gotten from " + baseUrl + apiEndpoint);
+        console.log("Number of items gotten from " + baseUrl + apiEndpoint);
         console.log(result.length);
         result.forEach(function(r) {
           options += '<option value="' + r.id + '">' + r.title + "</option>";
@@ -86,6 +86,9 @@ function loadGameDropdownList(apiEndpoint) {
     error: function(error) {
       console.log("Status: " + error.status + " Message: " + error.statusText);
       console.log(error);
+    },
+    complete: function(data) {
+      onAfterLoadingGameList();
     }
   });
 }
@@ -107,6 +110,14 @@ function logOut(e) {
   window.location.href = `${window.location.origin}/login.html`;
 }
 
-$(function() {
+function onAfterLoadingGameList() {
   setLoginInfo();
-});
+
+  loadNavBar();
+  const id = getUrlParameter("id");
+  if (id) {
+    console.log("onAfterLoadingGameList: Setting gamelist val to: " + id);
+    $("#gamelist").val(id);
+    console.log("onAfterLoadingGameList: Done setting gamelist val: " + $("#gamelist").val());
+  }
+}

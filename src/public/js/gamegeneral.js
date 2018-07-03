@@ -1,9 +1,78 @@
+/**
+ *
+ * @param {*} actionType 'unpublish' or 'publish'
+ * @param {*} recordType 'quiz' or 'vote'
+ */
+function setupGame(actionType, recordType) {
+  if (confirm(`Are you sure you want to ${actionType} this quiz?`)) {
+    var token = localStorage.getItem("token");
+    const id = getUrlParameter("id"); // quiz/survey id
+    const isQuiz = recordType === "quiz";
+    const myUrl =
+      window.location.origin + `/api/user/${isQuiz ? "quizzes" : "surveys"}/${actionType}`;
+
+    $.ajax({
+      headers: {
+        Authorization: "Bearer " + token
+      },
+      url: myUrl,
+      type: "POST",
+      data: {
+        id: id
+      },
+      error: function(data) {
+        console.log(data);
+        $("#result").append("Error - " + data.statusText);
+      },
+      success: function(data) {
+        alert(`${isQuiz ? "Quiz" : "Vote"} successfully ${actionType}ed`);
+        setTimeout(function() {
+          window.location.reload(true);
+        });
+      }
+    });
+  }
+}
+
+/**
+ * Delete record
+ * @param {*} questionId
+ * @param {*} recordType Should be "quiz" or ("vote" or "survey")
+ */
+function deleteId(questionId, recordType) {
+  if (confirm("Are you sure you want to delete this question?")) {
+    const token = localStorage.getItem("token");
+    const isQuiz = recordType === "quiz";
+    const myUrl =
+      window.location.origin +
+      `/api/user/${isQuiz ? "quiz" : "survey"}questions/delete/${questionId}`;
+
+    $.ajax({
+      headers: {
+        Authorization: "Bearer " + token
+      },
+      url: myUrl,
+      type: "post",
+      error: function(data) {
+        $("#result").show();
+        $("#result").html("Error deleting record. " + data.statusText);
+      },
+      success: function(data) {
+        alert("Question deleted successfully");
+        setTimeout(function() {
+          window.location.reload(true);
+        });
+      }
+    });
+  }
+}
+
 function loadGameRecord(recordType, idParam = "id") {
   var id = getUrlParameter(idParam);
   if (id > 0) {
     const isQuiz = recordType === "quiz";
     id = +id;
-    var myUrl = window.location.origin + `/api/user/${isQuiz ? "quizzes" : "votes"}/${id}`;
+    var myUrl = window.location.origin + `/api/user/${isQuiz ? "quizzes" : "surveys"}/${id}`;
 
     $("#pageHeading").html(`Update ${isQuiz ? "Quiz" : "Vote"} record`);
     var token = localStorage.getItem("token");
@@ -76,7 +145,7 @@ function saveOrUpdateGame(e, recordType) {
       $("#result").html(data.responseText);
     },
     success: function(data) {
-      window.location = `questions.html?${isQuiz ? "quiz" : "vote"}Id=${data.id}`;
+      window.location = `questions.html?id=${data.id}`;
     }
   });
 }

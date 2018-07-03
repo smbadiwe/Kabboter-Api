@@ -1,7 +1,7 @@
 import Router from "koa-router";
 import { QuizService } from "../../services";
 import { validateQuizProps, validateQuizBatchCreateProps } from "./quizzes.validate";
-import { validateInteger } from "../../utils/ValidationErrors";
+import { validateInteger, RequestError } from "../../utils/ValidationErrors";
 
 const router = new Router({ prefix: "/api/user/quizzes" });
 
@@ -34,6 +34,32 @@ router.post("/update", async ctx => {
     validateQuizProps(ctx.request.body, true);
 
     const res = await new QuizService().update(ctx.request.body);
+    ctx.body = res;
+  } catch (e) {
+    ctx.throw(e.status || 500, e);
+  }
+});
+
+router.post("/publish", async ctx => {
+  try {
+    const payload = ctx.request.body;
+    validateInteger(payload.id, "id", true);
+    payload.id = +payload.id;
+
+    const res = await new QuizService().publish(payload.id);
+    ctx.body = res;
+  } catch (e) {
+    ctx.throw(e.status || 500, e);
+  }
+});
+
+router.post("/unpublish", async ctx => {
+  try {
+    const payload = ctx.request.body;
+    validateInteger(payload.id, "id", true);
+    payload.id = +payload.id;
+
+    const res = await new QuizService().unpublish(payload.id);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);

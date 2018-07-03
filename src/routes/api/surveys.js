@@ -40,6 +40,35 @@ router.post("/update", async ctx => {
   }
 });
 
+router.post("/publish", async ctx => {
+  try {
+    const payload = ctx.request.body;
+    validateInteger(payload.id, "id", true);
+    payload.id = +payload.id;
+    if (payload.published) {
+      const res = await new SurveyService().publish(payload.id);
+      ctx.body = res;
+    } else {
+      throw new RequestError("Invalid data submitted");
+    }
+  } catch (e) {
+    ctx.throw(e.status || 500, e);
+  }
+});
+
+router.post("/unpublish", async ctx => {
+  try {
+    const payload = ctx.request.body;
+    validateInteger(payload.id, "id", true);
+    payload.id = +payload.id;
+
+    const res = await new SurveyService().unpublish(payload.id);
+    ctx.body = res;
+  } catch (e) {
+    ctx.throw(e.status || 500, e);
+  }
+});
+
 router.post("/delete/:id", async ctx => {
   try {
     validateInteger(ctx.params.id, "id", true);

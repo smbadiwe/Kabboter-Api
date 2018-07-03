@@ -173,7 +173,7 @@ $(function() {
                     console.log(data);
                     window.location = `../${
                       recordType === "quiz" ? "quiz" : "vote"
-                    }/addedit.html?id=${data.id}`;
+                    }/details.html?id=${data.id}`;
                   }
                 });
               } catch (error) {

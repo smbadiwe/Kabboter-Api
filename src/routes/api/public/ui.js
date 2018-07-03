@@ -49,6 +49,14 @@ router.get("/register", function(ctx) {
   ctx.body = fs.createReadStream(htmlFolderPath + "/register.html");
 });
 
+router.get("/playquiz", ctx => {
+  ctx.redirect("/quizplayer/quizplayer.html");
+});
+
+router.get("/playvote", ctx => {
+  ctx.redirect("/surveyplayer/surveyplayer.html");
+});
+
 // Don't change this to ES6 style. We use 'require' to auto-register routes
 // See src/app.js
 module.exports = router;
