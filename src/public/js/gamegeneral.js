@@ -137,7 +137,7 @@ function saveOrUpdateGame(e, recordType) {
       Authorization: "Bearer " + token
     },
     url: myUrl,
-    type: "post",
+    type: "POST",
     data: postData,
     error: function(data) {
       console.log(data);
@@ -145,7 +145,8 @@ function saveOrUpdateGame(e, recordType) {
       $("#result").html(data.responseText);
     },
     success: function(data) {
-      window.location = `questions.html?id=${data.id}`;
+      //NB: 'id' querystring key refers to the quiz/survey id; NOT the question id
+      window.location = `addeditquestions.html?id=${data.id}&title=${data.title}&desc=${data.description}`;
     }
   });
 }

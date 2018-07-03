@@ -94,7 +94,7 @@
                     $("#audience").html(audience[data.audience]);
                     $("#visibleTo").html(visibleTo[data.visibleTo]);
 
-                    $('#add-questions').html('<a href="questions.html?surveyId=' + data.id + '&title=' + data.title +
+                    $('#add-questions').html('<a href="addeditquestions.html?id=' + data.id + '&title=' + data.title +
                         '&desc=' + data.description + '" id="add-questions" role="button" class="btn btn-dark px-4">Add Question to Quiz</a>');
 
                     if (data.published) {
