@@ -74,19 +74,26 @@ function loadGameDropdownList(recordType) {
     url: url,
     beforeSend: setAuthToken,
     success: function(result) {
-      let options = "";
-      if (result) {
+      if (result && result.length) {
         console.log("Number of items gotten from " + url);
         console.log(result.length);
+        let options = "";
         result.forEach(function(r) {
           options += '<option value="' + r.id + '">' + r.title + "</option>";
         });
+        $("#gamelist").html(options);
+      } else {
+        const quizOrVote = recordType === "quizzes" ? "quiz" : "vote";
+        $("#result").show();
+        $("#result").html(
+          `No published ${recordType} yet. <a href="/pages/${quizOrVote}/${quizOrVote}.html">Click here</a> to publish a few.`
+        );
       }
-      $("#gamelist").html(options);
     },
     error: function(error) {
-      console.log("Status: " + error.status + " Message: " + error.statusText);
       console.log(error);
+      $("#result").show();
+      $("#result").html(error.statusText);
     },
     complete: function(data) {
       onAfterLoadingGameList();
