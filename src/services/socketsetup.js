@@ -13,13 +13,15 @@ import { validateInteger } from "../utils/ValidationErrors";
 log.setNamespace("socketsetup");
 
 const quizRooms = new Set();
+const surveyRooms = new Set();
 
-function joinQuizRoom(socket, quizpin) {
-  const roomNo = getQuizRoomNo(quizpin);
+function joinRoom(socket, quizpin, recordType) {
+  const roomNo = getRoomNo(quizpin, recordType);
   socket.roomNo = roomNo;
   socket.join(roomNo);
-  quizRooms.add(roomNo);
-  log.debug("Player socket %s joining room %s", socket.id, roomNo);
+  if (recordType === "quiz") quizRooms.add(roomNo);
+  else surveyRooms.add(roomNo);
+  log.debug("Player socket %s joining %s room %s", socket.id, recordType, roomNo);
 
   return roomNo;
 }
@@ -88,12 +90,12 @@ function setupQuizSockets(io) {
     //  data = { pin: pin, userInfo: userInfo }; // userInfo as provided during login
     socket.on("authenticate", (data, onError) => {
       try {
-        const roomNo = joinQuizRoom(socket, data.pin);
+        const roomNo = joinRoom(socket, data.pin);
         socket.authenticated = true;
         log.debug(`authenticated admin socket %s and added it to room %s`, socket.id, roomNo);
         quizPlayerIO.emit("get-quizrun-info", data);
       } catch (e) {
-        log.error("Server Socket: Error on 'authenticate' for socket %s: %O", socket.id, e.message);
+        log.error("Server Socket: Error on 'authenticate' for socket %s: %s", socket.id, e.message);
         if (onError) {
           onError(e.message);
         }
@@ -136,7 +138,7 @@ function setupQuizSockets(io) {
     // data = { pin: pin, socketId: socketId }
     socket.on("someone-just-left", data => {
       try {
-        const roomNo = getQuizRoomNo(data.pin);
+        const roomNo = getRoomNo(data.pin, "quiz");
         quizPlayerIO.in(roomNo).clients((err, clients) => {
           if (!err) {
             const nPlayers = clients.length;
@@ -196,7 +198,7 @@ function setupQuizSockets(io) {
     socket.on("authenticate", async (data, onError) => {
       try {
         //const token = data.token
-        const roomNo = getQuizRoomNo(data.pin);
+        const roomNo = getRoomNo(data.pin, "quiz");
         log.debug(`rooms (set on Server): %o`, quizRooms);
         log.debug(
           `authenticating player socket - ID "${
@@ -221,7 +223,7 @@ function setupQuizSockets(io) {
           );
 
           // Join the room playing the game
-          joinQuizRoom(socket, roomNo);
+          joinRoom(socket, roomNo);
 
           // tell client auth is OK, hand it the user info
           socket.emit("auth-success", userInfo);
@@ -299,7 +301,7 @@ function setupSurveySockets(io) {
     //  data = { pin: pin, userInfo: userInfo }; // userInfo as provided during login
     socket.on("authenticate", (data, onError) => {
       try {
-        const roomNo = joinSurveyRoom(socket, data.pin);
+        const roomNo = joinRoom(socket, data.pin, "survey");
         socket.authenticated = true;
         log.debug(`authenticated admin socket %s and added it to room %s`, socket.id, roomNo);
         surveyPlayerIO.emit("get-surveyrun-info", data);
@@ -347,7 +349,7 @@ function setupSurveySockets(io) {
     // data = { pin: pin, socketId: socketId }
     socket.on("someone-just-left", data => {
       try {
-        const roomNo = getSurveyRoomNo(data.pin);
+        const roomNo = getRoomNo(data.pin, "survey");
         surveyPlayerIO.in(roomNo).clients((err, clients) => {
           if (!err) {
             const nPlayers = clients.length;
@@ -407,7 +409,7 @@ function setupSurveySockets(io) {
     socket.on("authenticate", async (data, onError) => {
       try {
         //const token = data.token
-        const roomNo = getSurveyRoomNo(data.pin);
+        const roomNo = getRoomNo(data.pin, "survey");
         log.debug(`rooms (set on Server): %o`, surveyRooms);
         log.debug(
           `authenticating player socket - ID "${
@@ -432,7 +434,7 @@ function setupSurveySockets(io) {
           );
 
           // Join the room playing the game
-          joinSurveyRoom(socket, roomNo);
+          joinRoom(socket, roomNo, "survey");
 
           // tell client auth is OK, hand it the user info
           socket.emit("auth-success", userInfo);
@@ -500,13 +502,10 @@ function setupSurveySockets(io) {
   });
 }
 
-function getQuizRoomNo(pin) {
-  return "quiz-" + pin;
+function getRoomNo(pin, recordType) {
+  return `${recordType}-${pin}`;
 }
 
-function getSurveyRoomNo(pin) {
-  return "survey-" + pin;
-}
 module.exports = {
   setupQuizSockets,
   setupSurveySockets

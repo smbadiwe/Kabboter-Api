@@ -15,13 +15,6 @@ function callbackOnQuizPlayerError(errorMessage) {
   console.log("From /quizplayer callback fn: An error occurred.");
   console.log(errorMessage);
 }
-function refreshFieldsAfterAnswerIsSubmitted() {
-  // $("#questions").html("");
-  // $("#error").html("");
-  // $("#feedback").html("");
-  // $("#stats").html("");
-  // $("#dashboard").html("");
-}
 
 /**
  * Sample callback function to pass to socket. Socket will call it if anything goes wrong with our .emit request.
