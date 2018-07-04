@@ -64,8 +64,10 @@ function loadGameDetailsPageData(recordType) {
         );
       }
 
-      let rows = isQuiz ? getQuizRows(data) : getVoteRows(data);
-      $("#ls").append(rows);
+      if (data.questions && data.questions.length) {
+        let rows = isQuiz ? getQuizRows(data) : getVoteRows(data);
+        $("#ls").append(rows);
+      }
     }
   });
 }
@@ -349,9 +351,7 @@ function saveOrUpdateGame(e, recordType) {
     },
     success: function(data) {
       //NB: 'id' querystring key refers to the quiz/survey id; NOT the question id
-      window.location = `addeditquestions.html?id=${data.id}&title=${data.title}&desc=${
-        data.description
-      }`;
+      window.location = `details.html?id=${data.id}`;
     }
   });
 }

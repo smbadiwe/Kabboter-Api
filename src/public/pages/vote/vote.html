@@ -22,7 +22,7 @@
             </div>
             <div class="row mt-6">
                 <div class="col-sm-12 my-card py-2">
-                    <div id="result" class="alert alert-danger" style="display: none">
+                    <div id="result" class="alert alert-danger" style="display: none;">
                     </div>
                     <div class="table-responsive">
 
@@ -82,13 +82,16 @@
                     var qd = 1;
                     var rows = "";
                     $.each(data, function (key, val) {
+                        let btnLink = val.published ?
+                            `<a href="/surveyadmin/surveyadmin.html?id=${val.id}" class="btn btn-success btn-block btn-sm">Play game</a>`
+                            : `<a href="details.html?id=${val.id}" class="btn btn-success btn-block btn-sm">Publish</a>`;
                         rows += (`<tr>
                                     <td scope="row">`+ (qd++) + `</td>
                                     <td>` + val.title + `</td>
                                     <td>${val.description}</td>
-                                    <td>${val.published ? "<b>Yes</b>" : "No"}</td>
-                                    <td><a href="/surveyadmin/surveyadmin.html?id=${val.id}" class="btn btn-brand btn-sm">Play game</a></td>
-                                    <td><a href="details.html?id=${val.id}" class="btn btn-brand btn-sm">View details</a></td>
+                                    <td>${val.published ? "<span style='font-weight: bold; color: green;'>Yes</span>" : "No"}</td>
+                                    <td>${btnLink}</td>
+                                    <td><a href="details.html?id=${val.id}" class="btn btn-danger btn-block btn-sm">View details</a></td>
                                 </tr>`);
                     });
                     $('#ls').html(rows);

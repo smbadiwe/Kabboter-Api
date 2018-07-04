@@ -3,6 +3,12 @@ export async function up(knex) {
     .table("quizruns", t => {
       t.boolean("awardPoints").defaultTo(true);
       t.boolean("awardBonus").defaultTo(true);
+      t.string("quiztitle");
+      t.string("quizdescription");
+    })
+    .table("surveyruns", t => {
+      t.string("surveytitle");
+      t.string("surveydescription");
     })
     .table("quizquestions", t => {
       t.integer("points").defaultTo(0);
@@ -43,6 +49,12 @@ export async function down(knex) {
     .table("quizruns", t => {
       t.dropColumn("awardPoints");
       t.dropColumn("awardBonus");
+      t.dropColumn("quiztitle");
+      t.dropColumn("quizdescription");
+    })
+    .table("surveyruns", t => {
+      t.dropColumn("surveytitle");
+      t.dropColumn("surveydescription");
     })
     .table("quizquestions", t => {
       t.dropColumn("points");
