@@ -36,7 +36,9 @@ function setGameQuestionPropsOnPage(gamequestion) {
     $("#opt4").html(gamequestion.option4);
     startAdminCountDown(gamequestion.timeLimit);
   } else {
-    $("#feedback").html("That's all! Thank you for participating.");
+    $("#step1").hide();
+    $("#step2").hide();
+    $("#end").show();
   }
 }
 

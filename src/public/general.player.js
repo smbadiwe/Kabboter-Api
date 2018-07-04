@@ -90,6 +90,11 @@ function onPlayerReceiveNextQuestion(question, game) {
     $("#game").hide();
     $("#feedback").show();
     $("#feedbackText").html("That's all! Thank you for participating.");
+    localStorage.removeItem(game + "question");
+    localStorage.removeItem(game + "PlayerInfo");
+    localStorage.removeItem(game + "pin");
+    localStorage.removeItem("token");
+    localStorage.removeItem("userInfo");
   }
 }
 
@@ -100,13 +105,15 @@ function startPlayerCountDown(maxCount = 20) {
   const counter = setInterval(function() {
     if (answered || maxCount === 0) {
       clearInterval(counter);
-      $("#timer").html("Time up!");
 
       $("#option1").prop("disabled", true);
       $("#option2").prop("disabled", true);
       $("#option3").prop("disabled", true);
       $("#option4").prop("disabled", true);
-      alert("Time up!");
+      if (maxCount === 0) {
+        alert("Time up!");
+        $("#timer").html("Time up!");
+      }
     } else {
       $("#timer").html(maxCount);
       maxCount--;

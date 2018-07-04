@@ -12,15 +12,28 @@ import { validateInteger } from "../utils/ValidationErrors";
 
 log.setNamespace("socketsetup");
 
-const quizRooms = new Set();
-const surveyRooms = new Set();
+const quizRooms = {};
+const surveyRooms = {};
 
 function joinRoom(socket, quizpin, recordType) {
   const roomNo = getRoomNo(quizpin, recordType);
   socket.roomNo = roomNo;
   socket.join(roomNo);
-  if (recordType === "quiz") quizRooms.add(roomNo);
-  else surveyRooms.add(roomNo);
+  if (recordType === "quiz") {
+    const members = quizRooms[roomNo];
+    if (members) {
+      quizRooms[roomNo].push(socket.id);
+    } else {
+      quizRooms[roomNo] = [socket.id];
+    }
+  } else {
+    const members = surveyRooms[roomNo];
+    if (members) {
+      surveyRooms[roomNo].push(socket.id);
+    } else {
+      surveyRooms[roomNo] = [socket.id];
+    }
+  }
   log.debug("Player socket %s joining %s room %s", socket.id, recordType, roomNo);
 
   return roomNo;
@@ -90,7 +103,7 @@ function setupQuizSockets(io) {
     //  data = { pin: pin, userInfo: userInfo }; // userInfo as provided during login
     socket.on("authenticate", (data, onError) => {
       try {
-        const roomNo = joinRoom(socket, data.pin);
+        const roomNo = joinRoom(socket, data.pin, "quiz");
         socket.authenticated = true;
         log.debug(`authenticated admin socket %s and added it to room %s`, socket.id, roomNo);
         quizPlayerIO.emit("get-quizrun-info", data);
@@ -207,7 +220,7 @@ function setupQuizSockets(io) {
           quizRooms
         );
 
-        if (quizRooms.has(roomNo)) {
+        if (quizRooms[roomNo]) {
           socket.authenticated = true;
 
           // create user
@@ -223,7 +236,7 @@ function setupQuizSockets(io) {
           );
 
           // Join the room playing the game
-          joinRoom(socket, roomNo);
+          joinRoom(socket, roomNo, "quiz");
 
           // tell client auth is OK, hand it the user info
           socket.emit("auth-success", userInfo);
@@ -418,7 +431,7 @@ function setupSurveySockets(io) {
           surveyRooms
         );
 
-        if (surveyRooms.has(roomNo)) {
+        if (surveyRooms[roomNo]) {
           socket.authenticated = true;
 
           // create user
