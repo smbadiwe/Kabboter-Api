@@ -84,10 +84,8 @@ function loadGameDropdownList(recordType) {
         $("#gamelist").html(options);
       } else {
         const quizOrVote = recordType === "quizzes" ? "quiz" : "vote";
-        $("#result").show();
-        $("#result").html(
-          `No published ${recordType} yet. <a href="/pages/${quizOrVote}/${quizOrVote}.html">Click here</a> to publish a few.`
-        );
+        alert(`No published ${recordType} yet. You will need to publish a few.`);
+        window.location = `/pages/${quizOrVote}/${quizOrVote}.html`;
       }
     },
     error: function(error) {

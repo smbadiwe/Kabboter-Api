@@ -32,6 +32,7 @@
                                     <th scope="col" class="font-bold">#</th>
                                     <th scope="col" class="font-bold">Title</th>
                                     <th scope="col" class="font-bold">Description</th>
+                                    <th scope="col" class="font-bold">Published</th>
                                     <th scope="col" class="font-bold"></th>
                                     <th scope="col" class="font-bold"></th>
                                 </tr>
@@ -69,7 +70,7 @@
                 dataType: 'json',
                 error: function (data) {
                     console.log(data);
-                    $('#result').append('Error fetching quizzes');
+                    $('#result').append('Error fetching votes');
                 },
                 success: function (data) {
                     console.log(data);
@@ -84,7 +85,8 @@
                         rows += (`<tr>
                                     <td scope="row">`+ (qd++) + `</td>
                                     <td>` + val.title + `</td>
-                                    <td>`+ val.description + `</td>
+                                    <td>${val.description}</td>
+                                    <td>${val.published ? "<b>Yes</b>" : "No"}</td>
                                     <td><a href="/surveyadmin/surveyadmin.html?id=${val.id}" class="btn btn-brand btn-sm">Play game</a></td>
                                     <td><a href="details.html?id=${val.id}" class="btn btn-brand btn-sm">View details</a></td>
                                 </tr>`);

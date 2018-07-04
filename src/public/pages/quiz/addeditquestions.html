@@ -14,11 +14,11 @@
 <body>
     <div class="app">
         <div id="myNavBar"> </div>
-        <div class="container mt-5">
+        <div class="container mt-4">
             <div class="text-center">
                 <h1 class="font-weight-light text-secondary">
-                    <span id="actionType" style="font-weight: bold;"></span> Question</h1>
-                <h4 class="text-brand-light pt-3 font-weight-light">
+                    <span id="actionType" style="font-weight: bold;"></span> Quiz Question</h1>
+                <h4 class="text-brand-light pt-2 font-weight-light">
                     <span id='game-title'></span>
                 </h4>
                 <p class="text-secondary col-md-8 offset-md-2">
@@ -61,7 +61,6 @@
                         </div>
                         <p class="font-weight-bold">Input Question Point and Max Bonus </p>
                         <div class="row pt-3">
-
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">Question Point</label>
@@ -71,7 +70,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Max Bonus</label>
-                                    <inout type="number" min="0" class="form-control" id="maxbonus" />
+                                    <input type="number" min="0" class="form-control" id="maxbonus" />
                                 </div>
                             </div>
                         </div>
@@ -99,7 +98,7 @@
                             <input type="number" class="form-control" min="0" id="time" />
                         </div>
                         <div class="form-group">
-                            <button id='saveAndAdd' onclick="saveQuestion(event);" class="btn btn-brand-light px-4 mt-3">Save and add another question</button>
+                            <button id='saveAndAdd' onclick="saveQuestion(event);" class="btn btn-brand-light px-4 mt-3" style="display: none">Save and add another question</button>
                             <button id='save' onclick="saveQuestion(event);" class="btn btn-primary px-4 mt-3">Save and Continue</button>
                             <a role="button" href="javascript:history.go(-1);" class="btn btn-default px-4 mt-3">Back</a>
                         </div>
@@ -233,6 +232,7 @@
                     });
                 } else {
                     $('#actionType').html('Create');
+                    $('#saveAndAdd').show();
                 }
             }
         });
