@@ -16,7 +16,7 @@
         <div class="row">
             <div class="col-lg-5 form d-flex flex-column justify-content-center">
                 <div class="container">
-                    <p class="pb-5 text-center">
+                    <p class="pb-3 text-center">
                         <span class="text-secondary">Welcome to</span>
                         <br>
                         <img src="assets/img/logo.png" class="pb-3 pt-2" width="200" alt="">
@@ -25,7 +25,7 @@
                         <h1 class="text-center">
                             <span class="text-secondary">Login.</span>
                         </h1>
-                        <hr class="pb-3">
+                        <!-- <hr class="pb-3"> -->
                         <div class="row">
                             <div id="result" class="col-lg-10 offset-md-1"></div>
                             <form action="" class="col-lg-10 offset-md-1">
@@ -48,6 +48,36 @@
                                         <a href="#" id="forgotPasswordBtn">Forgot password</a>
                                     </span>
                                 </div>
+
+                                       
+                                <hr>
+
+                                <!-- PLAYERS BUTTON VIEW -->
+
+                                 <h3 class="pb-3 text-center">
+                                    <span class="text-secondary">Play Game</span>                    
+                                 </h3>
+                             
+                                <div class="row pt-2">
+
+                                    <!-- START OF PLAY QUIZ BUTTON -->
+
+                                    <span class="col-lg-5 text-center text-lg-left font-small" style="margin-bottom: 3px;">
+                                        <a href="" class="btn btn-brand btn-block" id="playQuizBtn">Play Quiz</a>
+                                    </span>
+
+                                    <!-- END OF PLAY QUIZ BUTTON -->
+
+                                    <!-- START OF VOTE QUIZ BUTTON -->
+
+                                    <span class="col-lg-7 text-center text-lg-right font-small">
+                                        <a href="#" class="btn btn-brand btn-block" id="playVoteBtn">Play Vote</a>
+                                    </span>
+
+                                    <!-- END OF PLAY VOTE QUIZ BUTTON -->
+                                </div>
+
+                                <!-- END OF PLAYERS BUTTON VIEW -->
                             </form>
                         </div>
                     </div>
@@ -123,11 +153,11 @@
                             </span>
                         </div>
                     </div>
-                    <p class="mt-5 text-center">
+                    <!-- <p class="mt-5 text-center">
                         <i>Powered by
                             <a href="http://www.raoatech.com">Raoatech</a>
                         </i>
-                    </p>
+                    </p> -->
                 </div>
             </div>
             <div class="col-lg-7 illustration d-flex flex-column justify-content-center align-items-center">
@@ -175,6 +205,32 @@
                     }
                 });
             });
+
+            /*
+
+                BUTTON TO NAVIGATE PLAYERS TO QUIZ VIEW 
+
+            */
+
+            $('#playQuizBtn').click(function(e) {
+                e.preventDefault();
+
+               window.location =  window.location.origin + '/api/public/quizplayer'
+            })
+
+            /*
+
+                BUTTON TO NAVIGATE PLAYERS TO VOTE/SURVEY VIEW 
+
+            */
+
+            $('#playVoteBtn').click(function(e) {
+
+                e.preventDefault();
+
+                window.location = window.location.origin + 'api/public/surveyplayer';
+            })
+
             $('#register').click(function (e) {
                 e.preventDefault();
                 var myUrl = window.location.origin + '/api/public/register';
