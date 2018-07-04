@@ -126,10 +126,10 @@
                                                 <span class="font-small text-secondary">`+ val.timeLimit + ` sec<br /></span>
                                             </div>
                                             <div class="col-2">
-                                                <button class="btn btn-danger btn-sm btn-block" onclick="deleteId(`+ val.id + `, 'vote');">Delete</a>
+                                                <button class="btn btn-danger btn-sm btn-block" onclick="deleteId(`+ val.id + `, 'vote');">Delete</button>
                                             </div>
                                             <div class="col-2">
-                                                <button class="btn btn-info btn-sm btn-block" onclick="editId(`+ val.id + `);">Edit</button>
+                                                <a role="button" class="btn btn-info btn-sm btn-block" href="addeditquestions.html?questionId=${val.id}&title=${data.title}&desc=${data.description}&id=${data.id}">Edit</a>
                                             </div>
                                         </div>
                                     </div>
@@ -144,13 +144,6 @@
 
         });
 
-        function editId(val) {
-            var title = getUrlParameter('title');
-            var desc = getUrlParameter('desc');
-            var quizId = getUrlParameter('quizId');
-            //                alert(val)
-            window.location = 'edit.html?questionId=' + val + '&title=' + title + '&desc=' + desc + '&quizId=' + quizId;
-        }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>

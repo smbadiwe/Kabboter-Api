@@ -146,7 +146,9 @@ function saveOrUpdateGame(e, recordType) {
     },
     success: function(data) {
       //NB: 'id' querystring key refers to the quiz/survey id; NOT the question id
-      window.location = `addeditquestions.html?id=${data.id}&title=${data.title}&desc=${data.description}`;
+      window.location = `addeditquestions.html?id=${data.id}&title=${data.title}&desc=${
+        data.description
+      }`;
     }
   });
 }

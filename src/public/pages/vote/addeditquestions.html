@@ -16,7 +16,8 @@
         <div id="myNavBar"> </div>
         <div class="container mt-5">
             <div class="text-center">
-                <h1 class="font-weight-light text-secondary">Create Questions</h1>
+                <h1 class="font-weight-light text-secondary">
+                    <span id="actionType" style="font-weight: bold;"></span> Question</h1>
                 <h4 class="text-brand-light pt-3 font-weight-light">
                     <span id='game-title'></span>
                 </h4>
@@ -59,21 +60,8 @@
                             </div>
                         </div>
                         <div class="form-group pt-3">
-                            <label for="time">Time Limit</label>
-                            <select class="form-control" id="time">
-                                <option selected value="5">5 sec </option>
-                                <option value="10">10 sec</option>
-                                <option value="15">15 sec</option>
-                                <option value="20">20 sec</option>
-                                <option value="25">25 sec</option>
-                                <option value="30">30 sec</option>
-                                <option value="35">35 sec</option>
-                                <option value="40">40 sec</option>
-                                <option value="45">45 sec</option>
-                                <option value="50">50 sec</option>
-                                <option value="55">55 sec</option>
-                                <option value="60">60 sec</option>
-                            </select>
+                            <label for="time">Time Limit (seconds)</label>
+                            <input type="number" class="form-control" min="0" id="time" />
                         </div>
                         <div class="form-group">
                             <button id='saveAndAdd' onclick="saveQuestion(event);" class="btn btn-brand-light px-4 mt-3">Save and add another question</button>
@@ -91,9 +79,6 @@
     <script>
         function saveQuestion(e) {
             e.preventDefault();
-            var token = localStorage.getItem("token");
-            var myUrl = window.location.origin + '/api/user/surveyquestions/create';
-
             var surveyId = getUrlParameter('id');
             if (!surveyId) {
                 window.location = '/pages/dashboard.html';
@@ -120,8 +105,13 @@
             }
             var option3 = $('#option3').val();
             var option4 = $('#option4').val();
-
             const ctrlId = e.target.id;
+
+            const token = localStorage.getItem("token");
+
+            const questionId = getUrlParameter('questionId');
+            const myUrl = window.location.origin + `/api/user/surveyquestions/${questionId ? 'update' : 'create'}`;
+
             $.ajax({
                 headers: {
                     Authorization: 'Bearer ' + token
@@ -129,6 +119,7 @@
                 url: myUrl,
                 type: 'post',
                 data: {
+                    id: questionId,
                     question: title,
                     timeLimit: time,
                     surveyId: surveyId,
@@ -155,9 +146,43 @@
         }
 
         $(function () {
-            loadNavBar();
-            $('#game-title').html(getUrlParameter('title'));
-            $('#game-description').html(getUrlParameter('desc'));
+            var surveyId = getUrlParameter('id');
+            if (!surveyId) {
+                window.location = '/pages/dashboard.html';
+            } else {
+                loadNavBar();
+                $('#game-title').html(getUrlParameter('title'));
+                $('#game-description').html(getUrlParameter('desc'));
+
+                const questionId = getUrlParameter('questionId');
+                if (questionId) { // means'we're editing question
+                    $('#actionType').html('Edit');
+                    const token = localStorage.getItem("token");
+                    $.ajax({
+                        headers: {
+                            Authorization: 'Bearer ' + token
+                        },
+                        url: window.location.origin + `/api/user/surveyquestions/${questionId}`,
+                        type: 'GET',
+                        error: function (data) {
+                            console.log(data);
+                            alert(data.statusText);
+                            window.location = `details.html?id=${surveyId}`;
+                        },
+                        success: function (data) {
+                            //START HERE: set fields. Code below is VERY buggy
+                            $('#question-title').val(data.question);
+                            $('#time').val(data.timeLimit);
+                            $('#option1').val(data.option1);
+                            $('#option2').val(data.option2);
+                            $('#option3').val(data.option3);
+                            $('#option4').val(data.option4);
+                        }
+                    });
+                } else {
+                    $('#actionType').html('Create');
+                }
+            }
         });
     </script>
     <!-- Popper JS -->
