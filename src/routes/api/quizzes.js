@@ -99,7 +99,9 @@ router.get("/my", async ctx => {
 
 router.get("/", async ctx => {
   try {
-    const res = await new QuizService().getAll();
+    // TODO: implement paging for all tables
+    const res = await new QuizService().getRecordsPaged(ctx.request.query);
+    //const res = await new QuizService().getAll();
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);

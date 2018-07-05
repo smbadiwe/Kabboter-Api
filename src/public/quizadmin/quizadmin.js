@@ -46,31 +46,11 @@ function getQuizRunInfo() {
   return JSON.parse(info);
 }
 
-function updateAnsweredQuestionsList(newQuestionId) {
-  //TODO: If you so desire, use this to update count or list of answered question.
-  // Note that the code commented out is not tested and probably buggy.
-  let list = sessionStorage.getItem("answeredquestionlist");
-  if (list) {
-    sessionStorage.setItem("answeredquestionlist", `${list}${newQuestionId},`);
-  } else {
-    sessionStorage.setItem("answeredquestionlist", `${newQuestionId},`);
-  }
-}
-
-function onReceiveNextQuestion(quizquestion) {
-  if (quizquestion) {
-    localStorage.setItem("quizquestion", JSON.stringify(quizquestion));
-    updateAnsweredQuestionsList(quizquestion.id);
-  }
-  setGameQuestionPropsOnPage(quizquestion);
-}
-
 // Sockets now
 const socket = io("/quizadmin", getSocketOptions());
 
 function onDisconnect(reason) {
-  localStorage.removeItem("quizruninfo");
-  localStorage.removeItem("quizquestion");
+  clearGameStorages("quiz");
   if (reason === "io server disconnect") {
     // the disconnection was initiated by the server, you need to reconnect manually
     console.log("Server disconnected you do to auth fail");

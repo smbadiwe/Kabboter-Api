@@ -46,25 +46,6 @@ function getSurveyRunInfo() {
   return JSON.parse(info);
 }
 
-function updateAnsweredQuestionsList(newQuestionId) {
-  //TODO: If you so desire, use this to update count or list of answered question.
-  // Note that the code commented out is not tested and probably buggy.
-  let list = sessionStorage.getItem("answeredquestionlist");
-  if (list) {
-    sessionStorage.setItem("answeredquestionlist", `${list}${newQuestionId},`);
-  } else {
-    sessionStorage.setItem("answeredquestionlist", `${newQuestionId},`);
-  }
-}
-
-function onReceiveNextQuestion(surveyquestion) {
-  if (surveyquestion) {
-    localStorage.setItem("surveyquestion", JSON.stringify(surveyquestion));
-    updateAnsweredQuestionsList(surveyquestion.id);
-  }
-  setGameQuestionPropsOnPage(surveyquestion);
-}
-
 // Sockets now
 const socket = io("/surveyadmin", getSocketOptions());
 

@@ -177,7 +177,7 @@ function submitAmswerChoice(event) {
  * @param {*} playerInfo
  */
 // Treated and used.
-function showAnswerQuizViewOnnAuthSuccess(playerInfo) {
+function showAnswerViewOnAuthSuccess(playerInfo) {
   // Show the view where user can answer the questions.
   //NB: Redirecting closes the socket. So, don't.
   //$("div#register").hide();

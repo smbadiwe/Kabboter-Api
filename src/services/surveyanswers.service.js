@@ -56,29 +56,23 @@ select count(*) as total from (
     });
     if (!surveyRun) throw new RequestError("Invalid PIN");
 
-    const existing = this.getBy({
+    const existing = this.getFirst({
       surveyId: record.surveyId,
       surveyQuestionId: record.surveyQuestionId,
       surveyRunId: surveyRun.id,
       userId: record.userId
     });
     if (existing && existing.length) {
-      existing[0].choice = record.choice;
-      existing[0].correct = record.correct;
-      existing[0].points = record.points;
-      existing[0].bonus = record.bonus;
+      existing.choice = record.choice;
 
-      await super.update(existing[0]);
+      await super.update(existing);
     } else {
       const newRecord = {
         surveyId: record.surveyId,
         surveyQuestionId: record.surveyQuestionId,
         surveyRunId: record.surveyRunId,
         userId: record.userId,
-        choice: record.choice,
-        correct: record.correct,
-        points: record.points,
-        bonus: record.bonus
+        choice: record.choice
       };
       await super.save(newRecord);
     }

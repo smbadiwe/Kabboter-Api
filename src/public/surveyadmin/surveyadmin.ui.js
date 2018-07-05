@@ -31,6 +31,7 @@ function startSurveyAdmin(e) {
 function onGetSurveyRunInfo(info) {
   // info = { id: <the surveyRun id>, surveyId: surveyId, pin: pin, totalQuestions: totalQuestions,surveytitle: surveytitle, surveydescription: surveydescription };
   console.log("onGetSurveyRunInfo - info = ");
+  console.log(info);
   localStorage.setItem("surveyruninfo", JSON.stringify(info));
   $("div#step1").hide();
   $("div#step2").show();

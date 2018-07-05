@@ -13,7 +13,36 @@ function showquest(e) {
   $("div#disquest").show();
 }
 
-function setGameQuestionPropsOnPage(gamequestion) {
+/**
+ *
+ * @param {*} gamequestion
+ * @param {*} game 'quiz' or 'survey'
+ */
+function onReceiveNextQuestion(gamequestion, game) {
+  if (gamequestion) {
+    localStorage.setItem(game + "question", JSON.stringify(gamequestion));
+    updateAnsweredQuestionsList(gamequestion.id);
+  }
+  setGameQuestionPropsOnPage(gamequestion, game);
+}
+
+function updateAnsweredQuestionsList(newQuestionId) {
+  //TODO: If you so desire, use this to update count or list of answered question.
+  // Note that the code commented out is not tested and probably buggy.
+  let list = sessionStorage.getItem("answeredquestionlist");
+  if (list) {
+    sessionStorage.setItem("answeredquestionlist", `${list}${newQuestionId},`);
+  } else {
+    sessionStorage.setItem("answeredquestionlist", `${newQuestionId},`);
+  }
+}
+
+/**
+ *
+ * @param {*} gamequestion
+ * @param {*} game 'quiz' or 'survey'
+ */
+function setGameQuestionPropsOnPage(gamequestion, game) {
   // This is a question object as defined in the API doc.
   //TODO: Render fields as you would like it.
   console.log("setGameQuestionPropsOnPage. gamequestion = ");
@@ -39,6 +68,8 @@ function setGameQuestionPropsOnPage(gamequestion) {
     $("#step1").hide();
     $("#step2").hide();
     $("#end").show();
+
+    clearGameStorages(game);
   }
 }
 
@@ -110,14 +141,6 @@ function setLoginInfo() {
   }
 }
 
-function logOut(e) {
-  e.preventDefault();
-  e.stopPropagation();
-  localStorage.removeItem("token");
-  localStorage.removeItem("userInfo");
-  window.location.href = `${window.location.origin}/login.html`;
-}
-
 function onAfterLoadingGameList() {
   setLoginInfo();
 
@@ -128,4 +151,16 @@ function onAfterLoadingGameList() {
     $("#gamelist").val(id);
     console.log("onAfterLoadingGameList: Done setting gamelist val: " + $("#gamelist").val());
   }
+}
+
+/**
+ * Clear all storage data associated with game playing.
+ * Sync up with the code at src\public\js\app.js
+ * @param {*} game 'quiz' or 'survey'
+ */
+function clearGameStorages(game) {
+  localStorage.removeItem(game + "runinfo");
+  localStorage.removeItem(game + "question");
+  sessionStorage.removeItem("answeredquestionlist");
+  sessionStorage.removeItem("userData");
 }

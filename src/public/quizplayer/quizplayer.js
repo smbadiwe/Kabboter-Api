@@ -47,7 +47,7 @@ function onAuthSuccess(playerInfo) {
   console.log(playerInfo);
 
   localStorage.setItem("quizPlayerInfo", JSON.stringify(playerInfo));
-  showAnswerQuizViewOnnAuthSuccess(playerInfo);
+  showAnswerViewOnAuthSuccess(playerInfo);
 }
 
 function onDisconnect(reason) {
@@ -74,8 +74,8 @@ function onDisconnect(reason) {
 function submitAnswer(answerInfo) {
   const quizPlayerInfo = JSON.parse(localStorage.getItem("quizPlayerInfo"));
   const quizquestion = JSON.parse(localStorage.getItem("quizquestion"));
-  const isCorrect = quizquestion.correctOptions.indexOf(answerInfo.choice);
 
+  const isCorrect = quizquestion.correctOptions.indexOf(answerInfo.choice) >= 0;
   const answerToSubmit = {
     userId: quizPlayerInfo.id,
     pin: quizPlayerInfo.pin,

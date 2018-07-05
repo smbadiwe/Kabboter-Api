@@ -34,7 +34,21 @@ function logout(event) {
   }
   localStorage.removeItem("token");
   localStorage.removeItem("userInfo");
+  clearGameStorages("quiz");
+  clearGameStorages("survey");
   window.location.href = "/"; // window.location.origin;
+}
+
+/**
+ * Clear all storage data associated with game playing
+ * Sync up with the code at src\public\general.admin.js
+ * @param {*} game 'quiz' or 'survey'
+ */
+function clearGameStorages(game) {
+  localStorage.removeItem(game + "runinfo");
+  localStorage.removeItem(game + "question");
+  sessionStorage.removeItem("answeredquestionlist");
+  sessionStorage.removeItem("userData");
 }
 
 /**

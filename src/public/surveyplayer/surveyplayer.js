@@ -47,7 +47,7 @@ function onAuthSuccess(playerInfo) {
   console.log(playerInfo);
 
   localStorage.setItem("surveyPlayerInfo", JSON.stringify(playerInfo));
-  showAnswerSurveyViewOnnAuthSuccess(playerInfo);
+  showAnswerViewOnAuthSuccess(playerInfo);
 }
 
 function onDisconnect(reason) {

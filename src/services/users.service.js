@@ -104,7 +104,8 @@ export default class UserService extends BaseEntityService {
         if (payload.phone) {
           queryBuilder.where("phone", "like", `%${payload.phone}%`);
         }
-      });
+      })
+      .select();
     const result = await this.dbPaging(playeyQuery, pagingOptions);
     return result; // = { data, pagination }
   }

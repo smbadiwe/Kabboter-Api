@@ -19,7 +19,7 @@ export class BaseEntityService {
   /**
    *
    * @param {*} query The Knex query
-   * @param {*} options { perPage: perPage, page: page, }
+   * @param {*} pagingInfo { perPage: perPage, page: page, }
    * 
    * @returns The following JSON
    *  { pagination: {
@@ -33,9 +33,9 @@ export class BaseEntityService {
       data: data // list of the data batch queried
     }
    */
-  async dbPaging(query, options) {
-    const perPage = options.perPage || 10;
-    let page = options.page || 1;
+  async dbPaging(query, pagingInfo) {
+    const perPage = pagingInfo.perPage || 10;
+    let page = pagingInfo.page || 1;
 
     const countQuery = knex.count("* as total").from(query.clone().as("inner"));
 

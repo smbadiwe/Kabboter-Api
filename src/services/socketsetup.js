@@ -88,9 +88,7 @@ function validateQuizAnswerProps(data) {
 function validateSurveyAnswerProps(data) {
   validateInteger(data.surveyId, "surveyId", true);
   validateInteger(data.surveyQuestionId, "surveyQuestionId", true);
-  validateInteger(data.points, "points");
   validateInteger(data.userId, "userId", true);
-  validateInteger(data.bonus, "bonus");
 }
 
 function setupQuizSockets(io) {
@@ -337,7 +335,7 @@ function setupSurveySockets(io) {
     socket.on("get-next-question", async (data, answeredQuestionIds, onError) => {
       try {
         log.debug(`admin socket.on("get-next-question" called. data = %o`, data);
-        const question = await new SurveyuestionService().getOneUnansweredQuestion(
+        const question = await new SurveyQuestionService().getOneUnansweredQuestion(
           data.surveyId,
           answeredQuestionIds
         );

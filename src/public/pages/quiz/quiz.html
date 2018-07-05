@@ -25,7 +25,6 @@
                     <div id="result" class="alert alert-danger" style="display: none">
                     </div>
                     <div class="table-responsive">
-
                         <table id="example" class="table table-hover table-borderless">
                             <thead class="thead-dark">
                                 <tr>
@@ -56,7 +55,6 @@
             window.location = `addedit.html?id=${val}`;
         }
         $(function () {
-
             loadNavBar();
             var token = localStorage.getItem("token");
             var myUrl = window.location.origin + '/api/user/quizzes/my';
@@ -87,7 +85,7 @@
                             : `<a href="details.html?id=${val.id}" class="btn btn-success btn-block btn-sm">Publish</a>`;
                         rows += (`<tr>
                                     <td scope="row">`+ (qd++) + `</td>
-                                    <td>` + val.title + `</td>
+                                    <td>${val.title}</td>
                                     <td>${val.description}</td>
                                     <td>${val.published ? "<span style='font-weight: bold; color: green;'>Yes</span>" : "No"}</td>
                                     <td>${btnLink}</td>

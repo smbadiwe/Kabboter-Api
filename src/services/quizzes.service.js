@@ -9,6 +9,23 @@ export default class QuizService extends BaseEntityService {
     log.setNamespace("QuizService");
   }
 
+  /**
+   *
+   * @param {*} queryParams Example: {title: '', page: 1, perPage: 10 }
+   */
+  async getRecordsPaged(queryParams) {
+    const query = this.connector
+      .table(this.tableName)
+      .modify(queryBuilder => {
+        if (queryParams.title) {
+          queryBuilder.where("title", "like", `%${queryParams.title}%`);
+        }
+      })
+      .select();
+
+    return await this.dbPaging(query, { page: queryParams.page, perPage: queryParams.perPage });
+  }
+
   async deleteRecord(id) {
     const hasRun = await new QuizRunService().hasQuizBeenRun(id);
     if (hasRun)
