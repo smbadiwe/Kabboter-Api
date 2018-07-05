@@ -47,22 +47,6 @@ function onPlayerSubmittedAnswer(data) {
   console.log(data);
 }
 
-function updateSurveyAdminPageOnWhenSomeoneJustJoined(data) {
-  // data = { nPlayers: nPlayers, topFive: topFive };
-  // You get the total number of players still connecting
-  // and a list of the top 5 to display on page.
-  console.log("From updateSurveyAdminPageOnWhenSomeoneJustJoined fn:");
-  console.log(data);
-}
-
-function updateSurveyAdminPageOnWhenSomeoneJustLeft(data) {
-  // data = { nPlayers: nPlayers, topFive: topFive };
-  // You get the total number of players still connecting
-  // and a list of the top 5 to display on page.
-  console.log("From updateSurveyAdminPageOnWhenSomeoneJustLeft fn:");
-  console.log(data);
-}
-
 $(function() {
   $("#playGameUrl").html(window.location.origin + "/playvote");
   loadGameDropdownList("surveys");

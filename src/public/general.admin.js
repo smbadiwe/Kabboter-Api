@@ -165,6 +165,30 @@ function clearGameStorages(game) {
   sessionStorage.removeItem("userData");
 }
 
+function onWhenSomeoneJustJoined(payload) {
+  // payload = {
+  //   nPlayers: nPlayers,
+  //   topFive: topFive,
+  //   newPlayer: data.userInfo,
+  //   pin: data.pin
+  // };
+  // You get the total number of players still connecting
+  // and a list of the top 5 to display on page.
+  $("#nplayers").html(payload.nPlayers);
+}
+
+function onWhenSomeoneJustLeft(payload) {
+  // payload = {
+  //   nPlayers: nPlayers,
+  //   topFive: topFive,
+  //   newPlayer: data.userInfo,
+  //   pin: data.pin
+  // };
+  // You get the total number of players still connecting
+  // and a list of the top 5 to display on page.
+  $("#nplayers").html(payload.nPlayers);
+}
+
 /* Socket Stuffs */
 
 /**
@@ -199,15 +223,15 @@ function SetGameRunInfoOnPage(info, game) {
   $("div#step2").show();
   $("#unum").html(info.pin);
   $("#nplayers").html(0);
-  $("#gametotalqns").html(info.totalQuestions);
+  // $("#gametotalqns").html(info.totalQuestions);
   $("#gametotal").html(info.totalQuestions);
 
   if (game === "quiz") {
-    $("#quiztitle").html(info.quiztitle);
-    $("#quizdescription").html(info.quizdescription);
+    $("#gametitle").html(info.quiztitle);
+    $("#gamedescription").html(info.quizdescription);
   } else {
-    $("#surveytitle").html(info.surveytitle);
-    $("#surveydescription").html(info.surveydescription);
+    $("#gametitle").html(info.surveytitle);
+    $("#gamedescription").html(info.surveydescription);
   }
 }
 

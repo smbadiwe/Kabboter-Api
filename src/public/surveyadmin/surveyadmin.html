@@ -21,7 +21,6 @@
     <div class="app">
         <div id="myNavBar"> </div>
         <div id='step1'>
-
             <div class="container mt-5">
                 <h1 class="font-weight-light text-center text-secondary">Select Vote</h1>
                 <div class="row mt-5">
@@ -35,30 +34,29 @@
                                 </select>
                             </div>
 
-                            <button class="btn btn-brand-light px-4 mt-2" onclick="startSurveyAdmin(event);">Start Survey</button>
+                            <button class="btn btn-brand-light px-4 mt-2" onclick="startSurveyAdmin(event);">Start Vote</button>
                             <a role="button" href='javascript:history.go(-1);' class="btn mt-2">Cancel</a>
                         </form>
                     </div>
                 </div>
             </div>
-
         </div>
 
         <div id="step2" style="display:none">
             <div class="container mt-5">
                 <div class="text-center">
                     <h4 class="font-weight-light text-brand-light">
-                        <span id='surveytitle'></span>
+                        <span id='gametitle'></span>
                     </h4>
                     <p class="text-secondary col-md-8 offset-md-2">
-                        <span id='surveydescription'></span>
+                        <span id='gamedescription'></span>
                     </p>
-                    <p class="text-secondary col-md-8 offset-md-2">
+                    <!-- <p class="text-secondary col-md-8 offset-md-2">
                         Total Questions:
                         <b>
                             <span id="gametotalqns"></span>
                         </b>
-                    </p>
+                    </p> -->
                     <hr>
                 </div>
                 <div id="showpin">
@@ -76,18 +74,14 @@
                             <button id="gotoDummyBtn" blass="btn btn-success" onclick='showquest(event);'>Start</button>
                             <hr class="mt-5">
                         </div>
-                        <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 text-center mt-3">
-                            <h5>
-                                <strong id="nplayers"></strong> users currently playing</h5>
-                        </div>
                     </div>
                 </div>
                 <div id="disquest" style="display:none">
                     <div id="timekeeper" class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 text-center" style="display:none">
-                        <div class="col-6">Time alloted (sec):
+                        <div class="col-5">Time alloted (sec):
                             <h3 id="maxTimeCount" class="font-weight-bold text-brand-light font-small"></h3>
                         </div>
-                        <div class="col-6">Time remaining (sec):
+                        <div class="col-5">Time remaining (sec):
                             <h2 id="timer" style="font-size:x-large; font-weight: bold">
                             </h2>
                         </div>
@@ -129,15 +123,19 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 text-center mt-3">
+                    <h5>
+                        <strong id="nplayers"></strong> users currently playing</h5>
+                </div>
                 <div id="timeout" style="display:none">
                     <div class="container mt-5">
                         <div class="text-center">
                             <h1 class="font-weight-light text-brand-light">Welldone! Wait while Next question is loading</h1>
-                            
-                            <div class="row text-center">    
-                                    <button onclick="reloadPage()" class="btn btn-brand font-small">Play another game</button>
-                                    <a href="../pages/game/scoreboard.html" class="btn btn-brand font-small">Go to scoreboard</a>
-                                    <button onclick='loadNextQuestion(event)' class="btn btn-brand font-small">Go to next question</button>
+
+                            <div class="row text-center">
+                                <button onclick="reloadPage()" class="btn btn-brand font-small">Play another game</button>
+                                <a href="../pages/game/scoreboard.html" class="btn btn-brand font-small">Go to scoreboard</a>
+                                <button onclick='loadNextQuestion(event)' class="btn btn-brand font-small">Go to next question</button>
                             </div>
                         </div>
                     </div>
@@ -149,77 +147,10 @@
             <div class="container mt-5">
                 <div class="text-center">
                     <h1 class="font-weight-light text-brand-light">That's all! Thank you for participating.</h1>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="results" style="display:none">
-        <div class="container mt-5">
-            <div class="text-center">
-                <h1 class="font-weight-light text-brand-light">Results</h1>
-            </div>
-            <div class="row mt-4">
-                <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 my-card py-4">
-                    <table class="table table-hover table-borderless">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th scope="col" class="font-bold">#</th>
-                                <th scope="col" class="font-bold">Player</th>
-                                <th scope="col" class="font-bold">Score</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Olajide</td>
-                                <td>1092</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>Dare</td>
-                                <td>1005</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>Vivian</td>
-                                <td>980</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <div id="scoreboard" style="display:none">
-        <div class="container mt-5">
-            <div class="text-center">
-                <h1 class="font-weight-light text-brand-light">Scoreboard</h1>
-            </div>
-            <div class="row mt-4">
-                <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 my-card p-4">
-                    <h3 class="text-center mb-4">
-                        <span class="font-bold">Question 1</span> of 13 </h3>
-                    <h4>Who is the President of Nigeria
-                        <br class="d-block d-md-none">
-                        <a role="button" id="gotoScoreboardBtn" href="#" class="float-left float-md-right btn btn-brand font-small px-4">Next</a>
-                    </h4>
-                    <canvas id="graph-div" class="py-5 text-center text-secondary">Graph here...</canvas>
-                    <div class="row">
-                        <div class="col-6 p-5 text-center bg-blue">
-                            <h4 class="font-bold">A. Buhari</h4>
-                        </div>
-                        <div class="col-6 p-5 text-center bg-red text-white">
-                            <h4 class="font-bold">B. Jonathan</h4>
-                        </div>
-                        <div class="col-6 p-5 text-center bg-pink text-white">
-                            <h4 class="font-bold">C. Obasanjo</h4>
-                        </div>
-                        <div class="col-6 p-5 text-center bg-yellow">
-                            <h4 class="font-bold">D. Falz</h4>
-                        </div>
+                    <div class="row text-center">
+                        <button onclick="reloadPage()" class="btn btn-brand font-small">Play another game</button>
+                        <a href="../pages/game/scoreboard.html" class="btn btn-brand font-small">Go to scoreboard</a>
+                        <button onclick='loadNextQuestion(event)' class="btn btn-brand font-small">Go to next question</button>
                     </div>
                 </div>
             </div>
@@ -233,6 +164,8 @@
     <script src="./surveyadmin.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <script>
+    </script>
 </body>
 
 </html>

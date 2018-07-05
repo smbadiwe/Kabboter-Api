@@ -5,30 +5,6 @@
 // <script src="./quizadmin.ui.js"></script>
 // to the page BEFORE importing this js file. That's where io is defined.
 
-function onWhenSomeoneJustJoined(payload) {
-  // payload = {
-  //   nPlayers: nPlayers,
-  //   topFive: topFive,
-  //   newPlayer: data.userInfo,
-  //   pin: data.pin
-  // };
-  // You get the total number of players still connecting
-  // and a list of the top 5 to display on page.
-  updateQuizAdminPageOnWhenSomeoneJustJoined(payload);
-}
-
-function onWhenSomeoneJustLeft(payload) {
-  // payload = {
-  //   nPlayers: nPlayers,
-  //   topFive: topFive,
-  //   newPlayer: data.userInfo,
-  //   pin: data.pin
-  // };
-  // You get the total number of players still connecting
-  // and a list of the top 5 to display on page.
-  updateQuizAdminPageOnWhenSomeoneJustLeft(payload);
-}
-
 // Sockets now
 const socket = io("/quizadmin", getSocketOptions());
 
@@ -53,10 +29,8 @@ function authenticateQuizAdmin(pin) {
  * 
  */
 
-function reloadPage(){
-
-  window.location = window.location.origin + window.location.pathname
-
+function reloadPage() {
+  window.location = window.location.origin + window.location.pathname;
 }
 
 /**

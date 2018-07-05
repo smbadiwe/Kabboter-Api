@@ -5,30 +5,6 @@
 // <script src="./surveyadmin.ui.js"></script>
 // to the page BEFORE importing this js file. That's where io is defined.
 
-function onWhenSomeoneJustJoined(payload) {
-  // payload = {
-  //   nPlayers: nPlayers,
-  //   topFive: topFive,
-  //   newPlayer: data.userInfo,
-  //   pin: data.pin
-  // };
-  // You get the total number of players still connecting
-  // and a list of the top 5 to display on page.
-  updateSurveyAdminPageOnWhenSomeoneJustJoined(payload);
-}
-
-function onWhenSomeoneJustLeft(payload) {
-  // payload = {
-  //   nPlayers: nPlayers,
-  //   topFive: topFive,
-  //   newPlayer: data.userInfo,
-  //   pin: data.pin
-  // };
-  // You get the total number of players still connecting
-  // and a list of the top 5 to display on page.
-  updateSurveyAdminPageOnWhenSomeoneJustLeft(payload);
-}
-
 // Sockets now
 const socket = io("/surveyadmin", getSocketOptions());
 
@@ -55,8 +31,8 @@ function getNextQuestion() {
   emitGetNextQuestionEvent(socket, "survey");
 }
 
-function reloadPage(){
-  window.location = window.location.origin + window.location.pathname
+function reloadPage() {
+  window.location = window.location.origin + window.location.pathname;
 }
 
 socket.on("receive-next-question", onReceiveNextQuestion);
