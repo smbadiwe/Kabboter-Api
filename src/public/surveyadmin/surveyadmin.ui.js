@@ -30,41 +30,10 @@ function startSurveyAdmin(e) {
 
 function onGetSurveyRunInfo(info) {
   // info = { id: <the surveyRun id>, surveyId: surveyId, pin: pin, totalQuestions: totalQuestions,surveytitle: surveytitle, surveydescription: surveydescription };
-  console.log("onGetSurveyRunInfo - info = ");
-  console.log(info);
-  localStorage.setItem("surveyruninfo", JSON.stringify(info));
-  $("div#step1").hide();
-  $("div#step2").show();
-  $("#unum").html(info.pin);
-  $("#nplayers").html(0);
-  $("#surveytitle").html(info.surveytitle);
-  $("#surveydescription").html(info.surveydescription);
-  $("#gametotalqns").html(info.totalQuestions);
-  $("#gametotal").html(info.totalQuestions);
-
-  //  $("#surveyinfo").html("PIN: " + info.pin + " Total Questions: " + info.totalQuestions);
-
+  SetGameRunInfoOnPage(info, "survey");
   // Finally
   authenticateSurveyAdmin(info.pin);
 }
-
-// function onGetAdminGameRunInfo(info) {
-//   // info = { id: <the surveyRun id>, surveyId: surveyId, pin: pin, totalQuestions: totalQuestions };
-//   console.log("onGetSurveyRunInfo - info = ");
-//   console.log(info);
-//   localStorage.setItem("surveyruninfo", JSON.stringify(info));
-
-//   $("div#step1").hide();
-//   $("div#step2").show();
-
-//   $("#surveyinfo").html("PIN: " + info.pin + " Total Questions: " + info.totalQuestions);
-
-//   // Finally
-//   authenticateSurveyAdmin();
-
-//   // Redirect closes our sockets. So, don't.
-//   // window.location.href = "http://localhost:3000/surveyadmin";
-// }
 
 function onPlayerSubmittedAnswer(data) {
   //data: {
@@ -92,15 +61,6 @@ function updateSurveyAdminPageOnWhenSomeoneJustLeft(data) {
   // and a list of the top 5 to display on page.
   console.log("From updateSurveyAdminPageOnWhenSomeoneJustLeft fn:");
   console.log(data);
-}
-
-function callbackOnSurveyAdminError(errorMessage) {
-  //TODO:  if there are no more questions to display, decide how to handle it.
-  // Such error messages will start with '404 - '
-  console.log("From /surveyadmin callback fn: An error occurred.");
-  console.log(errorMessage);
-  //TODO: Whatever you want.
-  //$("#error").html(errorMessage);
 }
 
 $(function() {

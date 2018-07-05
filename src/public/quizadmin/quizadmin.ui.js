@@ -30,40 +30,10 @@ function startQuizAdmin(e) {
 
 function onGetQuizRunInfo(info) {
   // info = { id: <the quizRun id>, quizId: quizId, pin: pin, totalQuestions: totalQuestions,quiztitle: quiztitle, quizdescription: quizdescription };
-  console.log("onGetQuizRunInfo - info = ");
-  localStorage.setItem("quizruninfo", JSON.stringify(info));
-  $("div#step1").hide();
-  $("div#step2").show();
-  $("#unum").html(info.pin);
-  $("#nplayers").html(0);
-  $("#quiztitle").html(info.quiztitle);
-  $("#quizdescription").html(info.quizdescription);
-  $("#gametotalqns").html(info.totalQuestions);
-  $("#gametotal").html(info.totalQuestions);
-
-  //  $("#quizinfo").html("PIN: " + info.pin + " Total Questions: " + info.totalQuestions);
-
+  SetGameRunInfoOnPage(info, "quiz");
   // Finally
   authenticateQuizAdmin(info.pin);
 }
-
-// function onGetAdminGameRunInfo(info) {
-//   // info = { id: <the quizRun id>, quizId: quizId, pin: pin, totalQuestions: totalQuestions };
-//   console.log("onGetQuizRunInfo - info = ");
-//   console.log(info);
-//   localStorage.setItem("quizruninfo", JSON.stringify(info));
-
-//   $("div#step1").hide();
-//   $("div#step2").show();
-
-//   $("#quizinfo").html("PIN: " + info.pin + " Total Questions: " + info.totalQuestions);
-
-//   // Finally
-//   authenticateQuizAdmin();
-
-//   // Redirect closes our sockets. So, don't.
-//   // window.location.href = "http://localhost:3000/quizadmin";
-// }
 
 function onPlayerSubmittedAnswer(data) {
   //data: {
@@ -93,16 +63,7 @@ function updateQuizAdminPageOnWhenSomeoneJustLeft(data) {
   console.log(data);
 }
 
-function callbackOnQuizAdminError(errorMessage) {
-  //TODO:  if there are no more questions to display, decide how to handle it.
-  // Such error messages will start with '404 - '
-  console.log("From /quizadmin callback fn: An error occurred.");
-  console.log(errorMessage);
-  //TODO: Whatever you want.
-  //$("#error").html(errorMessage);
-}
-
 $(function() {
-  $("#playGameUrl").html(window.location.origin + "/playvote");
+  $("#playGameUrl").html(window.location.origin + "/playquiz");
   loadGameDropdownList("quizzes");
 });

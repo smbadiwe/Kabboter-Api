@@ -52,7 +52,14 @@ export default class SurveyRunService extends BaseEntityService {
       record.surveyId
     );
 
-    return { id: res, surveyId: record.surveyId, pin: pin, totalQuestions: totalQuestions };
+    return {
+      gameRunId: res,
+      gameId: record.surveyId,
+      gametitle: survey.title,
+      gamedescription: survey.description,
+      pin: pin,
+      totalQuestions: totalQuestions
+    };
   }
 
   async hasSurveyBeenRun(surveyId) {

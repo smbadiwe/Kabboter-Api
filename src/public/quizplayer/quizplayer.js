@@ -55,7 +55,7 @@ function onDisconnect(reason) {
   localStorage.removeItem("quizPlayerInfo");
   localStorage.removeItem("quizquestion");
   // Tell admin that someone just disconnected
-  // io.of("/quizadmin").emit("someone-just-left", socket.id, callbackOnQuizPlayerError);
+  // io.of("/quizadmin").emit("someone-just-left", socket.id, callbackOnGamePlayerError);
   // localStorage.removeItem("quizpin");
   if (reason === "io server disconnect") {
     // the disconnection was initiated by the server, you need to reconnect manually
@@ -91,7 +91,7 @@ function submitAnswer(answerInfo) {
     answerInfo.timeCount,
     isCorrect
   );
-  socket.emit("submit-answer", answerToSubmit, callbackOnQuizPlayerError);
+  socket.emit("submit-answer", answerToSubmit, callbackOnGamePlayerError);
 }
 
 /**
@@ -129,7 +129,7 @@ socket.on("answer-submitted", onAnswerSubmitted);
 
 socket.on("get-quizrun-info", onGetPlayerGameRunInfo);
 
-socket.on("error", callbackOnQuizPlayerError);
+socket.on("error", callbackOnGamePlayerError);
 
 socket.on("disconnect", onDisconnect);
 

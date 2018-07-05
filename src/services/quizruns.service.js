@@ -64,13 +64,13 @@ export default class QuizRunService extends BaseEntityService {
 
     const totalQuestions = await new QuizQuestionService().getTotalQuizQuestions(record.quizId);
     return {
-      quizRunId: res,
-      quizId: record.quizId,
+      gameRunId: res,
+      gameId: record.quizId,
+      gametitle: quiz.title,
+      gamedescription: quiz.description,
       pin: pin,
-      totalQuestions: totalQuestions,
-      quiztitle: quiz.title,
-      quizdescription: quiz.description
-    }; // the id of the newly saved record
+      totalQuestions: totalQuestions
+    };
   }
 
   async hasQuizBeenRun(quizId) {

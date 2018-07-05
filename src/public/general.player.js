@@ -191,6 +191,14 @@ function showAnswerViewOnAuthSuccess(playerInfo) {
   );
 }
 
+/**
+ * Sample callback function to pass to socket. Socket will call it if anything goes wrong with our .emit request.
+ * @param {*} errorMessage A string describing the error
+ */
+function callbackOnGamePlayerError(errorMessage) {
+  alert(errorMessage);
+}
+
 $(function() {
   $("a#newplayer").click(function(e) {
     e.preventDefault();

@@ -164,3 +164,91 @@ function clearGameStorages(game) {
   sessionStorage.removeItem("answeredquestionlist");
   sessionStorage.removeItem("userData");
 }
+
+/* Socket Stuffs */
+
+/**
+ *
+ * @param {*} socket
+ * @param {*} reason
+ * @param {*} game 'quiz' or 'survey'
+ */
+function onSocketDisconnected(socket, reason, game) {
+  clearGameStorages(game);
+  if (reason === "io server disconnect") {
+    // the disconnection was initiated by the server, you need to reconnect manually
+    alert(
+      "Server disconnected you do to authentication failure. We'll try reconnecting. If you're not reconnected, refresh the page to start over."
+    );
+    socket.connect();
+  }
+  // else the socket will automatically try to reconnect
+}
+
+/**
+ *
+ * @param {*} info The data
+ * @param {*} game 'quiz' or 'survey'
+ */
+function SetGameRunInfoOnPage(info, game) {
+  // info = { id: <the surveyRun id>, surveyId: surveyId, pin: pin, totalQuestions: totalQuestions,surveytitle: surveytitle, surveydescription: surveydescription };
+  console.log("SetGameRunInfoOnPage. Game: " + game + ". info = ");
+  console.log(info);
+  localStorage.setItem(game + "runinfo", JSON.stringify(info));
+  $("div#step1").hide();
+  $("div#step2").show();
+  $("#unum").html(info.pin);
+  $("#nplayers").html(0);
+  $("#gametotalqns").html(info.totalQuestions);
+  $("#gametotal").html(info.totalQuestions);
+
+  if (game === "quiz") {
+    $("#quiztitle").html(info.quiztitle);
+    $("#quizdescription").html(info.quizdescription);
+  } else {
+    $("#surveytitle").html(info.surveytitle);
+    $("#surveydescription").html(info.surveydescription);
+  }
+}
+
+/**
+ * return data: {
+      gameRunId: res,
+      gameId: record.quizId,
+      gametitle: quiz.title,
+      gamedescription: quiz.description,
+      pin: pin,
+      totalQuestions: totalQuestions
+    }
+
+ * @param {*} game 'quiz' or 'survey'
+ */
+function getGameRunInfo(game) {
+  const info = localStorage.getItem(game + "runinfo");
+  if (!info) throw new Error(game + "runinfo not yet created");
+
+  return JSON.parse(info);
+}
+
+function callbackOnGameAdminError(errorMessage) {
+  alert(errorMessage);
+}
+
+/**
+ * @param {*} socket
+ * @param {*} game 'quiz' or 'survey'
+ */
+function emitGetNextQuestionEvent(socket, game) {
+  const gameRunInfo = getGameRunInfo(game);
+  let answeredQuestionIds = [];
+  const ids = sessionStorage.getItem("answeredquestionlist");
+  if (ids) {
+    const idsSplit = ids.split(",");
+    idsSplit.forEach(i => {
+      if (i) {
+        answeredQuestionIds.push(+i);
+      }
+    });
+  }
+  socket.emit("get-next-question", gameRunInfo, answeredQuestionIds, callbackOnGameAdminError);
+}

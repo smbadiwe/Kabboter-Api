@@ -29,35 +29,8 @@ function onWhenSomeoneJustLeft(payload) {
   updateQuizAdminPageOnWhenSomeoneJustLeft(payload);
 }
 
-/**
- * return data: {
-      quizRunId: res,
-      quizId: record.quizId,
-      pin: pin,
-      totalQuestions: totalQuestions,
-      quiztitle: quiz.title,
-      quizdescription: quiz.description
-    }
- */
-function getQuizRunInfo() {
-  const info = localStorage.getItem("quizruninfo");
-  if (!info) throw new Error("quizruninfo not yet created");
-
-  return JSON.parse(info);
-}
-
 // Sockets now
 const socket = io("/quizadmin", getSocketOptions());
-
-function onDisconnect(reason) {
-  clearGameStorages("quiz");
-  if (reason === "io server disconnect") {
-    // the disconnection was initiated by the server, you need to reconnect manually
-    console.log("Server disconnected you do to auth fail");
-    socket.connect();
-  }
-  // else the socket will automatically try to reconnect
-}
 
 /**
  * Call this function as soon as you can on page load.
@@ -79,21 +52,8 @@ function authenticateQuizAdmin(pin) {
  * The 'Next' button that loads a new question should call this.
  */
 function getNextQuestion() {
-  const quizRunInfo = getQuizRunInfo();
-  let answeredQuestionIds = [];
-  const ids = sessionStorage.getItem("answeredquestionlist");
-  if (ids) {
-    const idsSplit = ids.split(",");
-    idsSplit.forEach(i => {
-      if (i) {
-        answeredQuestionIds.push(+i);
-      }
-    });
-  }
-  socket.emit("get-next-question", quizRunInfo, answeredQuestionIds, callbackOnQuizAdminError);
+  emitGetNextQuestionEvent(socket, "quiz");
 }
-
-// socket.on("get-quizrun-info", onGetQuizRunInfo);
 
 socket.on("receive-next-question", onReceiveNextQuestion);
 
@@ -101,8 +61,10 @@ socket.on("when-someone-just-joined", onWhenSomeoneJustJoined);
 
 socket.on("when-someone-just-left", onWhenSomeoneJustLeft);
 
-socket.on("error", callbackOnQuizAdminError);
+socket.on("error", callbackOnGameAdminError);
 
-socket.on("disconnect", onDisconnect);
+socket.on("disconnect", reason => {
+  onSocketDisconnected(socket, reason, "quiz");
+});
 
 socket.on("player-sumbitted-answer", onPlayerSubmittedAnswer);

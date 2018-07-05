@@ -7,89 +7,16 @@ import {
   QuizQuestionService,
   SurveyQuestionService
 } from "./";
+import {
+  joinRoom,
+  leaveRoom,
+  tellAdminThatSomeoneJustJoined,
+  validateQuizAnswerProps,
+  getRoomNo,
+  quizRooms,
+  surveyRooms
+} from "./socketutils";
 import log from "../utils/log";
-import { validateInteger } from "../utils/ValidationErrors";
-
-log.setNamespace("socketsetup");
-
-const quizRooms = {};
-const surveyRooms = {};
-
-function joinRoom(socket, quizpin, recordType) {
-  const roomNo = getRoomNo(quizpin, recordType);
-  socket.roomNo = roomNo;
-  socket.join(roomNo);
-  if (recordType === "quiz") {
-    const members = quizRooms[roomNo];
-    if (members) {
-      quizRooms[roomNo].push(socket.id);
-    } else {
-      quizRooms[roomNo] = [socket.id];
-    }
-  } else {
-    const members = surveyRooms[roomNo];
-    if (members) {
-      surveyRooms[roomNo].push(socket.id);
-    } else {
-      surveyRooms[roomNo] = [socket.id];
-    }
-  }
-  log.debug("Player socket %s joining %s room %s", socket.id, recordType, roomNo);
-
-  return roomNo;
-}
-
-/**
- *
- * @param {*} adminIO
- * @param {*} playerIO
- * @param {*} data { pin: pin, userInfo: userInfo }
- * @param {*} roomNo
- */
-function tellAdminThatSomeoneJustJoined(adminIO, playerIO, data, roomNo) {
-  try {
-    playerIO.in(roomNo).clients((err, clients) => {
-      if (!err) {
-        const nPlayers = clients.length;
-        const topFive = clients.slice(0, 5);
-        // Inform admin so she can display on UI
-        const payload = {
-          nPlayers: nPlayers,
-          topFive: topFive,
-          newPlayer: data.userInfo,
-          pin: data.pin
-        };
-        adminIO.in(roomNo).emit("when-someone-just-joined", payload);
-      } else {
-        log.error(
-          "Server Socket: Error on 'someone-just-joined' trying to get clients in room. Socket: %o: %s",
-          userInfo,
-          err.message
-        );
-      }
-    });
-  } catch (e) {
-    log.error(
-      "Server Socket: Error on 'someone-just-joined' for socket %o: %s",
-      userInfo,
-      e.message
-    );
-  }
-}
-
-function validateQuizAnswerProps(data) {
-  validateInteger(data.quizId, "quizId", true);
-  validateInteger(data.quizQuestionId, "quizQuestionId", true);
-  validateInteger(data.points, "points");
-  validateInteger(data.userId, "userId", true);
-  validateInteger(data.bonus, "bonus");
-}
-
-function validateSurveyAnswerProps(data) {
-  validateInteger(data.surveyId, "surveyId", true);
-  validateInteger(data.surveyQuestionId, "surveyQuestionId", true);
-  validateInteger(data.userId, "userId", true);
-}
 
 function setupQuizSockets(io) {
   const quizAdminIO = io.of("/quizadmin");
@@ -183,7 +110,7 @@ function setupQuizSockets(io) {
     });
 
     socket.on("disconnect", () => {
-      socket.leave(socket.roomNo);
+      leaveRoom(socket, "quiz");
       log.debug(`user ${socket.id} disconnected`);
     });
 
@@ -290,7 +217,8 @@ function setupQuizSockets(io) {
     });
 
     socket.on("disconnect", () => {
-      if (socket.roomNo) socket.leave(socket.roomNo);
+      if (socket.roomNo) leaveRoom(socket, "quiz");
+
       quizAdminIO.emit("someone-just-left", socket.user);
       log.debug("user %s: $o disconnected", socket.id, socket.user);
     });
@@ -394,7 +322,7 @@ function setupSurveySockets(io) {
     });
 
     socket.on("disconnect", () => {
-      socket.leave(socket.roomNo);
+      leaveRoom(socket, "survey");
       log.debug(`user ${socket.id} disconnected`);
     });
 
@@ -501,7 +429,8 @@ function setupSurveySockets(io) {
     });
 
     socket.on("disconnect", () => {
-      if (socket.roomNo) socket.leave(socket.roomNo);
+      if (socket.roomNo) leaveRoom(socket, "survey");
+
       surveyAdminIO.emit("someone-just-left", socket.user);
       log.debug("user %s: $o disconnected", socket.id, socket.user);
     });
@@ -511,10 +440,6 @@ function setupSurveySockets(io) {
       console.log(error);
     });
   });
-}
-
-function getRoomNo(pin, recordType) {
-  return `${recordType}-${pin}`;
 }
 
 module.exports = {

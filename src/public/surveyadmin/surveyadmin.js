@@ -29,36 +29,8 @@ function onWhenSomeoneJustLeft(payload) {
   updateSurveyAdminPageOnWhenSomeoneJustLeft(payload);
 }
 
-/**
- * return data: {
-      surveyRunId: res,
-      surveyId: record.surveyId,
-      pin: pin,
-      totalQuestions: totalQuestions,
-      surveytitle: survey.title,
-      surveydescription: survey.description
-    }
- */
-function getSurveyRunInfo() {
-  const info = localStorage.getItem("surveyruninfo");
-  if (!info) throw new Error("surveyruninfo not yet created");
-
-  return JSON.parse(info);
-}
-
 // Sockets now
 const socket = io("/surveyadmin", getSocketOptions());
-
-function onDisconnect(reason) {
-  localStorage.removeItem("surveyruninfo");
-  localStorage.removeItem("surveyquestion");
-  if (reason === "io server disconnect") {
-    // the disconnection was initiated by the server, you need to reconnect manually
-    console.log("Server disconnected you do to auth fail");
-    socket.connect();
-  }
-  // else the socket will automatically try to reconnect
-}
 
 /**
  * Call this function as soon as you can on page load.
@@ -80,21 +52,8 @@ function authenticateSurveyAdmin(pin) {
  * The 'Next' button that loads a new question should call this.
  */
 function getNextQuestion() {
-  const surveyRunInfo = getSurveyRunInfo();
-  let answeredQuestionIds = [];
-  const ids = sessionStorage.getItem("answeredquestionlist");
-  if (ids) {
-    const idsSplit = ids.split(",");
-    idsSplit.forEach(i => {
-      if (i) {
-        answeredQuestionIds.push(+i);
-      }
-    });
-  }
-  socket.emit("get-next-question", surveyRunInfo, answeredQuestionIds, callbackOnSurveyAdminError);
+  emitGetNextQuestionEvent(socket, "survey");
 }
-
-// socket.on("get-surveyrun-info", onGetSurveyRunInfo);
 
 socket.on("receive-next-question", onReceiveNextQuestion);
 
@@ -102,8 +61,10 @@ socket.on("when-someone-just-joined", onWhenSomeoneJustJoined);
 
 socket.on("when-someone-just-left", onWhenSomeoneJustLeft);
 
-socket.on("error", callbackOnSurveyAdminError);
+socket.on("error", callbackOnGameAdminError);
 
-socket.on("disconnect", onDisconnect);
+socket.on("disconnect", reason => {
+  onSocketDisconnected(socket, reason, "survey");
+});
 
 socket.on("player-sumbitted-answer", onPlayerSubmittedAnswer);
