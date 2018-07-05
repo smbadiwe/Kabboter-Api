@@ -1,5 +1,6 @@
-import { validateInteger } from "../utils/ValidationErrors";
+import { validateInteger, RequestError } from "../utils/ValidationErrors";
 import log from "../utils/log";
+import { UserService } from "./";
 
 log.setNamespace("socketutils");
 
