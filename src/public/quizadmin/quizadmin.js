@@ -48,6 +48,17 @@ function authenticateQuizAdmin(pin) {
   });
 }
 
+/*
+ * The reload button that enables an admin to start a new quiz by refereshing the page
+ * 
+ */
+
+function reloadPage(){
+
+  window.location = window.location.origin + window.location.pathname
+
+}
+
 /**
  * The 'Next' button that loads a new question should call this.
  */
