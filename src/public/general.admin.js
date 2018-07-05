@@ -166,6 +166,8 @@ function clearGameStorages(game) {
 }
 
 function onWhenSomeoneJustJoined(payload) {
+  console.log("onWhenSomeoneJustJoined. payload = ");
+  console.log(payload);
   // payload = {
   //   nPlayers: nPlayers,
   //   topFive: topFive,
@@ -178,6 +180,8 @@ function onWhenSomeoneJustJoined(payload) {
 }
 
 function onWhenSomeoneJustLeft(payload) {
+  console.log("onWhenSomeoneJustLeft. payload = ");
+  console.log(payload);
   // payload = {
   //   nPlayers: nPlayers,
   //   topFive: topFive,
@@ -197,7 +201,7 @@ function onWhenSomeoneJustLeft(payload) {
  * @param {*} reason
  * @param {*} game 'quiz' or 'survey'
  */
-function onSocketDisconnected(socket, reason, game) {
+function onAdminDisconnected(socket, reason, game) {
   clearGameStorages(game);
   if (reason === "io server disconnect") {
     // the disconnection was initiated by the server, you need to reconnect manually

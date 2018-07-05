@@ -14,7 +14,7 @@ import {
   validateQuizAnswerProps,
   getRoomNo,
   onPlayerDisconnect,
-  surveyRooms,
+  getQuestion,
   authenticateGameAdmin,
   authenticateGamePlayer
 } from "./socketutils";
@@ -42,29 +42,15 @@ function setupQuizSockets(io) {
 
     // data = { quizRunId: 2, pin: pin, quizId: 3 }
     socket.on("get-next-question", async (data, answeredQuestionIds, onError) => {
-      try {
-        log.debug(`admin socket.on("get-next-question" called. data = %o`, data);
-        const question = await new QuizQuestionService().getOneUnansweredQuestion(
-          data.quizId,
-          answeredQuestionIds
-        );
-        // send question to both moderators and players
-        log.debug(`send question to both moderators and players. data = %o`, question);
-        socket.emit("receive-next-question", question, "quiz");
-        const roomNo = getRoomNo(data.pin, "quiz");
-        quizPlayerIO.in(roomNo).emit("receive-next-question", question, "quiz");
-        // const roomNo = getQuizRoomNo(data.pin);
-        //io.in(roomNo).emit("receive-next-question", question);
-      } catch (e) {
-        log.error(
-          "Server Socket: Error on 'get-next-question' for socket %s: %s",
-          socket.id,
-          e.message
-        );
-        if (onError) {
-          onError(e.message);
-        }
-      }
+      await getQuestion(
+        socket,
+        data,
+        answeredQuestionIds,
+        quizPlayerIO,
+        new QuizQuestionService(),
+        "quiz",
+        onError
+      );
     });
 
     // data = { pin: pin, socketId: socketId }
@@ -118,7 +104,7 @@ function setupQuizSockets(io) {
     socket.authenticated = false;
 
     socket.on("authenticate", async (data, onError) => {
-      await authenticateGamePlayer(data, socket, quizAdminIO, quizPlayerIO, "quiz", onError);
+      await authenticateGamePlayer(data, socket, quizAdminIO, "quiz", onError);
     });
 
     // { pin: 'w323', userId: 3, quizQuestionId: 2, choice: 1, correct: true, bonus: 4, points: 12 }
@@ -176,27 +162,15 @@ function setupSurveySockets(io) {
 
     // data = { surveyRunId: 2, pin: pin, surveyId: 3 }
     socket.on("get-next-question", async (data, answeredQuestionIds, onError) => {
-      try {
-        log.debug(`admin socket.on("get-next-question" called. data = %o`, data);
-        const question = await new SurveyQuestionService().getOneUnansweredQuestion(
-          data.surveyId,
-          answeredQuestionIds
-        );
-        // send question to both moderators and players
-        log.debug(`send question to both moderators and players. data = %o`, question);
-        socket.emit("receive-next-question", question, "survey");
-        const roomNo = getRoomNo(data.pin, "survey");
-        surveyPlayerIO.in(roomNo).emit("receive-next-question", question, "survey");
-      } catch (e) {
-        log.error(
-          "Server Socket: Error on 'get-next-question' for socket %s: %s",
-          socket.id,
-          e.message
-        );
-        if (onError) {
-          onError(e.message);
-        }
-      }
+      await getQuestion(
+        socket,
+        data,
+        answeredQuestionIds,
+        surveyPlayerIO,
+        new SurveyQuestionService(),
+        "survey",
+        onError
+      );
     });
 
     // data = { pin: pin, socketId: socketId }
@@ -250,7 +224,7 @@ function setupSurveySockets(io) {
     socket.authenticated = false;
 
     socket.on("authenticate", async (data, onError) => {
-      await authenticateGamePlayer(data, socket, surveyAdminIO, surveyPlayerIO, "survey", onError);
+      await authenticateGamePlayer(data, socket, surveyAdminIO, "survey", onError);
     });
 
     // { pin: 'w323', userId: 3, surveyQuestionId: 2, choice: 1, correct: true, bonus: 4, points: 12 }

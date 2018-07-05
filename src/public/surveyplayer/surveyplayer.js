@@ -50,20 +50,6 @@ function onAuthSuccess(playerInfo) {
   showAnswerViewOnAuthSuccess(playerInfo);
 }
 
-function onDisconnect(reason) {
-  console.log("onDisconnect: reason - " + reason);
-  localStorage.removeItem("surveyPlayerInfo");
-  localStorage.removeItem("surveyquestion");
-  // Tell admin that someone just disconnected
-  // io.of("/surveyadmin").emit("someone-just-left", socket.id, callbackOnGamePlayerError);
-  // localStorage.removeItem("surveypin");
-  if (reason === "io server disconnect") {
-    // the disconnection was initiated by the server, you need to reconnect manually
-    socket.connect();
-  }
-  // else the socket will automatically try to reconnect
-}
-
 /**
  * Submit answer to a survey question via socket.
  * TODO: package the answerInfo object and pass it to this method. Do this when client clicks on an answer button.
@@ -126,10 +112,8 @@ function getBonus(maxBonus, maxTimeCount, timeCount, answeredCorrectly = true) {
  * 
  */
 
-function reloadPage(){
-
-  window.location = window.location.origin + window.location.pathname
-
+function reloadPage() {
+  window.location = window.location.origin + window.location.pathname;
 }
 
 socket.on("receive-next-question", onPlayerReceiveNextQuestion);
@@ -140,6 +124,8 @@ socket.on("get-surveyrun-info", onGetPlayerGameRunInfo);
 
 socket.on("error", callbackOnGamePlayerError);
 
-socket.on("disconnect", onDisconnect);
+socket.on("disconnect", function(reason) {
+  onPlayerDisconnect(socket, reason, "survey");
+});
 
 socket.on("auth-success", onAuthSuccess);

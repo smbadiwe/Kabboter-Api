@@ -49,7 +49,7 @@ socket.on("when-someone-just-left", onWhenSomeoneJustLeft);
 socket.on("error", callbackOnGameAdminError);
 
 socket.on("disconnect", reason => {
-  onSocketDisconnected(socket, reason, "quiz");
+  onAdminDisconnected(socket, reason, "quiz");
 });
 
 socket.on("player-sumbitted-answer", onPlayerSubmittedAnswer);

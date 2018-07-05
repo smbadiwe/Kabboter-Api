@@ -177,13 +177,12 @@ export async function authenticateGameAdmin(data, socket, playerIO, recordType, 
     //           email: email,
     //             phone: phone
     // };
- * @param {*} socket The admin socket
+ * @param {*} socket The player socket
  * @param {*} adminIO
- * @param {*} playerIO
  * @param {*} recordType 'quiz' or 'survey'
  * @param {*} onError callback from client on error occurring
  */
-export async function authenticateGamePlayer(data, socket, adminIO, playerIO, recordType, onError) {
+export async function authenticateGamePlayer(data, socket, adminIO, recordType, onError) {
   try {
     if (!data.pin) throw new RequestError("No game code received.");
 
@@ -248,4 +247,48 @@ export function onPlayerDisconnect(socket, adminIO, recordType) {
 
   adminIO.emit("someone-just-left", socket.user);
   log.debug("user %s: $o disconnected", socket.id, socket.user);
+}
+
+/**
+ *
+ * @param {*} socket The admin socket
+ * @param {*} data
+ * @param {*} answeredQuestionIds
+ * @param {*} playerIO
+ * @param {*} recordType 'quiz' or 'survey'
+ * @param {*} onError callback from client on error occurring
+ */
+export async function getQuestion(
+  socket,
+  data,
+  answeredQuestionIds,
+  playerIO,
+  questionService,
+  recordType,
+  onError
+) {
+  try {
+    log.debug(`%s admin socket.on("get-next-question" called. data = %o`, recordType, data);
+    const question = await questionService.getOneUnansweredQuestion(
+      data.gameId,
+      answeredQuestionIds
+    );
+    // send question to both moderators and players
+    log.debug(`send %s question to both moderators and players. data = %o`, recordType, question);
+    socket.emit("receive-next-question", question, recordType);
+    // TODO: Look into this issue of not broadcasting to room.
+    // const roomNo = getRoomNo(data.pin, recordType);
+    // playerIO.in(roomNo).emit("receive-next-question", question, recordType);
+    playerIO.emit("receive-next-question", question, recordType);
+  } catch (e) {
+    log.error(
+      "Server Socket: %s Error on 'get-next-question' for socket %s: %s",
+      recordType,
+      socket.id,
+      e.message
+    );
+    if (onError) {
+      onError(e.message);
+    }
+  }
 }

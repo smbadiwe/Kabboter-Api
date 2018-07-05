@@ -66,6 +66,19 @@ function onGetPlayerGameRunInfo(data) {
   }
 }
 
+function onPlayerDisconnect(socket, reason, recordType) {
+  console.log(recordType + " onPlayerDisconnect: reason - " + reason);
+  localStorage.removeItem(recordType + "PlayerInfo");
+  localStorage.removeItem(recordType + "question");
+  localStorage.removeItem("moderator");
+  //TODO: Tell admin that someone just disconnected
+  if (reason === "io server disconnect") {
+    // the disconnection was initiated by the server, you need to reconnect manually
+    socket.connect();
+  }
+  // else the socket will automatically try to reconnect
+}
+
 let answered = false;
 /**
  *
@@ -105,6 +118,7 @@ function onPlayerReceiveNextQuestion(question, game) {
     localStorage.removeItem(game + "pin");
     localStorage.removeItem("token");
     localStorage.removeItem("userInfo");
+    localStorage.removeItem("moderator");
   }
 }
 
