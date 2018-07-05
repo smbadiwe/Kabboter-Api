@@ -55,6 +55,10 @@ function getNextQuestion() {
   emitGetNextQuestionEvent(socket, "survey");
 }
 
+function reloadPage(){
+  window.location = window.location.origin + window.location.pathname
+}
+
 socket.on("receive-next-question", onReceiveNextQuestion);
 
 socket.on("when-someone-just-joined", onWhenSomeoneJustJoined);

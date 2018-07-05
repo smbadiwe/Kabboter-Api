@@ -123,6 +123,17 @@ function getBonus(maxBonus, maxTimeCount, timeCount, answeredCorrectly = true) {
   return Math.ceil(bonus);
 }
 
+/*
+ * The reload button that enables an admin to start a new quiz by refereshing the page
+ * 
+ */
+
+function reloadPage(){
+
+  window.location = window.location.origin + window.location.pathname
+
+}
+
 socket.on("receive-next-question", onPlayerReceiveNextQuestion);
 
 socket.on("answer-submitted", onAnswerSubmitted);
