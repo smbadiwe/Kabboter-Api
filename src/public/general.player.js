@@ -32,6 +32,16 @@ function startGamePlay(e) {
     }
   }
 
+  // if there's pin, there'll be moderator
+  const moderator = JSON.parse(localStorage.getItem("moderator"));
+  if (
+    (phone && moderator.p === phone) ||
+    (email && moderator.e === email) ||
+    (username && moderator.u === username)
+  ) {
+    alert("No cheating. You can't play in a game that you're also the moderator");
+    return;
+  }
   console.log("calling onGetPlayPin: PIN = " + pin);
   const playerInfo = {
     pin: pin,
@@ -49,7 +59,7 @@ function startGamePlay(e) {
 function onGetPlayerGameRunInfo(data) {
   console.log("onGetPlayerGameRunInfo: data = ");
   console.log(data);
-
+  localStorage.setItem("moderator", JSON.stringify(data.userInfo));
   // if we're still in the start page, set the pin
   if ($("input#pin").length) {
     $("input#pin").val(data.pin);
