@@ -1,6 +1,6 @@
 import { BaseEntityService } from "./baseentity.service";
 import { SurveyService, SurveyAnswerService } from "./";
-import { RequestError } from "../utils/ValidationErrors";
+import { RequestError, Required } from "../utils/ValidationErrors";
 
 export default class SurveyQuestionService extends BaseEntityService {
   constructor() {
@@ -23,9 +23,6 @@ export default class SurveyQuestionService extends BaseEntityService {
       option2: payload.option2,
       option3: payload.option3,
       option4: payload.option4,
-      // correctOptions: payload.correctOptions,
-      // points: payload.points,
-      // maxBonus: payload.maxBonus,
       introLink: payload.introLink,
       creditResources: payload.creditResources
     };

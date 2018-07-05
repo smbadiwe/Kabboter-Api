@@ -10,13 +10,16 @@ import {
 import {
   joinRoom,
   leaveRoom,
-  tellAdminThatSomeoneJustJoined,
+  validateSurveyAnswerProps,
   validateQuizAnswerProps,
   getRoomNo,
-  quizRooms,
-  surveyRooms
+  onPlayerDisconnect,
+  surveyRooms,
+  authenticateGameAdmin,
+  authenticateGamePlayer
 } from "./socketutils";
 import log from "../utils/log";
+import { RequestError } from "../utils/ValidationErrors";
 
 function setupQuizSockets(io) {
   const quizAdminIO = io.of("/quizadmin");
@@ -26,18 +29,8 @@ function setupQuizSockets(io) {
     socket.authenticated = false;
 
     //  data = { pin: pin, userInfo: userInfo }; // userInfo as provided during login
-    socket.on("authenticate", (data, onError) => {
-      try {
-        const roomNo = joinRoom(socket, data.pin, "quiz");
-        socket.authenticated = true;
-        log.debug(`authenticated admin socket %s and added it to room %s`, socket.id, roomNo);
-        quizPlayerIO.emit("get-quizrun-info", data);
-      } catch (e) {
-        log.error("Server Socket: Error on 'authenticate' for socket %s: %s", socket.id, e.message);
-        if (onError) {
-          onError(e.message);
-        }
-      }
+    socket.on("authenticate", async (data, onError) => {
+      await authenticateGameAdmin(data, socket, quizPlayerIO, "quiz", onError);
     });
 
     // //NOT USED: data = { quizId: quidId, pin: pin, totalQuestions: totalQuestions }
@@ -58,7 +51,8 @@ function setupQuizSockets(io) {
         // send question to both moderators and players
         log.debug(`send question to both moderators and players. data = %o`, question);
         socket.emit("receive-next-question", question, "quiz");
-        quizPlayerIO.emit("receive-next-question", question, "quiz");
+        const roomNo = getRoomNo(data.pin, "quiz");
+        quizPlayerIO.in(roomNo).emit("receive-next-question", question, "quiz");
         // const roomNo = getQuizRoomNo(data.pin);
         //io.in(roomNo).emit("receive-next-question", question);
       } catch (e) {
@@ -104,7 +98,7 @@ function setupQuizSockets(io) {
       }
     });
 
-    // data = { quizQuestionId: quizQuestionId, choice: choice }
+    // data = { questionId: quizQuestionId, choice: choice }
     socket.on("player-sumbitted-answer", data => {
       //TODO: Emit to client to display in chart.
     });
@@ -123,74 +117,8 @@ function setupQuizSockets(io) {
   quizPlayerIO.on("connection", function(socket) {
     socket.authenticated = false;
 
-    /**
-    //  data =  {
-    //   pin: pin,
-    //     username: username,
-    //       lastname: lastname,
-    //         firstname: firstname,
-    //           email: email,
-    //             phone: phone
-    // };
-     */
     socket.on("authenticate", async (data, onError) => {
-      try {
-        //const token = data.token
-        const roomNo = getRoomNo(data.pin, "quiz");
-        log.debug(`rooms (set on Server): %o`, quizRooms);
-        log.debug(
-          `authenticating player socket - ID "${
-            socket.id
-          }". Searching for room ${roomNo} in room list %O`,
-          quizRooms
-        );
-
-        if (quizRooms[roomNo]) {
-          socket.authenticated = true;
-
-          // create user
-          log.debug("Creating player record for player: %o", data);
-          const userInfo = await new UserService().processPlayerRegistration(data);
-          userInfo.pin = data.pin; // the quiz pin. Not part of player record, so, not set in 'processPlayerRegistration'
-
-          socket.user = userInfo;
-          log.debug(
-            `authenticated player socket - ID "${socket.id}" (${userInfo.firstname} ${
-              userInfo.lastname
-            })`
-          );
-
-          // Join the room playing the game
-          joinRoom(socket, roomNo, "quiz");
-
-          // tell client auth is OK, hand it the user info
-          socket.emit("auth-success", userInfo);
-          // Tell admin someone just connected
-          tellAdminThatSomeoneJustJoined(quizAdminIO, quizPlayerIO, userInfo, roomNo);
-          log.debug(
-            `authenticated OK forplayer socket - ID "${socket.id}". Admin informed of new arrival`
-          );
-        } else {
-          log.debug(
-            `Auth failure - invalid PIN from player socket - ID "${
-              socket.id
-            }. Disconnecting socket..."`
-          );
-          socket.disconnect(true);
-          if (onError) {
-            onError("Invalid credentials. Failed to authenticate.");
-          }
-        }
-      } catch (e) {
-        log.error(
-          "Server Socket: Error on 'get-next-question' for socket %s: %s",
-          socket.id,
-          e.message
-        );
-        if (onError) {
-          onError(e.message);
-        }
-      }
+      await authenticateGamePlayer(data, socket, quizAdminIO, quizPlayerIO, "quiz", onError);
     });
 
     // { pin: 'w323', userId: 3, quizQuestionId: 2, choice: 1, correct: true, bonus: 4, points: 12 }
@@ -200,7 +128,7 @@ function setupQuizSockets(io) {
         await new QuizAnswerService().save(data);
         // quizAdminIO.in(getQuizRoomNo(data.pin))
         quizAdminIO.emit("player-sumbitted-answer", {
-          quizQuestionId: data.quizQuestionId,
+          questionId: data.quizQuestionId,
           choice: data.choice
         });
         socket.emit("answer-submitted", "Submitted");
@@ -217,10 +145,7 @@ function setupQuizSockets(io) {
     });
 
     socket.on("disconnect", () => {
-      if (socket.roomNo) leaveRoom(socket, "quiz");
-
-      quizAdminIO.emit("someone-just-left", socket.user);
-      log.debug("user %s: $o disconnected", socket.id, socket.user);
+      onPlayerDisconnect(socket, quizAdminIO, "quiz");
     });
 
     socket.on("error", error => {
@@ -238,18 +163,8 @@ function setupSurveySockets(io) {
     socket.authenticated = false;
 
     //  data = { pin: pin, userInfo: userInfo }; // userInfo as provided during login
-    socket.on("authenticate", (data, onError) => {
-      try {
-        const roomNo = joinRoom(socket, data.pin, "survey");
-        socket.authenticated = true;
-        log.debug(`authenticated admin socket %s and added it to room %s`, socket.id, roomNo);
-        surveyPlayerIO.emit("get-surveyrun-info", data);
-      } catch (e) {
-        log.error("Server Socket: Error on 'authenticate' for socket %s: %O", socket.id, e.message);
-        if (onError) {
-          onError(e.message);
-        }
-      }
+    socket.on("authenticate", async (data, onError) => {
+      await authenticateGameAdmin(data, socket, surveyPlayerIO, "survey", onError);
     });
 
     // //NOT USED: data = { surveyId: quidId, pin: pin, totalQuestions: totalQuestions }
@@ -270,9 +185,8 @@ function setupSurveySockets(io) {
         // send question to both moderators and players
         log.debug(`send question to both moderators and players. data = %o`, question);
         socket.emit("receive-next-question", question, "survey");
-        surveyPlayerIO.emit("receive-next-question", question, "survey");
-        // const roomNo = getSurveyRoomNo(data.pin);
-        //io.in(roomNo).emit("receive-next-question", question);
+        const roomNo = getRoomNo(data.pin, "survey");
+        surveyPlayerIO.in(roomNo).emit("receive-next-question", question, "survey");
       } catch (e) {
         log.error(
           "Server Socket: Error on 'get-next-question' for socket %s: %s",
@@ -335,74 +249,8 @@ function setupSurveySockets(io) {
   surveyPlayerIO.on("connection", function(socket) {
     socket.authenticated = false;
 
-    /**
-    //  data =  {
-    //   pin: pin,
-    //     username: username,
-    //       lastname: lastname,
-    //         firstname: firstname,
-    //           email: email,
-    //             phone: phone
-    // };
-     */
     socket.on("authenticate", async (data, onError) => {
-      try {
-        //const token = data.token
-        const roomNo = getRoomNo(data.pin, "survey");
-        log.debug(`rooms (set on Server): %o`, surveyRooms);
-        log.debug(
-          `authenticating player socket - ID "${
-            socket.id
-          }". Searching for room ${roomNo} in room list %O`,
-          surveyRooms
-        );
-
-        if (surveyRooms[roomNo]) {
-          socket.authenticated = true;
-
-          // create user
-          log.debug("Creating player record for player: %o", data);
-          const userInfo = await new UserService().processPlayerRegistration(data);
-          userInfo.pin = data.pin; // the survey pin. Not part of player record, so, not set in 'processPlayerRegistration'
-
-          socket.user = userInfo;
-          log.debug(
-            `authenticated player socket - ID "${socket.id}" (${userInfo.firstname} ${
-              userInfo.lastname
-            })`
-          );
-
-          // Join the room playing the game
-          joinRoom(socket, roomNo, "survey");
-
-          // tell client auth is OK, hand it the user info
-          socket.emit("auth-success", userInfo);
-          // Tell admin someone just connected
-          tellAdminThatSomeoneJustJoined(surveyAdminIO, surveyPlayerIO, userInfo, roomNo);
-          log.debug(
-            `authenticated OK forplayer socket - ID "${socket.id}". Admin informed of new arrival`
-          );
-        } else {
-          log.debug(
-            `Auth failure - invalid PIN from player socket - ID "${
-              socket.id
-            }. Disconnecting socket..."`
-          );
-          socket.disconnect(true);
-          if (onError) {
-            onError("Invalid credentials. Failed to authenticate.");
-          }
-        }
-      } catch (e) {
-        log.error(
-          "Server Socket: Error on 'get-next-question' for socket %s: %s",
-          socket.id,
-          e.message
-        );
-        if (onError) {
-          onError(e.message);
-        }
-      }
+      await authenticateGamePlayer(data, socket, surveyAdminIO, surveyPlayerIO, "survey", onError);
     });
 
     // { pin: 'w323', userId: 3, surveyQuestionId: 2, choice: 1, correct: true, bonus: 4, points: 12 }
@@ -412,7 +260,7 @@ function setupSurveySockets(io) {
         await new SurveyAnswerService().save(data);
         // surveyAdminIO.in(getSurveyRoomNo(data.pin))
         surveyAdminIO.emit("player-sumbitted-answer", {
-          surveyQuestionId: data.surveyQuestionId,
+          questionId: data.surveyQuestionId,
           choice: data.choice
         });
         socket.emit("answer-submitted", "Submitted");
@@ -429,10 +277,7 @@ function setupSurveySockets(io) {
     });
 
     socket.on("disconnect", () => {
-      if (socket.roomNo) leaveRoom(socket, "survey");
-
-      surveyAdminIO.emit("someone-just-left", socket.user);
-      log.debug("user %s: $o disconnected", socket.id, socket.user);
+      onPlayerDisconnect(socket, surveyAdminIO, "survey");
     });
 
     socket.on("error", error => {

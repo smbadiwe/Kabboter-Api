@@ -1,6 +1,6 @@
 import { BaseEntityService } from "./baseentity.service";
 import { QuizService, QuizAnswerService } from "./";
-import { RequestError } from "../utils/ValidationErrors";
+import { RequestError, Required } from "../utils/ValidationErrors";
 import log from "../utils/log";
 
 export default class QuizQuestionService extends BaseEntityService {

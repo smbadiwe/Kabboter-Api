@@ -386,7 +386,7 @@ export default class UserService extends BaseEntityService {
             });
           }
         });
-        roleNames = roleNames.substring(0, roleNames.length - 3);
+        roleNames = roleNames.substring(0, roleNames.length - 2);
       }
       const permissions = await new PermissionService().getByIds([...permissionIdsSet]);
       const userPermissions = [];
