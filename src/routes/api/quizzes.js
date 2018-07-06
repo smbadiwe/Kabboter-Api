@@ -87,10 +87,9 @@ router.post("/delete/:id", async ctx => {
 
 router.get("/my", async ctx => {
   try {
-    const userId = ctx.request.user.id;
-    const wq = ctx.request.query.wq;
-    const withoutQuestions = !wq || wq !== "y";
-    const res = await new QuizService().getByUserId(userId, withoutQuestions);
+    const searchParams = ctx.request.query;
+    searchParams.userId = ctx.request.user.id;
+    const res = await new QuizService().getRecordsPaged(searchParams);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
@@ -99,9 +98,7 @@ router.get("/my", async ctx => {
 
 router.get("/", async ctx => {
   try {
-    // TODO: implement paging for all tables
     const res = await new QuizService().getRecordsPaged(ctx.request.query);
-    //const res = await new QuizService().getAll();
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);

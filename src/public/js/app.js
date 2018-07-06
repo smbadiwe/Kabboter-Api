@@ -51,6 +51,26 @@ function clearAdminGameStorages(game) {
   sessionStorage.removeItem("userData");
 }
 
+function setPagingInfo(paging) {
+  $("#pg_info").html(
+    `Showing ${paging.total ? paging.from : 0} to ${paging.to} of ${paging.total} entries`
+  );
+
+  // set the nav buttons
+  $("#pg_current a").html(paging.currentPage);
+  $("#pg_last").attr("pgInd", paging.lastPage);
+  if (paging.currentPage > 1) {
+    $("#pg_previous").attr("pgInd", paging.currentPage - 1);
+    $("#pg_next").attr("pgInd", Math.min(paging.lastPage, paging.currentPage + 1));
+    $("#pg_previous").removeClass("disabled");
+    $("#pg_first").removeClass("disabled");
+    if (paging.currentPage < paging.lastPage) {
+      $("#pg_next").removeClass("disabled");
+      $("#pg_last").removeClass("disabled");
+    }
+  }
+}
+
 /**
  * Returns an array of the questions
  */

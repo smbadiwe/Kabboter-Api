@@ -60,7 +60,7 @@ export class BaseEntityService {
         perPage,
         currentPage: page,
         lastPage: Math.ceil(total / perPage),
-        from: offset,
+        from: offset + 1,
         to: offset + data.length
       },
       data: data

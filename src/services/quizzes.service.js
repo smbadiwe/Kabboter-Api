@@ -11,12 +11,15 @@ export default class QuizService extends BaseEntityService {
 
   /**
    *
-   * @param {*} queryParams Example: {title: '', page: 1, perPage: 10 }
+   * @param {*} queryParams Example: {title: '', userId: 0, page: 1, perPage: 10 }
    */
   async getRecordsPaged(queryParams) {
     const query = this.connector
       .table(this.tableName)
       .modify(queryBuilder => {
+        if (queryParams.userId) {
+          queryBuilder.where("userId", queryParams.userId);
+        }
         if (queryParams.title) {
           queryBuilder.where("title", "like", `%${queryParams.title}%`);
         }
