@@ -53,27 +53,28 @@ function setGameQuestionPropsOnPage(gamequestion, game) {
     $("#disquest").show();
     // quizRunInfo = { id: <the quizRun id>, quizId: quizId, pin: pin, totalQuestions: totalQuestions };
     let currentQuestionCount = 1 + (parseInt($("#gamenum").html()) || 0);
-    // console.log("currentQuestionCount = " + currentQuestionCount + ". quizquestion: ");
-    // console.log(quizquestion);
     $("#gamenum").html(currentQuestionCount);
-    $("#gametotal").html($("#gametotalqns").html());
 
     $("#quest").html(gamequestion.question);
     $("#opt1").html(gamequestion.option1);
     $("#opt2").html(gamequestion.option2);
     $("#opt3").html(gamequestion.option3);
     $("#opt4").html(gamequestion.option4);
-    startAdminCountDown(gamequestion.timeLimit);
+    startAdminCountDown(game, gamequestion.timeLimit);
   } else {
-    $("#step1").hide();
-    $("#step2").hide();
-    $("#end").show();
-
-    clearGameStorages(game);
+    showAdminEndViewAndClearStorage(game);
   }
 }
 
-function startAdminCountDown(maxCount = 20) {
+function showAdminEndViewAndClearStorage(game) {
+  $("#step1").hide();
+  $("#step2").hide();
+  $("#end").show();
+
+  clearAdminGameStorages(game);
+}
+
+function startAdminCountDown(game, maxCount = 20) {
   $("#timekeeper").show();
   $("#timer").html(maxCount);
   $("#maxTimeCount").html(maxCount);
@@ -83,10 +84,14 @@ function startAdminCountDown(maxCount = 20) {
       maxCount--;
     } else {
       clearInterval(counter);
-      $("#timer").html("Time up!");
-
-      $("div#disquest").hide();
-      $("div#timeout").show();
+      if ($("#gametotal").html() === $("#gamenum").html()) {
+        // it means we've exhausted our list of questions. So...
+        showAdminEndViewAndClearStorage(game);
+      } else {
+        $("#timer").html("Time up!");
+        $("div#disquest").hide();
+        $("div#timeout").show();
+      }
     }
   }, 1000);
 }
@@ -158,7 +163,7 @@ function onAfterLoadingGameList() {
  * Sync up with the code at src\public\js\app.js
  * @param {*} game 'quiz' or 'survey'
  */
-function clearGameStorages(game) {
+function clearAdminGameStorages(game) {
   localStorage.removeItem(game + "runinfo");
   localStorage.removeItem(game + "question");
   sessionStorage.removeItem("answeredquestionlist");
@@ -202,7 +207,7 @@ function onWhenSomeoneJustLeft(payload) {
  * @param {*} game 'quiz' or 'survey'
  */
 function onAdminDisconnected(socket, reason, game) {
-  clearGameStorages(game);
+  clearAdminGameStorages(game);
   if (reason === "io server disconnect") {
     // the disconnection was initiated by the server, you need to reconnect manually
     alert(
@@ -227,7 +232,6 @@ function SetGameRunInfoOnPage(info, game) {
   $("div#step2").show();
   $("#unum").html(info.pin);
   $("#nplayers").html(0);
-  // $("#gametotalqns").html(info.totalQuestions);
   $("#gametotal").html(info.totalQuestions);
 
   if (game === "quiz") {

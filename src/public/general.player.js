@@ -64,6 +64,9 @@ function onGetPlayerGameRunInfo(data) {
   if ($("input#pin").length) {
     $("input#pin").val(data.pin);
   }
+
+  $("#nplayers").html(0);
+  $("#gametotal").html(data.totalQuestions);
 }
 
 function onPlayerDisconnect(socket, reason, recordType) {
@@ -95,6 +98,10 @@ function onPlayerReceiveNextQuestion(question, game) {
     try {
       answered = false;
       $("div#youranswer").hide();
+
+      let currentQuestionCount = 1 + (parseInt($("#gamenum").html()) || 0);
+      $("#gamenum").html(currentQuestionCount);
+
       $("#question").html(question.question);
       // Enable the buttons
       $("#option1").prop("disabled", false);
@@ -103,40 +110,48 @@ function onPlayerReceiveNextQuestion(question, game) {
       $("#option4").prop("disabled", false);
 
       localStorage.setItem(game + "question", JSON.stringify(question));
-      startPlayerCountDown(question.timeLimit);
+      startPlayerCountDown(game, question.timeLimit);
     } catch (e) {
       console.log(e);
       $("#error").html(e);
     }
   } else {
-    $("#login").hide();
-    $("#game").hide();
-    $("#feedback").show();
-    $("#feedbackText").html("That's all! Thank you for participating.");
-    localStorage.removeItem(game + "question");
-    localStorage.removeItem(game + "PlayerInfo");
-    localStorage.removeItem(game + "pin");
-    localStorage.removeItem("token");
-    localStorage.removeItem("userInfo");
-    localStorage.removeItem("moderator");
+    showPlayerEndViewAndClearStorage(game);
   }
 }
 
-function startPlayerCountDown(maxCount = 20) {
+function showPlayerEndViewAndClearStorage(game) {
+  $("#login").hide();
+  $("#game").hide();
+  $("#feedback").show();
+  $("#feedbackText").html("That's all! Thank you for participating.");
+  localStorage.removeItem(game + "question");
+  localStorage.removeItem(game + "PlayerInfo");
+  localStorage.removeItem(game + "pin");
+  localStorage.removeItem("token");
+  localStorage.removeItem("userInfo");
+  localStorage.removeItem("moderator");
+}
+
+function startPlayerCountDown(game, maxCount = 20) {
   $("#timekeeper").show();
   $("#timer").html(maxCount);
   $("#maxTimeCount").html(maxCount);
   const counter = setInterval(function() {
     if (answered || maxCount === 0) {
       clearInterval(counter);
-
-      $("#option1").prop("disabled", true);
-      $("#option2").prop("disabled", true);
-      $("#option3").prop("disabled", true);
-      $("#option4").prop("disabled", true);
-      if (maxCount === 0) {
-        alert("Time up!");
-        $("#timer").html("Time up!");
+      if ($("#gametotal").html() === $("#gamenum").html()) {
+        // it means we've exhausted our list of questions. So...
+        showPlayerEndViewAndClearStorage(game);
+      } else {
+        $("#option1").prop("disabled", true);
+        $("#option2").prop("disabled", true);
+        $("#option3").prop("disabled", true);
+        $("#option4").prop("disabled", true);
+        if (maxCount === 0) {
+          alert("Time up!");
+          $("#timer").html("Time up!");
+        }
       }
     } else {
       $("#timer").html(maxCount);
@@ -193,14 +208,13 @@ function submitAmswerChoice(event) {
 /**
  * playerInfo: {
  *  pin: xxx,
- *  id: userId,
- *  lastname: xxx,
- *  firstname: xxx,
- *  username: xxx
+ *  i: userId,
+ *  l: lastname,
+ *  f: firstname,
+ *  u: username
  * }
  * @param {*} playerInfo
  */
-// Treated and used.
 function showAnswerViewOnAuthSuccess(playerInfo) {
   // Show the view where user can answer the questions.
   //NB: Redirecting closes the socket. So, don't.
@@ -210,9 +224,7 @@ function showAnswerViewOnAuthSuccess(playerInfo) {
   $("div#timeout").hide();
 
   $("span#pin").html(playerInfo.pin);
-  $("span#gameplayer").html(
-    playerInfo.username + " - " + playerInfo.firstname + " " + playerInfo.lastname
-  );
+  $("span#gameplayer").html(playerInfo.u + " - " + playerInfo.f + " " + playerInfo.l);
 }
 
 /**

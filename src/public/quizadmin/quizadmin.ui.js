@@ -32,7 +32,7 @@ function onGetQuizRunInfo(info) {
   // info = { id: <the quizRun id>, quizId: quizId, pin: pin, totalQuestions: totalQuestions,quiztitle: quiztitle, quizdescription: quizdescription };
   SetGameRunInfoOnPage(info, "quiz");
   // Finally
-  authenticateQuizAdmin(info.pin);
+  authenticateQuizAdmin(info.pin, info.totalQuestions);
 }
 
 function onPlayerSubmittedAnswer(data) {

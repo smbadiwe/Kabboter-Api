@@ -32,7 +32,7 @@ function onGetSurveyRunInfo(info) {
   // info = { id: <the surveyRun id>, surveyId: surveyId, pin: pin, totalQuestions: totalQuestions,surveytitle: surveytitle, surveydescription: surveydescription };
   SetGameRunInfoOnPage(info, "survey");
   // Finally
-  authenticateSurveyAdmin(info.pin);
+  authenticateSurveyAdmin(info.pin, info.totalQuestions);
 }
 
 function onPlayerSubmittedAnswer(data) {

@@ -36,6 +36,9 @@ export default class SurveyRunService extends BaseEntityService {
       exist = await this.getFirst({ pin: pin });
     } while (exist);
 
+    const totalQuestions = await new SurveyQuestionService().getTotalSurveyQuestions(
+      record.surveyId
+    );
     const surveyRun = {
       surveyId: record.surveyId,
       surveytitle: survey.title,
@@ -43,14 +46,11 @@ export default class SurveyRunService extends BaseEntityService {
       pin: pin,
       randomizeQuestions: record.randomizeQuestions,
       randomizeAnswers: record.randomizeAnswers,
-      displayPin: record.displayPin
+      displayPin: record.displayPin,
+      totalQuestions: totalQuestions
     };
 
     const res = await super.save(surveyRun);
-
-    const totalQuestions = await new SurveyQuestionService().getTotalSurveyQuestions(
-      record.surveyId
-    );
 
     return {
       gameRunId: res,

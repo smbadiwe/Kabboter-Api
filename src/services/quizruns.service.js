@@ -45,9 +45,9 @@ export default class QuizRunService extends BaseEntityService {
     do {
       pin = generatePin();
       exist = await this.getFirst({ pin: pin });
-      log.debug("Done getting quiz run by pin: %s. value = %o", pin, exist);
     } while (exist);
 
+    const totalQuestions = await new QuizQuestionService().getTotalQuizQuestions(record.quizId);
     const quizRun = {
       quizId: record.quizId,
       quiztitle: quiz.title,
@@ -56,13 +56,13 @@ export default class QuizRunService extends BaseEntityService {
       randomizeQuestions: record.randomizeQuestions,
       randomizeAnswers: record.randomizeAnswers,
       displayPin: record.displayPin,
+      totalQuestions: totalQuestions,
       awardPoints: record.awardPoints,
       awardBonus: record.awardBonus
     };
 
     const res = await super.save(quizRun);
 
-    const totalQuestions = await new QuizQuestionService().getTotalQuizQuestions(record.quizId);
     return {
       gameRunId: res,
       gameId: record.quizId,

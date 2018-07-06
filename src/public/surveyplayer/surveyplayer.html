@@ -101,7 +101,11 @@
 
         <!-- Step 2 -->
         <div class="game" id="game" style="display:none">
-            <div class="text-center" style="color: white; font-size:x-large;">Question:
+            <div class="text-center" style="color: white; font-size:x-large;">
+                <strong>Question
+                    <span id="gamenum">0</span>
+                </strong> of
+                <span id="gametotal"></span>:&nbsp;
                 <span id="question"></span>
             </div>
             <div id="timekeeper" class="text-center" style="color: white; font-size:x-large; display:none">
@@ -143,9 +147,9 @@
             <div class="container mt-5">
                 <div class="text-center" style="color: white">
                     <h1 id="feedbackText" class="font-weight-light text-brand-light">Welldone! Wait for the Next question to be announced</h1>
-                
-                    
-                    <div class="row text-center">    
+
+
+                    <div class="row text-center">
                         <button onclick="reloadPage()" class="btn btn-brand font-small">Play another game</button>
                     </div>
 

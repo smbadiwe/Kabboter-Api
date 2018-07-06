@@ -63,7 +63,7 @@ function submitAnswer(answerInfo) {
 
   const isCorrect = quizquestion.correctOptions.indexOf(answerInfo.choice) >= 0;
   const answerToSubmit = {
-    userId: quizPlayerInfo.id,
+    userId: quizPlayerInfo.i,
     pin: quizPlayerInfo.pin,
     quizId: quizquestion.quizId,
     quizQuestionId: quizquestion.id,

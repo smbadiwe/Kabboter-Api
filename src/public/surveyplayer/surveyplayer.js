@@ -62,19 +62,13 @@ function submitAnswer(answerInfo) {
   const surveyquestion = JSON.parse(localStorage.getItem("surveyquestion"));
 
   const answerToSubmit = {
-    userId: surveyPlayerInfo.id,
+    userId: surveyPlayerInfo.i,
     pin: surveyPlayerInfo.pin,
     surveyId: surveyquestion.surveyId,
     surveyQuestionId: surveyquestion.id,
-    points: surveyquestion.points,
     choice: answerInfo.choice
   };
-  answerToSubmit.bonus = getBonus(
-    surveyquestion.maxBonus,
-    surveyquestion.timeLimit,
-    answerInfo.timeCount,
-    true
-  );
+  answerToSubmit.bonus = getBonus(0, surveyquestion.timeLimit, answerInfo.timeCount, true);
   socket.emit("submit-answer", answerToSubmit, callbackOnGamePlayerError);
 }
 

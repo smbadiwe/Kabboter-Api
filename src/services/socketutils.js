@@ -17,23 +17,36 @@ export function joinRoom(socket, pin, recordType) {
   const roomNo = getRoomNo(pin, recordType);
   socket.roomNo = roomNo;
   socket.join(roomNo);
+
+  const socketDataForRoom = {
+    socketId: socket.id,
+    userId: socket.user.i,
+    username: socket.user.u,
+    isAdmin: socket.user.isAdmin
+  };
   if (recordType === "quiz") {
     const members = quizRooms[roomNo];
     if (members) {
-      quizRooms[roomNo].push(socket.id);
+      quizRooms[roomNo].push(socketDataForRoom);
     } else {
-      quizRooms[roomNo] = [socket.id];
+      quizRooms[roomNo] = [socketDataForRoom];
     }
   } else {
     const members = surveyRooms[roomNo];
     if (members) {
-      surveyRooms[roomNo].push(socket.id);
+      surveyRooms[roomNo].push(socketDataForRoom);
     } else {
-      surveyRooms[roomNo] = [socket.id];
+      surveyRooms[roomNo] = [socketDataForRoom];
     }
   }
-  log.debug("Player socket %s [%o] joined %s room %s", socket.id, socket.user, recordType, roomNo);
-
+  log.debug(
+    "Player socket %s [%o] joined %s room %s",
+    socket.id,
+    socketDataForRoom,
+    recordType,
+    roomNo
+  );
+  log.debug("%s room: %O", recordType, recordType === "quiz" ? quizRooms : surveyRooms);
   return roomNo;
 }
 
@@ -51,14 +64,12 @@ export function leaveRoom(socket, recordType) {
   const roomNo = socket.roomNo;
   socket.leave(roomNo);
   if (recordType === "quiz") {
-    const members = quizRooms[roomNo];
-    if (members) {
-      const index = quizRooms[roomNo].indexOf(socket.id);
+    if (quizRooms[roomNo]) {
+      const index = quizRooms[roomNo].findIndex(item => item.socketId === socket.id);
       if (index !== -1) quizRooms[roomNo].splice(index, 1);
     }
   } else {
-    const members = surveyRooms[roomNo];
-    if (members) {
+    if (surveyRooms[roomNo]) {
       const index = surveyRooms[roomNo].indexOf(socket.id);
       if (index !== -1) surveyRooms[roomNo].splice(index, 1);
     }
@@ -77,16 +88,17 @@ export function leaveRoom(socket, recordType) {
  */
 export function tellAdminThatSomeoneJustJoined(adminIO, data, roomNo, recordType) {
   try {
-    const room = recordType === "quiz" ? quizRooms[roomNo] : surveyRooms[roomNo];
-    const totalPlayers = room.length - 1; // minus the moderator
-    const topFive = room.slice(1, 6);
+    let room = recordType === "quiz" ? quizRooms[roomNo] : surveyRooms[roomNo];
+    room = room.filter(item => !item.isAdmin);
+    const totalPlayers = room.length; // minus the moderator
+    const topFive = room.slice(0, 5);
     const payload = {
       nPlayers: totalPlayers,
       topFive: topFive,
       newPlayer: data.userInfo,
       pin: data.pin
     };
-    adminIO.in(roomNo).emit("when-someone-just-joined", payload);
+    adminIO.emit("when-someone-just-joined", payload);
   } catch (e) {
     log.error(
       "Server Socket: Error on 'someone-just-joined' for socket %o: %s",
@@ -121,7 +133,7 @@ export function getRoomNo(pin, recordType) {
 
 /**
  *
- * @param {*} data  data = { pin: pin, userInfo: userInfo }; // userInfo as provided during login
+ * @param {*} data  data = { pin: pin, totalQuestions: totalQuestions, userInfo: userInfo }; // userInfo as provided during login
  * @param {*} socket The admin socket
  * @param {*} playerIO
  * @param {*} recordType 'quiz' or 'survey'
@@ -142,6 +154,7 @@ export async function authenticateGameAdmin(data, socket, playerIO, recordType, 
 
     data.userInfo.e = user.email;
     data.userInfo.p = user.phone;
+    data.userInfo.isAdmin = true;
     socket.user = data.userInfo;
 
     const roomNo = joinRoom(socket, data.pin, recordType);
@@ -209,7 +222,7 @@ export async function authenticateGamePlayer(data, socket, adminIO, recordType, 
       );
 
       // Join the room playing the game
-      joinRoom(socket, roomNo, recordType);
+      joinRoom(socket, data.pin, recordType);
 
       socket.authenticated = true;
 

@@ -33,13 +33,6 @@ function setupQuizSockets(io) {
       await authenticateGameAdmin(data, socket, quizPlayerIO, "quiz", onError);
     });
 
-    // //NOT USED: data = { quizId: quidId, pin: pin, totalQuestions: totalQuestions }
-    // // When quizrun is created, admin at the client will emit this event.
-    // socket.on("share-quizrun-info", data => {
-    //   // share to all players so they can join room too.
-    //   quizPlayerIO.emit("get-quizrun-info", data);
-    // });
-
     // data = { quizRunId: 2, pin: pin, quizId: 3 }
     socket.on("get-next-question", async (data, answeredQuestionIds, onError) => {
       await getQuestion(
@@ -152,13 +145,6 @@ function setupSurveySockets(io) {
     socket.on("authenticate", async (data, onError) => {
       await authenticateGameAdmin(data, socket, surveyPlayerIO, "survey", onError);
     });
-
-    // //NOT USED: data = { surveyId: quidId, pin: pin, totalQuestions: totalQuestions }
-    // // When surveyrun is created, admin at the client will emit this event.
-    // socket.on("share-surveyrun-info", data => {
-    //   // share to all players so they can join room too.
-    //   surveyPlayerIO.emit("get-surveyrun-info", data);
-    // });
 
     // data = { surveyRunId: 2, pin: pin, surveyId: 3 }
     socket.on("get-next-question", async (data, answeredQuestionIds, onError) => {

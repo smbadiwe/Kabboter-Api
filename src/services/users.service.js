@@ -251,10 +251,10 @@ export default class UserService extends BaseEntityService {
     }
     if (user) {
       return {
-        id: user.id,
-        lastname: user.lastname,
-        firstname: user.firstname,
-        username: user.username
+        i: user.id,
+        l: user.lastname,
+        f: user.firstname,
+        u: user.username
       };
     }
     const username = await this.generateUsername(userRegInfo.lastname, userRegInfo.firstname);
@@ -270,10 +270,10 @@ export default class UserService extends BaseEntityService {
     const userId = await this.save(user);
 
     return {
-      id: userId,
-      lastname: userRegInfo.lastname,
-      firstname: userRegInfo.firstname,
-      username: username
+      i: userId,
+      l: userRegInfo.lastname,
+      f: userRegInfo.firstname,
+      u: username
     };
   }
 

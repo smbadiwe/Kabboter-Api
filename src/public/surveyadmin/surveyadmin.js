@@ -12,11 +12,11 @@ const socket = io("/surveyadmin", getSocketOptions());
  * Call this function as soon as you can on page load.
  * The URL loading the page MUST pass pin via querystring, with key: 'pin'
  */
-function authenticateSurveyAdmin(pin) {
+function authenticateSurveyAdmin(pin, totalQuestions) {
   // Server sends this info on successful login, as a JSON: { token: ..., user: {...} }
   // I'm assuming you saved it somewhere in local storage, with key: userInfo.
   const userInfo = getUserInfo();
-  const auth = { pin: pin, userInfo: userInfo };
+  const auth = { pin: pin, totalQuestions: totalQuestions, userInfo: userInfo };
   console.log("sending auth data for auth. data: ");
   console.log(auth);
   socket.emit("authenticate", auth, error => {

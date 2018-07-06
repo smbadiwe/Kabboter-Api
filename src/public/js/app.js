@@ -34,8 +34,8 @@ function logout(event) {
   }
   localStorage.removeItem("token");
   localStorage.removeItem("userInfo");
-  clearGameStorages("quiz");
-  clearGameStorages("survey");
+  clearAdminGameStorages("quiz");
+  clearAdminGameStorages("survey");
   window.location.href = "/"; // window.location.origin;
 }
 
@@ -44,7 +44,7 @@ function logout(event) {
  * Sync up with the code at src\public\general.admin.js
  * @param {*} game 'quiz' or 'survey'
  */
-function clearGameStorages(game) {
+function clearAdminGameStorages(game) {
   localStorage.removeItem(game + "runinfo");
   localStorage.removeItem(game + "question");
   sessionStorage.removeItem("answeredquestionlist");
