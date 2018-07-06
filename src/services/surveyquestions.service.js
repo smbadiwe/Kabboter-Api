@@ -67,12 +67,7 @@ export default class SurveyQuestionService extends BaseEntityService {
   }
 
   async getTotalSurveyQuestions(surveyId) {
-    const totalQuestions = await this.connector
-      .table(this.tableName)
-      .where({ surveyId: surveyId })
-      .count("*");
-
-    return totalQuestions;
+    return await this.getCount({ surveyId: surveyId });
   }
 
   async getBySurveyIds(surveyIds) {
