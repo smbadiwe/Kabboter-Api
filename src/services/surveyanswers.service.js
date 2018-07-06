@@ -70,7 +70,7 @@ select count(*) as total from (
       const newRecord = {
         surveyId: record.surveyId,
         surveyQuestionId: record.surveyQuestionId,
-        surveyRunId: record.surveyRunId,
+        surveyRunId: surveyRun.Id,
         userId: record.userId,
         choice: record.choice
       };

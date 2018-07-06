@@ -1,3 +1,64 @@
+function onPlayerSubmittedAnswer(data, game) {
+  //data: {
+  //     questionId: data.quizQuestionId,
+  //     choice: data.choice
+  // }
+  //TODO: Use this info to update dashboard. That dashboard where you show
+  // chart of the different options and how many players chose each.
+  console.log("From " + game + " onPlayerSubmittedAnswer fn. data:");
+  console.log(data);
+  if (data && data.choice && +data.choice) {
+    const tally = JSON.parse(localStorage.getItem(game + "question"));
+    if (tally.id === data.questionId) {
+      tally["answer" + data.choice] = tally["answer" + data.choice] + 1;
+
+      localStorage.setItem(game + "question", JSON.stringify(tally));
+    }
+  }
+}
+
+/**
+ * This function displays the list of answers and options to a particular quiz or survey in graphical format...
+ * NOTE: function is been used in the scoreboard.html file
+ * @param {*} game 'quiz' or 'survey'
+ */
+function scoreboard(game) {
+  $("#scoreboard").load("/pages/game/scoreboard.html", function() {
+    $("#scoreboard").show();
+    const data = JSON.parse(localStorage.getItem(game + "question"));
+    /*
+        Appends our questions and options to our views on the SCOREBOARD.HTML file
+      */
+    $("#scoreboard #option1").html(data.option1);
+    $("#scoreboard #option2").html(data.option2);
+    $("#scoreboard #option3").html(data.option3);
+    $("#scoreboard #option4").html(data.option4);
+    $("#scoreboard #question").html(data.question);
+    /*
+        Displays graph of selected questions or surveys on the users top screen
+        ANSWERS ON THE Y-AXIS
+        OPTIONS ON THE X-AXIS
+    */
+    var ctx = document.getElementById("graph-div").getContext("2d");
+    var chart = new Chart(ctx, {
+      type: "bar",
+
+      data: {
+        labels: [data.option1, data.option2, data.option3, data.option4],
+        datasets: [
+          {
+            label: data.question,
+            data: [data.answer1, data.answer2, data.answer3, data.answer4],
+            backgroundColor: ["aqua", "red", "palevioletred", "yellow"]
+          }
+        ]
+      },
+
+      options: {}
+    });
+  });
+}
+
 function loadNextQuestion(e) {
   e.preventDefault();
   getNextQuestion();
@@ -20,6 +81,11 @@ function showquest(e) {
  */
 function onReceiveNextQuestion(gamequestion, game) {
   if (gamequestion) {
+    // Use this value to tally how players answered
+    gamequestion.answer1 = 0;
+    gamequestion.answer2 = 0;
+    gamequestion.answer3 = 0;
+    gamequestion.answer4 = 0;
     localStorage.setItem(game + "question", JSON.stringify(gamequestion));
     updateAnsweredQuestionsList(gamequestion.id);
   }
@@ -70,7 +136,6 @@ function showAdminEndViewAndClearStorage(game) {
   $("#step1").hide();
   $("#step2").hide();
   $("#end").show();
-
   clearAdminGameStorages(game);
 }
 
@@ -91,6 +156,8 @@ function startAdminCountDown(game, maxCount = 20) {
         $("#timer").html("Time up!");
         $("div#disquest").hide();
         $("div#timeout").show();
+
+        scoreboard(game);
       }
     }
   }, 1000);

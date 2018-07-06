@@ -35,18 +35,6 @@ function onGetQuizRunInfo(info) {
   authenticateQuizAdmin(info.pin, info.totalQuestions);
 }
 
-function onPlayerSubmittedAnswer(data) {
-  //data: {
-  //     quizQuestionId: data.quizQuestionId,
-  //     choice: data.choice
-  // }
-  // data = { quizQuestionId: quizQuestionId<integer>, choice: <1,2,3,or 4> }
-  //TODO: Use this info to update dashboard. That dashboard where you show
-  // chart of the different options and how many players chose each.
-  console.log("From onPlayerSubmittedAnswer fn:");
-  console.log(data);
-}
-
 $(function() {
   $("#playGameUrl").html(window.location.origin + "/playquiz");
   loadGameDropdownList("quizzes");

@@ -150,7 +150,6 @@ function saveOrUpdateGame(e, recordType) {
   });
 }
 
-
 /*
 
   This functions displays the list of players on the screen and their scores so far. Just like a leaderboard
@@ -162,34 +161,38 @@ function saveOrUpdateGame(e, recordType) {
 */
 
 function getResults() {
-
   $.ajax({
-    
     url: "result.json",
     type: "get",
     error: function(data) {
       console.log(data);
-      
     },
     success: function(data) {
-
       /*  
 
       APPENDS OUR RESULT FROM THE SUCCESS CALLBACK TO NECESSARY PART IN OUR VIEW
 
       */
-      console.log(data)
+      console.log(data);
       var id = 1;
       $.each(data.results, function(index, element) {
-        $("#results").append(`
+        $("#results").append(
+          `
         <tr>
-        <th scope="row" id="id">`+id+++`</th>
-        <td>`+element.name+`</td>
-        <td>`+element.score+`</td>
+        <th scope="row" id="id">` +
+            id++ +
+            `</th>
+        <td>` +
+            element.name +
+            `</td>
+        <td>` +
+            element.score +
+            `</td>
     </tr>
     
-        `)
-    });
+        `
+        );
+      });
     }
   });
 }
@@ -199,78 +202,5 @@ function getResults() {
   END OF GET RESULT FUNCTION
 
   MAY the force be with you!
-
-*/
-
-/*
-
-    This function displays the list of answers and options to a particular quiz or survey in graphical
-    format...
-
-    NOTE: function is been used in the scoreboard.html file
-    
-  START OF SCOREBOARD FUNCTION
-
-*/
-
-function scoreboard(){
-  const token = localStorage.getItem("token");
-  $.ajax({
-    // headers: {
-    //   Authorization: "Bearer " + token
-    // },
-    url: "scores.json",
-    type: "get",
-    error: function(data) {
-      console.log(data);
-     
-    },
-    success: function(data) {
-      console.log(data)
-
-      /*
-        Appends our questions and options to our views on the SCOREBOARD.HTML file
-
-      */
-
-      $("#option1").html(data.option1)
-      $("#option2").html(data.option2)
-      $("#option3").html(data.option3)
-      $("#option4").html(data.option4)
-      $("#question").html(data.question)
-
-      /*
-
-          Displays graph of selected questions or surveys on the users top screen
-
-          ANSWERS ON THE Y-AXIS
-
-          OPTIONS ON THE X-AXIS
-
-
-      */
-
-      var ctx = document.getElementById('graph-div').getContext('2d');
-      var chart = new Chart(ctx, {
-          type: 'bar',
-
-          data: {
-              labels: [data.option1, data.option2, data.option3, data.option4],
-              datasets: [{
-                  label: data.question,
-                  data: [data.answer1, data.answer2, data.answer3, data.answer4],
-                  backgroundColor: [ 'aqua', 'red', 'palevioletred', 'yellow' ]
-              }]
-          },
-
-          options: {}
-      });
-    }
-  });
-}
-
-/*
-
-  END OF SCOREBOARD FUNCTION
 
 */

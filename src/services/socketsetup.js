@@ -77,10 +77,10 @@ function setupQuizSockets(io) {
       }
     });
 
-    // data = { questionId: quizQuestionId, choice: choice }
-    socket.on("player-sumbitted-answer", data => {
-      //TODO: Emit to client to display in chart.
-    });
+    // // data = { questionId: quizQuestionId, choice: choice }
+    // socket.on("player-sumbitted-answer", data => {
+    //   //TODO: Emit to client to display in chart.
+    // });
 
     socket.on("disconnect", () => {
       leaveRoom(socket, "quiz");
@@ -190,10 +190,10 @@ function setupSurveySockets(io) {
       }
     });
 
-    // data = { surveyQuestionId: surveyQuestionId, choice: choice }
-    socket.on("player-sumbitted-answer", data => {
-      //TODO: Emit to client to display in chart.
-    });
+    // // data = { surveyQuestionId: surveyQuestionId, choice: choice }
+    // socket.on("player-sumbitted-answer", data => {
+    //   //TODO: Emit to client to display in chart.
+    // });
 
     socket.on("disconnect", () => {
       leaveRoom(socket, "survey");

@@ -52,4 +52,6 @@ socket.on("disconnect", reason => {
   onAdminDisconnected(socket, reason, "quiz");
 });
 
-socket.on("player-sumbitted-answer", onPlayerSubmittedAnswer);
+socket.on("player-sumbitted-answer", data => {
+  onPlayerSubmittedAnswer(data, "quiz");
+});
