@@ -5,10 +5,12 @@ export async function up(knex) {
       t.boolean("awardBonus").defaultTo(true);
       t.string("quiztitle");
       t.string("quizdescription");
+      t.integer("totalQuestions");
     })
     .table("surveyruns", t => {
       t.string("surveytitle");
       t.string("surveydescription");
+      t.integer("totalQuestions");
     })
     .table("quizquestions", t => {
       t.integer("points").defaultTo(0);
@@ -51,10 +53,12 @@ export async function down(knex) {
       t.dropColumn("awardBonus");
       t.dropColumn("quiztitle");
       t.dropColumn("quizdescription");
+      t.dropColumn("totalQuestions");
     })
     .table("surveyruns", t => {
       t.dropColumn("surveytitle");
       t.dropColumn("surveydescription");
+      t.dropColumn("totalQuestions");
     })
     .table("quizquestions", t => {
       t.dropColumn("points");
