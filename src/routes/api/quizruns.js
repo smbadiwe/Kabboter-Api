@@ -1,7 +1,7 @@
-import Koa from "koa";
 import Router from "koa-router";
-import { QuizRunService, QuizAnswerService } from "../../services";
+import { QuizRunService } from "../../services";
 import { validateQuizRunProps } from "./quizruns.validate";
+import { validateInteger } from "../../utils/ValidationErrors";
 import log from "../../utils/log";
 
 const router = new Router({ prefix: "/api/user/quizruns" });
@@ -13,6 +13,20 @@ router.post("/create", async ctx => {
     const res = await new QuizRunService().save(ctx.request.body);
     log.debug("Done creating quiz run...");
 
+    ctx.body = res;
+  } catch (e) {
+    ctx.throw(e.status || 500, e);
+  }
+});
+
+router.get("/topscores", async ctx => {
+  try {
+    const { quizRunId, limit } = ctx.request.query;
+    validateInteger(quizRunId, "quizRunId", true);
+    validateInteger(limit, "limit", true);
+    const res = await new QuizRunService().getPlayerTotalScores(quizRunId, limit);
+
+    log.debug("Quiz /topscores getPlayerTotalScores res = %O", res);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);

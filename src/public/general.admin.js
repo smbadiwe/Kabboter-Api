@@ -3,7 +3,7 @@ function onPlayerSubmittedAnswer(data, game) {
   //     questionId: data.quizQuestionId,
   //     choice: data.choice
   // }
-  //TODO: Use this info to update dashboard. That dashboard where you show
+  // We use this info to update dashboard. That dashboard where you show
   // chart of the different options and how many players chose each.
   console.log("From " + game + " onPlayerSubmittedAnswer fn. data:");
   console.log(data);
@@ -23,7 +23,7 @@ function onPlayerSubmittedAnswer(data, game) {
  * @param {*} game 'quiz' or 'survey'
  */
 function scoreboard(game) {
-  $("#scoreboard").load("/pages/game/scoreboard.html", function() {
+  $("#scoreboard").load("/pages/game/scoreboard.component.html", function() {
     $("#scoreboard").show();
     const data = JSON.parse(localStorage.getItem(game + "question"));
     /*
@@ -136,7 +136,6 @@ function showAdminEndViewAndClearStorage(game) {
   $("#step1").hide();
   $("#step2").hide();
   $("#end").show();
-  clearAdminGameStorages(game);
 }
 
 function startAdminCountDown(game, maxCount = 20) {
@@ -149,15 +148,16 @@ function startAdminCountDown(game, maxCount = 20) {
       maxCount--;
     } else {
       clearInterval(counter);
+      $("#timer").html("Time up!");
+      $("div#disquest").hide();
+      $("div#timeout").show();
+
+      scoreboard(game);
       if ($("#gametotal").html() === $("#gamenum").html()) {
         // it means we've exhausted our list of questions. So...
-        showAdminEndViewAndClearStorage(game);
-      } else {
-        $("#timer").html("Time up!");
-        $("div#disquest").hide();
-        $("div#timeout").show();
-
-        scoreboard(game);
+        setTimeout(function() {
+          showAdminEndViewAndClearStorage(game);
+        }, 5000);
       }
     }
   }, 1000);
@@ -291,6 +291,8 @@ function onAdminDisconnected(socket, reason, game) {
  * @param {*} game 'quiz' or 'survey'
  */
 function SetGameRunInfoOnPage(info, game) {
+  clearAdminGameStorages(game);
+
   // info = { id: <the surveyRun id>, surveyId: surveyId, pin: pin, totalQuestions: totalQuestions,surveytitle: surveytitle, surveydescription: surveydescription };
   console.log("SetGameRunInfoOnPage. Game: " + game + ". info = ");
   console.log(info);

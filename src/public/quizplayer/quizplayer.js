@@ -87,7 +87,7 @@ function submitAnswer(answerInfo) {
  * @param {*} timeCount Time count when player submitted an answer. We assume count goes from 0mto maxTimeCount.
  * @param {*} answeredCorrectly True if player answered correctly. False otherwise.
  */
-function getBonus(maxBonus, maxTimeCount, timeCount, answeredCorrectly = true) {
+function getBonus(maxBonus, maxTimeCount, timeCount, answeredCorrectly) {
   if (!answeredCorrectly || maxTimeCount < 1 || maxBonus < 1) return 0;
   /*
       Let max bonus be B, with values, b, going from 0 to B.
@@ -107,15 +107,6 @@ function getBonus(maxBonus, maxTimeCount, timeCount, answeredCorrectly = true) {
   // If yes, do we round it up or down, or do we use the normal math way?
   // Confirm with Project Manager.
   return Math.ceil(bonus);
-}
-
-/*
- * The reload button that enables an admin to start a new quiz by refereshing the page
- * 
- */
-
-function reloadPage() {
-  window.location = window.location.origin + window.location.pathname;
 }
 
 socket.on("receive-next-question", onPlayerReceiveNextQuestion);

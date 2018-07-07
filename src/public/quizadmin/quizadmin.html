@@ -8,6 +8,7 @@
     <title>Game App</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/styles.css" type="text/css">
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -126,7 +127,7 @@
                 <div id="timeout" style="display:none">
                     <div class="container mt-5">
                         <div class="text-center">
-                            <div id="scoreboard"></div>
+                            <div id="scoreboard" style="display:none"></div>
                             <div class="row">
                                 <button onclick='loadNextQuestion(event)' class="btn btn-brand font-small">Go to next question</button>
                             </div>
@@ -143,10 +144,11 @@
         <div id="end" style="display:none">
             <div class="container mt-5">
                 <div class="text-center">
-                    <h1 class="font-weight-light text-brand-light">That's all! Thank you for participating.</h1>
-                    <div class="row">
+                    <h2 class="font-weight-light text-brand-light">That's all! Thank you for participating.</h2>
+                    <div id="topscores" style="display:none"></div>
+                    <div class="btn-toolbar col-12">
                         <button onclick="reloadPage()" class="btn btn-brand font-small">Play another game</button>
-                        <!-- <a role="button" href="../pages/game/scoreboard.html" class="btn btn-brand font-small">Go to scoreboard</a> -->
+                        <button onclick="getTopScores()" class="btn btn-success font-small">Show top scores</button>
                     </div>
                 </div>
             </div>

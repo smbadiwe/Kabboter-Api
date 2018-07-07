@@ -5,6 +5,7 @@ import { generatePin } from "../utils";
 export default class SurveyRunService extends BaseEntityService {
   constructor() {
     super("surveyruns");
+    log.setNamespace("SurveyRunService");
   }
 
   async getNextQuestionToBeAnswered(surveyRunId, surveyId) {
@@ -39,6 +40,7 @@ export default class SurveyRunService extends BaseEntityService {
     const totalQuestions = await new SurveyQuestionService().getTotalSurveyQuestions(
       record.surveyId
     );
+    console.log(totalQuestions);
     const surveyRun = {
       surveyId: record.surveyId,
       surveytitle: survey.title,

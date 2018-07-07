@@ -35,6 +35,47 @@ function onGetQuizRunInfo(info) {
   authenticateQuizAdmin(info.pin, info.totalQuestions);
 }
 
+function getTopScores() {
+  $("#topscores").load("/pages/game/topscores.component.html", function() {
+    $("#topscores").show();
+    const token = localStorage.getItem("token");
+    const quizRunInfo = JSON.parse(localStorage.getItem("quizruninfo"));
+    $.ajax({
+      headers: {
+        Authorization: "Bearer " + token
+      },
+      url: window.location.origin + "/api/user/quizruns/topscores",
+      type: "GET",
+      data: {
+        quizRunId: quizRunInfo.gameRunId,
+        limit: $("#topscores #limit").val()
+      },
+      error: function(data) {
+        console.log(data);
+      },
+      success: function(data) {
+        console.log("/api/user/quizruns/topscores data = ");
+        console.log(data);
+        let rows = "";
+        $.each(data, function(i, element) {
+          console.log(i);
+          console.log(element);
+          console.log("=======================");
+          rows += `
+        <tr>
+            <td>${i + 1}</td>
+            <td>[${element.username}] ${element.firstname} ${element.lastname}</td>
+            <td>${element.score}</td>
+        </tr>
+        `;
+        });
+
+        $("#topscores #topScoresTable tbody").html(rows);
+      }
+    });
+  });
+}
+
 $(function() {
   $("#playGameUrl").html(window.location.origin + "/playquiz");
   loadGameDropdownList("quizzes");

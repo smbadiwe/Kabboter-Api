@@ -21,7 +21,7 @@ select count(*) as total from (
   ) as a;`;
     const result = await this.runSqlSelectQuery(countQuery, [uid]);
     log.debug("getUserSurveyParticipationCount - count = %o", result);
-    return result.total;
+    return result[0].total;
   }
 
   async getOneUnansweredQuestionInSurvey(surveyRunId, surveyId, surveyQuestionIds) {
@@ -49,12 +49,11 @@ select count(*) as total from (
    * Save survey answer. If user has answered this survey before, we update the record.
    * @param {*} record
    */
-
   async save(record) {
-    const surveyRun = await new SurveyRunService().getBy({
+    const surveyRun = await new SurveyRunService().getFirst({
       pin: record.pin
     });
-    if (!surveyRun) throw new RequestError("Invalid PIN");
+    if (!surveyRun) throw new RequestError("Invalid game code");
 
     const existing = this.getFirst({
       surveyId: record.surveyId,
@@ -70,7 +69,7 @@ select count(*) as total from (
       const newRecord = {
         surveyId: record.surveyId,
         surveyQuestionId: record.surveyQuestionId,
-        surveyRunId: surveyRun.Id,
+        surveyRunId: surveyRun.id,
         userId: record.userId,
         choice: record.choice
       };

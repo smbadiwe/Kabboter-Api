@@ -5,16 +5,28 @@
 function startGamePlay(e) {
   e.preventDefault();
 
-  const pin = $("#pin").val();
+  const pin = $("#pin")
+    .val()
+    .trim();
   if (!pin) {
     alert("Game code not set.");
     return;
   }
-  const username = $("#username").val();
-  const lastname = $("#lastname").val();
-  const firstname = $("#firstname").val();
-  const email = $("#email").val();
-  const phone = $("#phone").val();
+  const username = $("#username")
+    .val()
+    .trim();
+  const lastname = $("#lastname")
+    .val()
+    .trim();
+  const firstname = $("#firstname")
+    .val()
+    .trim();
+  const email = $("#email")
+    .val()
+    .trim();
+  const phone = $("#phone")
+    .val()
+    .trim();
   if (!username) {
     if (!lastname) {
       alert("Last name not set.");

@@ -1,0 +1,31 @@
+<div class="container mt-2">
+    <div class="text-center">
+        <hr />
+        <h1 class="font-weight-light text-brand-light">Top Scores</h1>
+        <div class="row mt-3">
+            <div class="col-12 dataTables_wrapper dt-bootstrap4">
+                <div class="row">
+                    <div class="dataTables_length col-sm-12">
+                        <label>Showing top
+                            <input type="number" id="limit" style="text-align: center" value="10" min="0" oninput="getTopScores()" /> scores
+                        </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table id="topScoresTable" class="table table-hover table-borderless">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col" class="font-bold">#</th>
+                                    <th scope="col" class="font-bold">Player</th>
+                                    <th scope="col" class="font-bold">Score</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

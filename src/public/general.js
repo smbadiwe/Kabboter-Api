@@ -46,3 +46,10 @@ function getSocketOptions() {
     rejectUnauthorized: false
   }; // [2] Please don't set this to true
 }
+
+/*
+ * This refreshes the page, trimming the querystrings off.
+ */
+function reloadPage() {
+  window.location = window.location.origin + window.location.pathname;
+}

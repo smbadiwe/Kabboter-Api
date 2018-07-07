@@ -10,6 +10,17 @@ export default class QuizRunService extends BaseEntityService {
     log.setNamespace("QuizRunService");
   }
 
+  async getPlayerTotalScores(quizRunId, limit) {
+    const query = `
+    SELECT g.quizRunId, g.userId, u.username, u.firstname, u.lastname, SUM(g.points + g.bonus) AS score 
+    FROM quizanswers g
+    INNER JOIN users u ON u.id = g.userId
+    GROUP BY g.quizRunId, g.userId
+    HAVING g.quizRunId = ?
+    ORDER BY score DESC`;
+    return await this.runSqlSelectQuery(query, [quizRunId]);
+  }
+
   async getNextQuestionToBeAnswered(quizRunId, quizId, answeredQuestionIds) {
     if (!quizRunId) throw new Required("quizRunId");
     if (!quizId) throw new Required("quizId");

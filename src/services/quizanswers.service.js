@@ -22,7 +22,7 @@ select count(*) as total from (
   ) as a;`;
     const result = await this.runSqlSelectQuery(countQuery, [uid]);
     log.debug("getUserQuizParticipationCount - count = %o", result);
-    return result.total;
+    return result[0].total;
   }
 
   async getOneUnansweredQuestionInQuiz(quizRunId, quizId, quizQuestionIds) {
@@ -61,7 +61,7 @@ select count(*) as total from (
     const quizRun = await new QuizRunService().getFirst({
       pin: record.pin
     });
-    if (!quizRun) throw new RequestError("Invalid PIN");
+    if (!quizRun) throw new RequestError("Invalid game code");
 
     log.debug(`save: quizRun record: %O`, quizRun);
     const existing = await this.getFirst({
