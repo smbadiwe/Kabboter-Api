@@ -22,9 +22,9 @@
     <div class="app">
         <div id="myNavBar"> </div>
         <div id='step1'>
-            <div class="container mt-5">
+            <div class="container mt-2">
                 <h1 class="font-weight-light text-center text-secondary">Select Quiz</h1>
-                <div class="row mt-5">
+                <div class="row mt-2">
                     <div class="col-md-8 offset-md-2 my-card p-5">
                         <div id="result" class="alert alert-danger" style="display: none"></div>
                         <form>
@@ -44,7 +44,7 @@
         </div>
 
         <div id="step2" style="display:none">
-            <div class="container mt-5">
+            <div class="container mt-2">
                 <div class="text-center">
                     <h4 class="font-weight-light text-brand-light">
                         <span id='gametitle'></span>
@@ -78,13 +78,15 @@
                     </div>
                 </div>
                 <div id="disquest" style="display:none">
-                    <div id="timekeeper" class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 text-center" style="display:none">
-                        <div class="col-5">Time alloted (sec):
-                            <h3 id="maxTimeCount" class="font-weight-bold text-brand-light font-small"></h3>
-                        </div>
-                        <div class="col-5">Time remaining (sec):
-                            <h2 id="timer" style="font-size:x-large; font-weight: bold">
-                            </h2>
+                    <div class="row mt-4">
+                        <div id="timekeeper" class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 text-center mt-3" style="display:none">
+                            <div class="col-5">Time alloted (sec):
+                                <h3 id="maxTimeCount" class="font-weight-bold text-brand-light font-small"></h3>
+                            </div>
+                            <div class="col-5">Time remaining (sec):
+                                <h2 id="timer" style="font-size:x-large; font-weight: bold">
+                                </h2>
+                            </div>
                         </div>
                     </div>
                     <div class="row mt-4">
@@ -120,29 +122,32 @@
                                     </h5>
                                 </div>
                             </div>
-                            <button onclick='loadNextQuestion(event)' class="btn btn-brand my-4 px-4">Next</button>
+                            <button id="loadQuestion" onclick='loadNextQuestion(event)' class="btn btn-brand my-4 px-4">Next</button>
                         </div>
                     </div>
                 </div>
                 <div id="timeout" style="display:none">
-                    <div class="container mt-5">
+                    <div class="container mt-2">
                         <div class="text-center">
                             <div id="scoreboard" style="display:none"></div>
+
                             <div class="row">
-                                <button onclick='loadNextQuestion(event)' class="btn btn-brand font-small">Go to next question</button>
+                                <div class="col-12">
+                                    <button onclick='loadNextQuestion(event)' class="btn btn-brand font-small">Go to next question</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 text-center mt-3">
                     <h5>
-                        <strong id="nplayers"></strong> users currently playing</h5>
+                        <strong id="nplayers"></strong> user(s) currently playing</h5>
                 </div>
             </div>
         </div>
 
         <div id="end" style="display:none">
-            <div class="container mt-5">
+            <div class="container mt-2">
                 <div class="text-center">
                     <h2 class="font-weight-light text-brand-light">That's all! Thank you for participating.</h2>
                     <div id="topscores" style="display:none"></div>

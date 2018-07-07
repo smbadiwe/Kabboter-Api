@@ -70,8 +70,9 @@ function loadNextQuestion(e) {
 
 function showquest(e) {
   e.preventDefault();
-  $("div#showpin").hide();
-  $("div#disquest").show();
+  $("#showpin").hide();
+  $("#disquest").show();
+  $("#loadQuestion").click();
 }
 
 /**
@@ -149,8 +150,8 @@ function startAdminCountDown(game, maxCount = 20) {
     } else {
       clearInterval(counter);
       $("#timer").html("Time up!");
-      $("div#disquest").hide();
-      $("div#timeout").show();
+      $("#disquest").hide();
+      $("#timeout").show();
 
       scoreboard(game);
       if ($("#gametotal").html() === $("#gamenum").html()) {
@@ -168,10 +169,10 @@ function startAdminCountDown(game, maxCount = 20) {
  * @param {*} recordType "quizzes" or "surveys"
  */
 function loadGameDropdownList(recordType) {
-  $("div#step2").hide();
-  $("div#disquest").hide();
-  $("div#scoreboard").hide();
-  $("div#results").hide();
+  $("#step2").hide();
+  $("#disquest").hide();
+  $("#scoreboard").hide();
+  $("#results").hide();
   const baseUrl = window.location.origin;
   const url = baseUrl + `/api/user/${recordType}/published`;
   $.ajax({

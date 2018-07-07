@@ -30,19 +30,22 @@
                     <div id="result" class="alert alert-danger" style="display: none"></div>
                     <form>
                         <div class="form-group">
-                            <label for="question-title">Question</label>
+                            <label for="question-title">
+                                <span style="color: red;">* </span>Question</label>
                             <input type="text" name="question-title" id="question-title" class="form-control">
                         </div>
                         <div class="row pt-3">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="option1">Option 1</label>
+                                    <label for="option1">
+                                        <span style="color: red;">* </span>Option 1</label>
                                     <input type="text" id="option1" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="option2">Option 2</label>
+                                    <label for="option2">
+                                        <span style="color: red;">* </span>Option 2</label>
                                     <input type="text" id="option2" class="form-control">
                                 </div>
                             </div>
@@ -63,19 +66,22 @@
                         <div class="row pt-3">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="">Question Point</label>
-                                    <input type="number" min="0" class="form-control" id="basepoint" />
+                                    <label for="">
+                                        <span style="color: red;">* </span>Question Point</label>
+                                    <input type="number" min="0" class="form-control" id="basepoint" value="0" />
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Max Bonus</label>
-                                    <input type="number" min="0" class="form-control" id="maxbonus" />
+                                    <label>
+                                        <span style="color: red;">* </span>Max Bonus</label>
+                                    <input type="number" min="0" class="form-control" id="maxbonus" value="0" />
                                 </div>
                             </div>
                         </div>
                         <div class="form-group col-12 pt-3">
-                            <p class="font-weight-bold">Select the correct option </p>
+                            <p class="font-weight-bold">
+                                <span style="color: red;">* </span>Select the correct option </p>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="inlineRadioOptions" value="1"> &nbsp;
                                 <label class="form-check-label" for="inlineRadioOptions">Option 1</label>
@@ -94,7 +100,8 @@
                             </div>
                         </div>
                         <div class="form-group pt-3">
-                            <label for="time">Time Limit (seconds)</label>
+                            <label for="time">
+                                <span style="color: red;">* </span>Time Limit (seconds)</label>
                             <input type="number" class="form-control" min="0" id="time" />
                         </div>
                         <div class="form-group">

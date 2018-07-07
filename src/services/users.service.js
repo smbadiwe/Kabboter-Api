@@ -245,7 +245,7 @@ export default class UserService extends BaseEntityService {
   async processPlayerRegistration(userRegInfo) {
     let user;
     if (userRegInfo.username) {
-      user = await this.getByUsername(userRegInfo.username);
+      user = await this.getByUsernameOrEmailOrPhone(userRegInfo.username);
     } else {
       user = await this.getByEmailOrPhone(userRegInfo.email, userRegInfo.phone);
     }

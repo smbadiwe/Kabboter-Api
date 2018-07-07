@@ -21,18 +21,18 @@
 
         <!-- Step 1 -->
         <div id="login">
-            <div class="container mt-5">
+            <div class="container mt-2">
                 <div class="row">
-                    <div class="col-lg-8 offset-lg-2 my-card bg-white pt-5 px-5">
+                    <div class="col-lg-8 offset-lg-2 my-card bg-white pt-2 px-5">
                         <h3 class="font-bold text-center text-secondary">Answer Quiz</h3>
                         <div class="mt-4">
                             <div class="mt-4 row text-center">
                                 <div class="col-md-6">
-                                    <a role="button" id="newplayer" href="" class="btn btn-light px-5 py-2 btn-block">I'm a new player</a>
+                                    <a role="button" id="newplayer" href="" class="btn btn-light px-5 py-2 btn-block">New user</a>
                                     <br />
                                 </div>
                                 <div class="col-md-6">
-                                    <a role="button" id="existingplayer" href="" class="btn btn-brand px-5 py-2 btn-block">I have a username</a>
+                                    <a role="button" id="existingplayer" href="" class="btn btn-brand px-5 py-2 btn-block">Existing user</a>
                                     <br />
                                 </div>
                             </div>
@@ -40,16 +40,17 @@
                     </div>
                 </div>
                 <div class="row" style="display: none;" id="enterusername">
-                    <div class="col-lg-8 offset-lg-2 my-card bg-white pt-5 px-5">
+                    <div class="col-lg-8 offset-lg-2 my-card bg-white pt-2 px-5">
                         <div class="mt-4">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="username" placeholder="Enter Username" style="text-align:center;" />
+                                <input type="text" class="form-control" id="username" placeholder="Enter username, email or phone number" style="text-align:center;"
+                                />
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row" style="display: none;" id="register">
-                    <div class="col-lg-8 offset-lg-2 my-card bg-white pt-5 px-5">
+                    <div class="col-lg-8 offset-lg-2 my-card bg-white pt-2 px-5">
                         <h3 class="font-bold text-center text-secondary">Register as a new player</h3>
                         <hr>
                         <div class="mt-4">
@@ -73,7 +74,7 @@
                     </div>
                 </div>
                 <div class="row" style="display: none;" id="startgamebtn">
-                    <div class="col-lg-8 offset-lg-2 my-card bg-white pt-5 px-5">
+                    <div class="col-lg-8 offset-lg-2 my-card bg-white pt-2 px-5">
                         <h3 class="font-bold text-center text-secondary">Game Code</h3>
                         <label style="text-align: center">Game code will appear in the box when the moderator starts a new game. If the moderator has already
                             started the game, you can get the Code and enter it manually.
@@ -90,12 +91,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div>
-                <p class="pt-5 text-center text-secondary">
-                    Powered by
-                    <a href="http://www.raoatech.com">Raoatech</a>
-                </p>
             </div>
         </div>
 
@@ -156,6 +151,12 @@
         </div>
         <div class="py-4 text-center player-footer">
             <img src="../assets/img/footer.png" alt="">
+        </div>
+        <div>
+            <p class="pt-5 text-center text-secondary">
+                Powered by
+                <a href="http://www.raoatech.com">Raoatech</a>
+            </p>
         </div>
     </div>
     <script src="../general.player.js"></script>

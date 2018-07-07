@@ -8,20 +8,6 @@ export default class SurveyRunService extends BaseEntityService {
     log.setNamespace("SurveyRunService");
   }
 
-  async getNextQuestionToBeAnswered(surveyRunId, surveyId) {
-    const surveyQns = await new SurveyQuestionService().getBy({
-      surveyId: surveyId
-    });
-    if (!surveyQns) throw new RequestError("No questions under the given survey.");
-
-    const question = await new SurveyAnswerService().getOneUnansweredQuestionInSurvey(
-      surveyRunId,
-      surveyId,
-      surveyQns.map(q => q.id)
-    );
-    return question;
-  }
-
   /**
    * Returns { id: <the quizRun id>, surveyId: surveyId, pin: pin, totalQuestions: totalQuestions };
    * @param {*} record

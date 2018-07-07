@@ -21,26 +21,6 @@ export default class QuizRunService extends BaseEntityService {
     return await this.runSqlSelectQuery(query, [quizRunId]);
   }
 
-  async getNextQuestionToBeAnswered(quizRunId, quizId, answeredQuestionIds) {
-    if (!quizRunId) throw new Required("quizRunId");
-    if (!quizId) throw new Required("quizId");
-    const quizQns = await new QuizQuestionService().getBy({
-      quizId: quizId
-    });
-    if (!quizQns) throw new RequestError("404 - No questions under the given quiz.");
-
-    const question = await new QuizAnswerService().getOneUnansweredQuestionInQuiz(
-      quizRunId,
-      quizId,
-      quizQns.map(q => q.id)
-    );
-
-    log.debug("getNextQuestionToBeAnswered - question = %o", question);
-    // if (!question) throw new RequestError("404 - No more pending questions for this quiz", 404);
-    // Null means there is no more question to answer.
-    return question;
-  }
-
   /**
    * Returns { id: <the quizRun id>, quizId: quizId, pin: pin, totalQuestions: totalQuestions };
    * @param {*} record
