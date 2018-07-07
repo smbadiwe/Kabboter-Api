@@ -247,6 +247,17 @@ export default class UserService extends BaseEntityService {
     if (userRegInfo.username) {
       user = await this.getByUsernameOrEmailOrPhone(userRegInfo.username);
     } else {
+      if (!userRegInfo.lastname) {
+        throw new RequestError("Last name not set.");
+      }
+      if (!userRegInfo.firstname) {
+        throw new RequestError("First name not set.");
+      }
+      if (!userRegInfo.email && !userRegInfo.phone) {
+        throw new RequestError(
+          "We need at least one way to contact you. So give us either email address or phone number"
+        );
+      }
       user = await this.getByEmailOrPhone(userRegInfo.email, userRegInfo.phone);
     }
     if (user) {
