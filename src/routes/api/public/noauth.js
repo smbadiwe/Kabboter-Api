@@ -84,7 +84,7 @@ router.get("/initdb", async ctx => {
     console.log("from /initdb: config.knexfile = " + config.knexfile);
     console.log(config);
     await knex.migrate.latest(config);
-    //await knex.seed.run(config);
+    await knex.seed.run(config);
     ctx.body = apiSuccess("knex migrate and seed ran successfully");
   } catch (e) {
     console.log(e);

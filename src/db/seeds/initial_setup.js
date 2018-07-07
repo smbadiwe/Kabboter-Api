@@ -48,7 +48,7 @@ export async function seed(knex) {
       email: "trump@gmail.com",
       organization: "",
       passwordHash: hashSync("donald", genSaltSync()),
-      roles: "1"
+      roles: Enums.UserRoleOptions.SuperAdmin
     },
     {
       id: 2,
@@ -57,7 +57,8 @@ export async function seed(knex) {
       username: "trc",
       email: "cruz@gmail.com",
       passwordHash: hashSync("ted", genSaltSync()),
-      organization: ""
+      organization: "",
+      roles: Enums.UserRoleOptions.SuperAdmin
     },
     {
       id: 3,
@@ -66,7 +67,8 @@ export async function seed(knex) {
       username: "mkr",
       email: "rubio@gmail.com",
       passwordHash: hashSync("rubio", genSaltSync()),
-      organization: ""
+      organization: "",
+      roles: Enums.UserRoleOptions.SuperAdmin
     }
   ]);
 
@@ -92,7 +94,9 @@ export async function seed(knex) {
       option2: "Sunshine state",
       option3: "Food basket",
       option4: "Center for excellence",
-      correctOptions: "1"
+      correctOptions: "1",
+      points: 10,
+      maxBonus: 5
     },
     {
       id: 2,
@@ -103,7 +107,9 @@ export async function seed(knex) {
       option2: "Heartland",
       option3: "Food basket",
       option4: "Center for excellence",
-      correctOptions: "2"
+      correctOptions: "2",
+      points: 10,
+      maxBonus: 5
     },
     {
       id: 3,
@@ -114,7 +120,9 @@ export async function seed(knex) {
       option2: "Heartland",
       option3: "Food basket",
       option4: "Center for excellence",
-      correctOptions: "4"
+      correctOptions: "4",
+      points: 10,
+      maxBonus: 5
     }
   ]);
 }
