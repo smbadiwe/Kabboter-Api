@@ -115,6 +115,7 @@ function onPlayerReceiveNextQuestion(question, game) {
       $("#gamenum").html(currentQuestionCount);
 
       $("#question").html(question.question);
+      $("#qnPoints").html(question.points);
       // Enable the buttons
       $("#option1").prop("disabled", false);
       $("#option2").prop("disabled", false);

@@ -100,22 +100,26 @@ export function leaveRoom(socket, recordType) {
 /**
  *
  * @param {*} adminIO
+ * @param {*} playerIO
  * @param {*} data { pin: pin, userInfo: userInfo }
  * @param {*} roomNo
- * @param {*} recordType 'quiz' or 'survey'
  */
-export function tellAdminThatSomeoneJustJoined(adminIO, data, roomNo, recordType) {
+export function tellAdminThatSomeoneJustJoined(adminIO, playerIO, data, roomNo) {
   try {
-    let room = recordType === "quiz" ? quizRooms[roomNo] : surveyRooms[roomNo];
-    room = room.filter(item => !item.isAdmin);
-    const totalPlayers = room.length; // minus the moderator
-    const topFive = room.slice(0, 5);
+    //log.debug("Players in room %s: %O", roomNo, playerIO.in(roomNo).sockets);
+    const totalPlayers = Object.keys(playerIO.in(roomNo).sockets).length;
+
     const payload = {
       nPlayers: totalPlayers,
-      topFive: topFive,
       newPlayer: data.userInfo,
       pin: data.pin
     };
+    log.debug(
+      "Informing admin that %o just joined room %s. Total players now: %s",
+      payload.newPlayer,
+      roomNo,
+      totalPlayers
+    );
     adminIO.emit("when-someone-just-joined", payload);
   } catch (e) {
     log.error(
@@ -209,11 +213,12 @@ export async function authenticateGameAdmin(data, socket, playerIO, recordType, 
     //             phone: phone
     // };
  * @param {*} socket The player socket
+ * @param {*} playerIO
  * @param {*} adminIO
  * @param {*} recordType 'quiz' or 'survey'
  * @param {*} onError callback from client on error occurring
  */
-export async function authenticateGamePlayer(data, socket, adminIO, recordType, onError) {
+export async function authenticateGamePlayer(data, socket, playerIO, adminIO, recordType, onError) {
   try {
     if (!data.pin) throw new RequestError("No game code received.");
 
@@ -247,7 +252,7 @@ export async function authenticateGamePlayer(data, socket, adminIO, recordType, 
       // tell client auth is OK, hand it the user info
       socket.emit("auth-success", userInfo);
       // Tell admin someone just connected
-      tellAdminThatSomeoneJustJoined(adminIO, userInfo, roomNo, recordType);
+      tellAdminThatSomeoneJustJoined(adminIO, playerIO, userInfo, roomNo);
       log.debug(
         `authenticated OK for player socket - ID "${socket.id}". Admin informed of new arrival`
       );

@@ -21,8 +21,6 @@ export default class UserService extends BaseEntityService {
 
   async processResetPassword(payload) {
     const { username, password } = payload;
-    if (!username) throw new Required("username");
-    if (!password) throw new Required("password");
 
     const user = await this.getByUsernameOrEmailOrPhone(username);
     if (!user) {
@@ -198,15 +196,6 @@ export default class UserService extends BaseEntityService {
    * @param {*} userRegInfo
    */
   async processUserRegistration(userRegInfo) {
-    if (!userRegInfo.securityquestion) throw new Required("securityquestion");
-    if (!userRegInfo.securityanswer) throw new Required("securityanswer");
-    if (!userRegInfo.firstname) throw new Required("firstname");
-    if (!userRegInfo.lastname) throw new Required("lastname");
-    if (!userRegInfo.password) throw new Required("password");
-    if (!userRegInfo.email && !userRegInfo.phone)
-      throw new ValidationError(
-        "We need a way to contact you. Provide phone number or email address"
-      );
     let user = await this.getByEmailOrPhone(userRegInfo.email, userRegInfo.phone);
     if (user) {
       throw new RequestError(
@@ -412,9 +401,8 @@ export default class UserService extends BaseEntityService {
     };
   }
 
-  async processLogin(username, password, rememberme) {
-    if (!username) throw new Required("username");
-    if (!password) throw new Required("password");
+  async processLogin(payload) {
+    const { username, password, rememberme } = payload;
     const user = await this.getByUsernameOrEmailOrPhone(username);
 
     if (!user) {

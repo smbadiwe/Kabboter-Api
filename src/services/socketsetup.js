@@ -35,8 +35,6 @@ function setupQuizSockets(io) {
 
     // data = { quizRunId: 2, pin: pin, quizId: 3 }
     socket.on("get-next-question", async (data, answeredQuestionIds, onError) => {
-      log.debug("==================\nquizPlayerIO.sockets = %O\n", quizPlayerIO.sockets);
-
       await getQuestion(
         socket,
         data,
@@ -108,7 +106,7 @@ function setupQuizSockets(io) {
     socket.authenticated = false;
 
     socket.on("authenticate", async (data, onError) => {
-      await authenticateGamePlayer(data, socket, quizAdminIO, "quiz", onError);
+      await authenticateGamePlayer(data, socket, quizPlayerIO, quizAdminIO, "quiz", onError);
     });
 
     // { pin: 'w323', userId: 3, quizQuestionId: 2, choice: 1, correct: true, bonus: 4, points: 12 }
@@ -200,11 +198,6 @@ function setupSurveySockets(io) {
         );
       }
     });
-
-    // // data = { surveyQuestionId: surveyQuestionId, choice: choice }
-    // socket.on("player-sumbitted-answer", data => {
-    //   //TODO: Emit to client to display in chart.
-    // });
 
     socket.on("disconnect", () => {
       leaveRoom(socket, "survey");

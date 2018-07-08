@@ -4,6 +4,7 @@ import { ValidationError, RequestError } from "../../../utils/ValidationErrors";
 import { UserService } from "../../../services";
 import knex from "../../../db/connection";
 import * as knexfile from "../../../db/knexfile";
+import { validateLogin, validateUserRegistration, validateResetPassword } from "./noauth.validate";
 
 const router = new Router({ prefix: "/api/public" });
 
@@ -43,6 +44,7 @@ router.post("/validatesecurityquestion", async ctx => {
 
 router.post("/resetpassword", async ctx => {
   try {
+    validateResetPassword(ctx.request.body);
     const respBody = await new UserService().processResetPassword(ctx.request.body);
     ctx.body = respBody;
   } catch (e) {
@@ -52,6 +54,7 @@ router.post("/resetpassword", async ctx => {
 
 router.post("/register", async ctx => {
   try {
+    validateUserRegistration(ctx.request.body);
     const respBody = await new UserService().processUserRegistration(ctx.request.body);
     ctx.body = respBody;
   } catch (e) {
@@ -62,8 +65,8 @@ router.post("/register", async ctx => {
 // POST /login
 router.post("/login", async ctx => {
   try {
-    const { username, password, rememberme } = ctx.request.body;
-    const respBody = await new UserService().processLogin(username, password, rememberme);
+    validateLogin(ctx.request.body);
+    const respBody = await new UserService().processLogin(ctx.request.body);
     ctx.body = respBody;
   } catch (e) {
     ctx.throw(e.status || 500, e);
