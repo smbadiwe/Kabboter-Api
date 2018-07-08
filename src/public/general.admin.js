@@ -47,7 +47,6 @@ function scoreboard(game) {
         labels: [data.option1, data.option2, data.option3, data.option4],
         datasets: [
           {
-            label: data.question,
             data: [data.answer1, data.answer2, data.answer3, data.answer4],
             backgroundColor: ["aqua", "red", "palevioletred", "yellow"]
           }
