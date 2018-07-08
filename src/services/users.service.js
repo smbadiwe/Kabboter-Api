@@ -26,7 +26,7 @@ export default class UserService extends BaseEntityService {
 
     const user = await this.getByUsernameOrEmailOrPhone(username);
     if (!user) {
-      throw new ValidationError("Username (or phone or email) is incorrect.");
+      throw new ValidationError("User detail is incorrect.");
     }
 
     const record = { id: user.id, passwordHash: hashSync(password, genSaltSync()) };
@@ -41,7 +41,7 @@ export default class UserService extends BaseEntityService {
 
     const user = await this.getByUsernameOrEmailOrPhone(username);
     if (!user) {
-      throw new ValidationError("Username (or phone or email) is incorrect.");
+      throw new ValidationError("User detail is incorrect.");
     }
 
     if (securityquestion !== user.securityquestion)
@@ -205,7 +205,7 @@ export default class UserService extends BaseEntityService {
     if (!userRegInfo.password) throw new Required("password");
     if (!userRegInfo.email && !userRegInfo.phone)
       throw new ValidationError(
-        "We need a way to contact you. Provide eith phone number or email address"
+        "We need a way to contact you. Provide phone number or email address"
       );
     let user = await this.getByEmailOrPhone(userRegInfo.email, userRegInfo.phone);
     if (user) {
@@ -229,13 +229,15 @@ export default class UserService extends BaseEntityService {
       securityanswer: hashSync(userRegInfo.securityanswer, genSaltSync()),
       country: userRegInfo.country
     };
-    await this.save(user);
+    user.id = await this.save(user);
 
-    return {
-      email: userRegInfo.email,
-      phone: userRegInfo.phone,
-      username: username
-    };
+    // automatically log the user in.
+    return this.setJwtAuth(user);
+    // return {
+    //   email: userRegInfo.email,
+    //   phone: userRegInfo.phone,
+    //   username: username
+    // };
   }
 
   /**
@@ -356,6 +358,8 @@ export default class UserService extends BaseEntityService {
   }
 
   async getByUsernameOrEmailOrPhone(username) {
+    if (!username) throw new Required("username");
+
     const user = await this.connector
       .table(this.tableName)
       .where({ username: username })
@@ -366,58 +370,64 @@ export default class UserService extends BaseEntityService {
     return user;
   }
 
+  setJwtAuth(user) {
+    // let roleIds = [];
+    // if (user.roles) {
+    //   roleIds = user.roles.split(",").map(p => +p);
+    // }
+    // const permissionIdsSet = new Set();
+    // let roleNames = "";
+    // const rolesObj = await new UserRoleService().getByIds(roleIds);
+    // if (rolesObj && rolesObj.length > 0) {
+    //   rolesObj.forEach(r => {
+    //     roleNames += `${r.name}, `;
+    //     if (r.permissionIds) {
+    //       const pids = r.permissionIds.split(",");
+    //       pids.forEach(p => {
+    //         permissionIdsSet.add(+p);
+    //       });
+    //     }
+    //   });
+    //   roleNames = roleNames.substring(0, roleNames.length - 2);
+    // }
+    // const permissions = await new PermissionService().getByIds([...permissionIdsSet]);
+    // const userPermissions = [];
+    // if (permissions && permissions.length > 0) {
+    //   permissions.forEach(p => {
+    //     userPermissions.push(p.name);
+    //   });
+    // }
+    // jwt sign
+    //TODO: Figure out a way to expire tokens. For some ideas, visit
+    // https://stackoverflow.com/questions/26739167/jwt-json-web-token-automatic-prolongation-of-expiration
+    const userInfo = { i: user.id, u: user.username, r: user.roles };
+    const token = sign(userInfo, process.env.APP_SECRET, {
+      expiresIn: "12h"
+    });
+    userInfo.f = user.firstname;
+    userInfo.l = user.lastname;
+    return {
+      token: token,
+      user: userInfo
+    };
+  }
+
   async processLogin(username, password, rememberme) {
     if (!username) throw new Required("username");
     if (!password) throw new Required("password");
     const user = await this.getByUsernameOrEmailOrPhone(username);
 
     if (!user) {
-      throw new RequestError("Username (or phone or email) is incorrect.");
+      throw new RequestError("User detail is incorrect.");
     }
-    if (user.disabled) {
-      throw new RequestError("Account not yet verified or enabled");
+    if (user.disabled && user.roles !== Enums.UserRoleOptions.Moderator) {
+      // In this app, 'disabled' for moderators means they can login but cannot create quiz or vote.
+      throw new RequestError("You account has been disabled. Contact admin.");
     }
 
     const isValid = await compare(password, user.passwordHash);
     if (isValid) {
-      let roleIds = [];
-      if (user.roles) {
-        roleIds = user.roles.split(",").map(p => +p);
-      }
-      const permissionIdsSet = new Set();
-      let roleNames = "";
-      const rolesObj = await new UserRoleService().getByIds(roleIds);
-      if (rolesObj && rolesObj.length > 0) {
-        rolesObj.forEach(r => {
-          roleNames += `${r.name}, `;
-          if (r.permissionIds) {
-            const pids = r.permissionIds.split(",");
-            pids.forEach(p => {
-              permissionIdsSet.add(+p);
-            });
-          }
-        });
-        roleNames = roleNames.substring(0, roleNames.length - 2);
-      }
-      const permissions = await new PermissionService().getByIds([...permissionIdsSet]);
-      const userPermissions = [];
-      if (permissions && permissions.length > 0) {
-        permissions.forEach(p => {
-          userPermissions.push(p.name);
-        });
-      }
-      // jwt sign
-      //TODO: Figure out a way to expire tokens. For some ideas, visit
-      // https://stackoverflow.com/questions/26739167/jwt-json-web-token-automatic-prolongation-of-expiration
-      const userInfo = { i: user.id, u: user.username, p: userPermissions };
-      const token = sign(userInfo, process.env.APP_SECRET, {
-        expiresIn: "12h"
-      });
-
-      return {
-        token: token,
-        user: { i: user.id, u: user.username, f: user.firstname, l: user.lastname, r: roleNames }
-      };
+      return this.setJwtAuth(user);
     } else {
       throw new RequestError("Wrong password");
     }

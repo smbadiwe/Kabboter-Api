@@ -14,7 +14,7 @@ router.get("/getsecurityquestion", async ctx => {
     const { username } = ctx.request.query;
     const user = await new UserService().getByUsernameOrEmailOrPhone(username);
     if (!user) {
-      throw new ValidationError("Username (or phone or email) is incorrect.");
+      throw new ValidationError("User detail is incorrect.");
     }
     if (!user.securityquestion) {
       throw new RequestError(

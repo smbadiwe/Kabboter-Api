@@ -86,7 +86,7 @@ function getSecurityQuestions() {
 
 function getSecurityQuestionsForDropdown() {
   const questions = getSecurityQuestions();
-  let options = '<option value="" disabled selected>Select a security question...</option>';
+  let options = '<option value="" disabled selected>* Select a security question...</option>';
   for (const qn of questions) {
     options += `<option value="${qn}">${qn}</option>`;
   }

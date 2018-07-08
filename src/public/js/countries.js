@@ -1,6 +1,6 @@
 function getCountriesForDropdown() {
   const countries = getCountries();
-  let options = '<option value="" disabled selected>Select country...</option>';
+  let options = '<option value="" disabled selected>* Select country...</option>';
   for (const country of countries) {
     options += `<option value="${country.code}">${country.name}</option>`;
   }

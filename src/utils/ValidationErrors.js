@@ -2,15 +2,28 @@ export class RequestError extends Error {
   constructor(message, status = 400) {
     super(`${message || "Request error"}`);
 
-    this.status = status; // bad request
+    this._status = status; // bad request
 
     // Saving class name in the property of our custom error as a shortcut.
-    this.name = this.constructor.name;
+    this._name = this.constructor.name;
 
     // Capturing stack trace, excluding constructor call from it.
     Error.captureStackTrace(this, this.constructor);
   }
+
+  get name() {
+    return this._name;
+  }
+
+  get status() {
+    return this._status;
+  }
+
+  set status(value) {
+    this._status = value;
+  }
 }
+
 export class ValidationError extends RequestError {
   constructor(message) {
     super(`${message || "Invalid value"}`, 400);

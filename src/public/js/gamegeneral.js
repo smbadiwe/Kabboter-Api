@@ -38,12 +38,11 @@ function loadGameDetailsPageData(recordType) {
       $("#audience").html(audience[data.audience]);
       $("#visibleTo").html(visibleTo[data.visibleTo]);
 
+      const quizOrVote = isQuiz ? "Quiz" : "Vote";
       $("#add-questions").html(
         `<a href="addeditquestions.html?id=${data.id}&title=${data.title}&desc=${
           data.description
-        }" id="add-questions" role="button" class="btn btn-dark px-4">Add Question to ${
-          isQuiz ? "Quiz" : "Vote"
-        }</a>`
+        }" id="add-questions" role="button" class="btn btn-dark px-4">Add Question to ${quizOrVote}</a>`
       );
 
       if (data.published) {
@@ -51,16 +50,12 @@ function loadGameDetailsPageData(recordType) {
         $("#actionDiv").html(`
                           <a role="button" href='/${quizOrSurvey}admin/${quizOrSurvey}admin.html?id=${
           data.id
-        }' style="float: center;" class="btn btn-success btn-inline">Launch Game</a>
-                          <a role="button" href='' style="float: center;" onclick="setupGame('unpublish', '${recordType}');" class="btn btn-brand-light btn-inline">Unpublish ${
-          isQuiz ? "Quiz" : "Vote"
-        }</a>
+        }' style="float: center;" class="btn btn-success btn-inline">Launch ${quizOrVote}</a>
+                          <a role="button" href='' style="float: center;" onclick="setupGame('unpublish', '${recordType}');" class="btn btn-brand-light btn-inline">Unpublish ${quizOrVote}</a>
                         `);
       } else if (data.questions && data.questions.length > 0) {
         $("#actionDiv").html(
-          `<a role="button" href='' style="float: center;" onclick="setupGame('publish', '${recordType}');" class="btn btn-brand-light btn-block">Publish ${
-            isQuiz ? "Quiz" : "Vote"
-          }</a>`
+          `<a role="button" href='' style="float: center;" onclick="setupGame('publish', '${recordType}');" class="btn btn-brand-light btn-block">Publish ${quizOrVote}</a>`
         );
       }
 
