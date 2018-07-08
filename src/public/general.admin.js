@@ -205,17 +205,17 @@ function loadGameDropdownList(recordType) {
   });
 }
 
-function setLoginInfo() {
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  if (!userInfo) {
-    logOut();
-  } else {
-    $("#dis-name").html(`${userInfo.f} ${userInfo.l}`);
-  }
-}
+// function setLoginInfo() {
+//   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+//   if (!userInfo) {
+//     logOut();
+//   } else {
+//     $("#dis-name").html(`${userInfo.f} ${userInfo.l}`);
+//   }
+// }
 
 function onAfterLoadingGameList() {
-  setLoginInfo();
+  //setLoginInfo();
 
   loadNavBar();
   const id = getUrlParameter("id");

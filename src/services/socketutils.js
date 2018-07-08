@@ -7,6 +7,19 @@ log.setNamespace("socketutils");
 export const quizRooms = {};
 export const surveyRooms = {};
 
+function addToRoom(rooms, roomNo, item) {
+  if (rooms[roomNo]) {
+    rooms[roomNo].push(item);
+  } else {
+    rooms[roomNo] = [item];
+  }
+}
+
+function closeSocketsInRoom(rooms, roomNo) {
+  // finally
+  delete rooms[roomNo];
+}
+
 /**
  *
  * @param {*} socket
@@ -25,19 +38,9 @@ export function joinRoom(socket, pin, recordType) {
     isAdmin: socket.user.isAdmin
   };
   if (recordType === "quiz") {
-    const members = quizRooms[roomNo];
-    if (members) {
-      quizRooms[roomNo].push(socketDataForRoom);
-    } else {
-      quizRooms[roomNo] = [socketDataForRoom];
-    }
+    addToRoom(quizRooms, roomNo, socketDataForRoom);
   } else {
-    const members = surveyRooms[roomNo];
-    if (members) {
-      surveyRooms[roomNo].push(socketDataForRoom);
-    } else {
-      surveyRooms[roomNo] = [socketDataForRoom];
-    }
+    addToRoom(surveyRooms, roomNo, socketDataForRoom);
   }
   log.debug(
     "Player socket %s [%o] joined %s room %s",
@@ -48,6 +51,21 @@ export function joinRoom(socket, pin, recordType) {
   );
   log.debug("%s room: %O", recordType, recordType === "quiz" ? quizRooms : surveyRooms);
   return roomNo;
+}
+
+/**
+ * Socket from a moderaturending the game. This method removes the room
+ * @param {*} socket
+ * @param {*} pin
+ * @param {*} recordType 'quiz' or 'survey'
+ */
+export function destroyRoom(socket, pin, recordType) {
+  const roomNo = getRoomNo(pin, recordType);
+  if (recordType === "quiz") {
+    closeSocketsInRoom(quizRooms, roomNo);
+  } else {
+    closeSocketsInRoom(surveyRooms, roomNo);
+  }
 }
 
 /**

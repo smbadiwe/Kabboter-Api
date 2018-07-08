@@ -35,6 +35,8 @@ function setupQuizSockets(io) {
 
     // data = { quizRunId: 2, pin: pin, quizId: 3 }
     socket.on("get-next-question", async (data, answeredQuestionIds, onError) => {
+      log.debug("==================\nquizPlayerIO.sockets = %O\n", quizPlayerIO.sockets);
+
       await getQuestion(
         socket,
         data,
@@ -75,6 +77,15 @@ function setupQuizSockets(io) {
           e.message
         );
       }
+    });
+
+    socket.on("end-game", data => {
+      try {
+        const roomNo = getRoomNo(data.pin, "quiz");
+        // Object.keys(quizPlayerIO.sockets.sockets).forEach(function(s) {
+        //   quizPlayerIO.sockets.sockets[s].disconnect(true);
+        // });
+      } catch (e) {}
     });
 
     // // data = { questionId: quizQuestionId, choice: choice }
