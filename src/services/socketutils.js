@@ -234,7 +234,9 @@ export async function authenticateGamePlayer(data, socket, playerIO, adminIO, re
     //const token = data.token
     const roomNo = getRoomNo(data.pin, recordType);
     log.debug(
-      `authenticating player socket - ID "${socket.id}". Searching for room ${roomNo} in room list`
+      "authenticating player socket - ID %s. Searching for room %s in room list",
+      socket.id,
+      roomNo
     );
     const rooms = Object.keys(adminIO.adapter.rooms);
     // Note that we're checking room in adminIO, not playerIO.
@@ -249,9 +251,10 @@ export async function authenticateGamePlayer(data, socket, playerIO, adminIO, re
 
       socket.user = userInfo;
       log.debug(
-        `authenticated player socket - ID "${socket.id}" (${userInfo.firstname} ${
-          userInfo.lastname
-        })`
+        "authenticated player socket - ID %s (%s %s)",
+        socket.id,
+        userInfo.firstname,
+        userInfo.lastname
       );
 
       // Join the room playing the game
@@ -264,16 +267,18 @@ export async function authenticateGamePlayer(data, socket, playerIO, adminIO, re
       // Tell admin someone just connected
       tellAdminThatSomeoneJustJoined(adminIO, playerIO, userInfo, roomNo);
       log.debug(
-        `authenticated OK for player socket - ID "${socket.id}". Admin informed of new arrival`
+        "authenticated OK for player socket - ID %s. Admin informed of new arrival",
+        socket.id
       );
     } else {
       log.debug(
-        `Auth failure - invalid PIN from player socket - ID "${socket.id}. Disconnecting socket..."`
+        "Auth failure - invalid PIN from player socket - ID %s. Disconnecting socket...",
+        socket.id
       );
-      socket.disconnect(true);
       if (onError) {
         onError("Invalid credentials. Failed to authenticate.");
       }
+      socket.disconnect(true); // I may remove this if client can't see that auth failed.
     }
   } catch (e) {
     log.error(

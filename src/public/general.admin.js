@@ -34,6 +34,12 @@ function scoreboard(game) {
     $("#scoreboard #option3").html(data.option3);
     $("#scoreboard #option4").html(data.option4);
     $("#scoreboard #question").html(data.question);
+    if (game === "quiz") {
+      $("#scoreboard #answer").show();
+      $("#scoreboard #answer").html(
+        `Answer: <strong>${data["option" + data.correctOptions]}</strong>`
+      );
+    }
     /*
         Displays graph of selected questions or surveys on the users top screen
         ANSWERS ON THE Y-AXIS
@@ -46,7 +52,7 @@ function scoreboard(game) {
         labels: [data.option1, data.option2, data.option3, data.option4],
         datasets: [
           {
-            data: [data.answer1, data.answer2, data.answer3, data.answer4],
+            data: [data.answer1, data.answer2, data.answer3, data.answer4], //These are tallies showing how many people chose a particular option
             backgroundColor: ["aqua", "red", "palevioletred", "yellow"]
           }
         ]

@@ -214,7 +214,7 @@ function setupSurveySockets(io) {
     socket.authenticated = false;
 
     socket.on("authenticate", async (data, onError) => {
-      await authenticateGamePlayer(data, socket, surveyAdminIO, "survey", onError);
+      await authenticateGamePlayer(data, socket, surveyPlayerIO, surveyAdminIO, "survey", onError);
     });
 
     // { pin: 'w323', userId: 3, surveyQuestionId: 2, choice: 1, correct: true, bonus: 4, points: 12 }
