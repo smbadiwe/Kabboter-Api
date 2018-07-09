@@ -84,16 +84,16 @@
                         </div>
                     </div>
                     <div class="col-9 mt-3">
-                        <div id="disquest" style="display:none">
+                        <div id="disquest" style="display:none" class="my-card">
                             <div class="container mt-4">
                                 <!-- <div class="row mt-4"> -->
                                 <div id="timekeeper" class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 text-center mt-3" style="display:none">
                                     <div class="col-5">Time alloted (sec):
-                                        <h3 id="maxTimeCount" class="font-weight-bold text-brand-light font-small"></h3>
+                                        <span id="maxTimeCount" class="font-weight-bold text-brand-light font-small"></span>
                                     </div>
                                     <div class="col-5">Time remaining (sec):
-                                        <h2 id="timer" style="font-size:x-large; font-weight: bold">
-                                        </h2>
+                                        <span id="timer" style="font-size:x-large; font-weight: bold">
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -156,10 +156,10 @@
 
         <div id="end" style="display:none">
             <div class="container mt-2">
-                <div class="text-center">
+                <div class="text-center" style="margin-top: 70px;">
                     <h2 class="font-weight-light text-brand-light">That's all! Thank you for participating.</h2>
                     <div id="topscores" style="display:none"></div>
-                    <div class="btn-toolbar col-12">
+                    <div class="text-center">
                         <button onclick="reloadPage()" class="btn btn-brand font-small">Play another game</button>
                         <button onclick="getTopScores()" class="btn btn-success font-small">Show top scores</button>
                     </div>
