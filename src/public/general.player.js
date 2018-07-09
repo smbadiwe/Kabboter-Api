@@ -109,7 +109,7 @@ function onPlayerReceiveNextQuestion(question, game) {
   if (question) {
     try {
       answered = false;
-      $("div#youranswer").hide();
+      $("#youranswer").hide();
 
       let currentQuestionCount = 1 + (parseInt($("#gamenum").html()) || 0);
       $("#gamenum").html(currentQuestionCount);
@@ -185,8 +185,8 @@ function submitAmswerChoice(event) {
   $("#option3").prop("disabled", true);
   $("#option4").prop("disabled", true);
 
-  const maxTimeCount = parseInt($("div#maxTimeCount").html()) || 20;
-  let timeCount = parseInt($("div#timer").html()) || 0;
+  const maxTimeCount = parseInt($("#maxTimeCount").html()) || 20;
+  let timeCount = parseInt($("#timer").html()) || 0;
   timeCount = maxTimeCount - timeCount;
 
   // hide counter div
@@ -209,8 +209,8 @@ function submitAmswerChoice(event) {
       ansChosen = "D";
       break;
   }
-  $("div#youranswer").show();
-  $("div#youranswer").html("Your answer: " + ansChosen);
+  $("#youranswer").show();
+  $("#youranswer").html("Your answer: " + ansChosen);
   const answerInfo = {
     timeCount: timeCount,
     choice: choice
@@ -231,10 +231,10 @@ function submitAmswerChoice(event) {
 function showAnswerViewOnAuthSuccess(playerInfo) {
   // Show the view where user can answer the questions.
   //NB: Redirecting closes the socket. So, don't.
-  //$("div#register").hide();
-  $("div#login").hide();
-  $("div#game").show();
-  $("div#timeout").hide();
+  //$("#register").hide();
+  $("#login").hide();
+  $("#game").show();
+  $("#timeout").hide();
 
   $("span#pin").html(playerInfo.pin);
   $("span#gameplayer").html(playerInfo.u + " - " + playerInfo.f + " " + playerInfo.l);
@@ -252,16 +252,23 @@ $(function() {
   $("a#newplayer").click(function(e) {
     e.preventDefault();
     e.stopPropagation();
-    $("div#register").show();
-    $("div#enterusername").hide();
-    $("div#startgamebtn").show();
+    $("#enterusername").hide();
+    $("#username").val("");
+
+    $("#register").show();
+    $("#startgamebtn").show();
   });
   $("a#existingplayer").click(function(e) {
     e.preventDefault();
     e.stopPropagation();
-    $("div#register").hide();
-    $("div#enterusername").show();
-    $("div#startgamebtn").show();
+    $("#register").hide();
+    $("#firstname").val("");
+    $("#lastname").val("");
+    $("#email").val("");
+    $("#phone").val("");
+
+    $("#enterusername").show();
+    $("#startgamebtn").show();
   });
 
   $("button.question").click(submitAmswerChoice);

@@ -1,12 +1,6 @@
 import { BaseEntityService } from "./baseentity.service";
-import {
-  UserRoleService,
-  PermissionService,
-  QuizService,
-  SurveyService,
-  QuizAnswerService,
-  SurveyAnswerService
-} from "./";
+import { QuizService, SurveyService, QuizAnswerService, SurveyAnswerService } from "./";
+import { validatePlayerRegistration } from "../routes/api/public/noauth.validate";
 import { RequestError, ValidationError, Required } from "../utils/ValidationErrors";
 import { sign } from "jsonwebtoken";
 import { compare, hashSync, genSaltSync } from "bcrypt";
@@ -234,21 +228,11 @@ export default class UserService extends BaseEntityService {
    * @param {*} userRegInfo
    */
   async processPlayerRegistration(userRegInfo) {
+    validatePlayerRegistration(userRegInfo);
     let user;
     if (userRegInfo.username) {
       user = await this.getByUsernameOrEmailOrPhone(userRegInfo.username);
     } else {
-      if (!userRegInfo.lastname) {
-        throw new RequestError("Last name not set.");
-      }
-      if (!userRegInfo.firstname) {
-        throw new RequestError("First name not set.");
-      }
-      if (!userRegInfo.email && !userRegInfo.phone) {
-        throw new RequestError(
-          "We need at least one way to contact you. So give us either email address or phone number"
-        );
-      }
       user = await this.getByEmailOrPhone(userRegInfo.email, userRegInfo.phone);
     }
     if (user) {
@@ -307,25 +291,20 @@ export default class UserService extends BaseEntityService {
   }
 
   async getByEmailOrPhone(email, phone) {
-    if (!email && !username) return null;
-    if (email && !phone) {
-      return await this.connector
-        .table(this.tableName)
-        .where({ email: email })
-        .first();
-    }
-    if (phone && !email) {
-      return await this.connector
-        .table(this.tableName)
-        .where({ phone: phone })
-        .first();
-    }
+    if (!email && !phone) return null;
 
     return await this.connector
       .table(this.tableName)
-      .where({ email: email })
-      .orWhere({ phone: phone })
-      .first();
+      .first()
+      .modify(queryBuilder => {
+        if (email && !phone) {
+          queryBuilder.where({ email: email });
+        } else if (phone && !email) {
+          queryBuilder.where({ phone: phone });
+        } else {
+          queryBuilder.where({ email: email }).orWhere({ phone: phone });
+        }
+      });
   }
 
   async getByEmailOrUsername(email, username) {
