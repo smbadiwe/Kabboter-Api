@@ -33,9 +33,13 @@ function getNextQuestion() {
 
 socket.on("receive-next-question", onReceiveNextQuestion);
 
-socket.on("when-someone-just-joined", onWhenSomeoneJustJoined);
+socket.on("when-someone-just-joined", function(data) {
+  onWhenSomeoneJustJoined(data, "survey");
+});
 
-socket.on("when-someone-just-left", onWhenSomeoneJustLeft);
+socket.on("when-someone-just-left", function(data) {
+  onWhenSomeoneJustLeft(data, "survey");
+});
 
 socket.on("error", callbackOnGameAdminError);
 

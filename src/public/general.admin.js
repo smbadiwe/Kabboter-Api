@@ -42,7 +42,6 @@ function scoreboard(game) {
     var ctx = document.getElementById("graph-div").getContext("2d");
     var chart = new Chart(ctx, {
       type: "bar",
-
       data: {
         labels: [data.option1, data.option2, data.option3, data.option4],
         datasets: [
@@ -52,8 +51,21 @@ function scoreboard(game) {
           }
         ]
       },
-
-      options: {}
+      options: {
+        legend: {
+          display: false
+        },
+        scales: {
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: true,
+                stepSize: 1
+              }
+            }
+          ]
+        }
+      }
     });
   });
 }
@@ -70,6 +82,7 @@ function loadNextQuestion(e) {
 function showquest(e) {
   e.preventDefault();
   $("#showpin").hide();
+  $("#qnShell").show();
   $("#disquest").show();
   $("#loadQuestion").click();
 }
@@ -237,32 +250,81 @@ function clearAdminGameStorages(game) {
   sessionStorage.removeItem("userData");
 }
 
-function onWhenSomeoneJustJoined(payload) {
+/**
+ *
+ * @param {*} payload  = {
+ *   nPlayers: nPlayers,
+ *   newPlayer: data.userInfo, // the user that joined
+ *   pin: data.pin
+ * };
+ * @param {*} game 'quiz' or 'survey'
+ */
+function onWhenSomeoneJustJoined(payload, game) {
   console.log("onWhenSomeoneJustJoined. payload = ");
   console.log(payload);
-  // payload = {
-  //   nPlayers: nPlayers,
-  //   topFive: topFive,
-  //   newPlayer: data.userInfo,
-  //   pin: data.pin
-  // };
-  // You get the total number of players still connecting
-  // and a list of the top 5 to display on page.
+
   $("#nplayers").html(payload.nPlayers);
+  const gameRunInfo = getGameRunInfo(game);
+
+  const limit = 10;
+  const thePlayer = `[${payload.newPlayer.u}] ${payload.newPlayer.f}`;
+  if (!gameRunInfo.lastXPlayers) {
+    gameRunInfo.lastXPlayers = [thePlayer];
+  } else {
+    // if it's not in the list
+    if (gameRunInfo.lastXPlayers.indexOf(thePlayer) < 0) {
+      gameRunInfo.lastXPlayers.unshift(thePlayer); // add to front
+    }
+
+    const limitWithBuffer = limit + Math.ceil(limit / 2);
+    if (gameRunInfo.lastXPlayers.length > limitWithBuffer) {
+      gameRunInfo.lastXPlayers = gameRunInfo.lastXPlayers.slice(0, limitWithBuffer);
+    }
+  }
+
+  renderPlayerListRows(gameRunInfo.lastXPlayers, limit);
+
+  setGameRunInfo(game, gameRunInfo);
 }
 
-function onWhenSomeoneJustLeft(payload) {
+function onWhenSomeoneJustLeft(payload, game) {
   console.log("onWhenSomeoneJustLeft. payload = ");
   console.log(payload);
   // payload = {
   //   nPlayers: nPlayers,
-  //   topFive: topFive,
-  //   newPlayer: data.userInfo,
+  //   userInfo: data.userInfo, // the user that left
   //   pin: data.pin
   // };
-  // You get the total number of players still connecting
-  // and a list of the top 5 to display on page.
+
   $("#nplayers").html(payload.nPlayers);
+  const gameRunInfo = getGameRunInfo(game);
+  if (gameRunInfo.lastXPlayers) {
+    const limit = 10;
+    const thePlayer = `[${payload.newPlayer.u}] ${payload.newPlayer.f}`;
+
+    // remove from list
+    const index = gameRunInfo.lastXPlayers.indexOf(thePlayer);
+    if (index > -1) {
+      gameRunInfo.lastXPlayers.splice(index, 1);
+    }
+
+    renderPlayerListRows(gameRunInfo.lastXPlayers, limit);
+
+    if (gameRunInfo.lastXPlayers.length === limit) {
+      //TODO: Call for more players to store as buffer on client.
+    }
+  }
+}
+
+function renderPlayerListRows(lastXPlayers, limit) {
+  console.log("calling renderPlayerListRows. list = ");
+  console.log(lastXPlayers);
+  let rows = "";
+  for (let i = 0; i < lastXPlayers.length; i++) {
+    if (i === limit) break;
+    rows += `<div class="row d-flex my-card p-1 mt-2 align-items-center">${lastXPlayers[i]}</div>`;
+  }
+  $("#members").html(rows);
 }
 
 /* Socket Stuffs */
@@ -296,7 +358,7 @@ function SetGameRunInfoOnPage(info, game) {
   // info = { id: <the surveyRun id>, surveyId: surveyId, pin: pin, totalQuestions: totalQuestions,surveytitle: surveytitle, surveydescription: surveydescription };
   console.log("SetGameRunInfoOnPage. Game: " + game + ". info = ");
   console.log(info);
-  localStorage.setItem(game + "runinfo", JSON.stringify(info));
+  setGameRunInfo(game, info);
   $("div#step1").hide();
   $("div#step2").show();
   $("#unum").html(info.pin);
@@ -329,6 +391,10 @@ function getGameRunInfo(game) {
   if (!info) throw new Error(game + "runinfo not yet created");
 
   return JSON.parse(info);
+}
+
+function setGameRunInfo(game, valueAsJson) {
+  localStorage.setItem(game + "runinfo", JSON.stringify(valueAsJson));
 }
 
 function callbackOnGameAdminError(errorMessage) {

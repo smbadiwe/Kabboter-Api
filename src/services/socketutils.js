@@ -17,7 +17,7 @@ function addToRoom(rooms, roomNo, item) {
 
 function closeSocketsInRoom(rooms, roomNo) {
   // finally
-  delete rooms[roomNo];
+  // delete rooms[roomNo];
 }
 
 /**
@@ -37,11 +37,11 @@ export function joinRoom(socket, pin, recordType) {
     username: socket.user.u,
     isAdmin: socket.user.isAdmin
   };
-  if (recordType === "quiz") {
-    addToRoom(quizRooms, roomNo, socketDataForRoom);
-  } else {
-    addToRoom(surveyRooms, roomNo, socketDataForRoom);
-  }
+  // if (recordType === "quiz") {
+  //   addToRoom(quizRooms, roomNo, socketDataForRoom);
+  // } else {
+  //   addToRoom(surveyRooms, roomNo, socketDataForRoom);
+  // }
   log.debug(
     "Player socket %s [%o] joined %s room %s",
     socket.id,
@@ -49,7 +49,7 @@ export function joinRoom(socket, pin, recordType) {
     recordType,
     roomNo
   );
-  log.debug("%s room: %O", recordType, recordType === "quiz" ? quizRooms : surveyRooms);
+  //log.debug("%s room: %O", recordType, recordType === "quiz" ? quizRooms : surveyRooms);
   return roomNo;
 }
 
@@ -59,7 +59,7 @@ export function joinRoom(socket, pin, recordType) {
  * @param {*} pin
  * @param {*} recordType 'quiz' or 'survey'
  */
-export function destroyRoom(socket, pin, recordType) {
+function destroyRoom(socket, pin, recordType) {
   const roomNo = getRoomNo(pin, recordType);
   if (recordType === "quiz") {
     closeSocketsInRoom(quizRooms, roomNo);
@@ -80,18 +80,28 @@ export function leaveRoom(socket, recordType) {
     user: socket.user
   });
   const roomNo = socket.roomNo;
-  socket.leave(roomNo);
-  if (recordType === "quiz") {
-    if (quizRooms[roomNo]) {
-      const index = quizRooms[roomNo].findIndex(item => item.socketId === socket.id);
-      if (index !== -1) quizRooms[roomNo].splice(index, 1);
-    }
-  } else {
-    if (surveyRooms[roomNo]) {
-      const index = surveyRooms[roomNo].indexOf(socket.id);
-      if (index !== -1) surveyRooms[roomNo].splice(index, 1);
-    }
+  try {
+    socket.leave(roomNo);
+  } catch (e) {
+    log.debug(
+      "Non-show-stopping error when Player socket %s tried to leave %s room %s. %O",
+      socket.id,
+      recordType,
+      roomNo,
+      e
+    );
   }
+  // if (recordType === "quiz") {
+  //   if (quizRooms[roomNo]) {
+  //     const index = quizRooms[roomNo].findIndex(item => item.socketId === socket.id);
+  //     if (index !== -1) quizRooms[roomNo].splice(index, 1);
+  //   }
+  // } else {
+  //   if (surveyRooms[roomNo]) {
+  //     const index = surveyRooms[roomNo].indexOf(socket.id);
+  //     if (index !== -1) surveyRooms[roomNo].splice(index, 1);
+  //   }
+  // }
   log.debug("Player socket %s left %s room %s", socket.id, recordType, roomNo);
 
   return roomNo;
@@ -101,18 +111,17 @@ export function leaveRoom(socket, recordType) {
  *
  * @param {*} adminIO
  * @param {*} playerIO
- * @param {*} data { pin: pin, userInfo: userInfo }
+ * @param {*} userInfo { pin: pin, ...userInfo }
  * @param {*} roomNo
  */
-export function tellAdminThatSomeoneJustJoined(adminIO, playerIO, data, roomNo) {
+export function tellAdminThatSomeoneJustJoined(adminIO, playerIO, userInfo, roomNo) {
   try {
     //log.debug("Players in room %s: %O", roomNo, playerIO.in(roomNo).sockets);
     const totalPlayers = Object.keys(playerIO.in(roomNo).sockets).length;
 
     const payload = {
       nPlayers: totalPlayers,
-      newPlayer: data.userInfo,
-      pin: data.pin
+      newPlayer: userInfo
     };
     log.debug(
       "Informing admin that %o just joined room %s. Total players now: %s",
@@ -227,11 +236,12 @@ export async function authenticateGamePlayer(data, socket, playerIO, adminIO, re
     log.debug(
       `authenticating player socket - ID "${socket.id}". Searching for room ${roomNo} in room list`
     );
+    const rooms = Object.keys(adminIO.adapter.rooms);
+    // Note that we're checking room in adminIO, not playerIO.
+    // This is how it's supposed to be, since we created the room at the admin first.
 
-    const room = recordType === "quiz" ? quizRooms[roomNo] : surveyRooms[roomNo];
-    if (room) {
-      socket.authenticated = true;
-
+    const roomExists = rooms.indexOf(roomNo) >= 0; // recordType === "quiz" ? quizRooms[roomNo] : surveyRooms[roomNo];
+    if (roomExists) {
       // create user
       log.debug("Creating player record for player: %o", data);
       const userInfo = await new UserService().processPlayerRegistration(data);

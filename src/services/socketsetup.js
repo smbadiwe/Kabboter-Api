@@ -46,36 +46,36 @@ function setupQuizSockets(io) {
       );
     });
 
-    // data = { pin: pin, socketId: socketId }
-    socket.on("someone-just-left", data => {
-      try {
-        const roomNo = getRoomNo(data.pin, "quiz");
-        quizPlayerIO.in(roomNo).clients((err, clients) => {
-          if (!err) {
-            const nPlayers = clients.length;
-            const topFive = clients.slice(0, 5);
-            // Inform admin so she can display on UI
-            const payload = {
-              nPlayers: nPlayers,
-              topFive: topFive
-            };
-            quizAdminIO.in(roomNo).emit("when-someone-just-left", data);
-          } else {
-            log.error(
-              "Server Socket: Error on 'someone-just-left' trying to get clients in room. Socket: %s: %s",
-              socket.id,
-              err.message
-            );
-          }
-        });
-      } catch (e) {
-        log.error(
-          "Server Socket: Error on 'someone-just-left' for socket %s: %s",
-          socket.id,
-          e.message
-        );
-      }
-    });
+    // // data = { pin: pin, socketId: socketId }
+    // socket.on("someone-just-left", data => {
+    //   try {
+    //     const roomNo = getRoomNo(data.pin, "quiz");
+    //     quizPlayerIO.in(roomNo).clients((err, clients) => {
+    //       if (!err) {
+    //         const nPlayers = clients.length;
+    //         const topFive = clients.slice(0, 5);
+    //         // Inform admin so she can display on UI
+    //         const payload = {
+    //           nPlayers: nPlayers,
+    //           topFive: topFive
+    //         };
+    //         quizAdminIO.in(roomNo).emit("when-someone-just-left", data);
+    //       } else {
+    //         log.error(
+    //           "Server Socket: Error on 'someone-just-left' trying to get clients in room. Socket: %s: %s",
+    //           socket.id,
+    //           err.message
+    //         );
+    //       }
+    //     });
+    //   } catch (e) {
+    //     log.error(
+    //       "Server Socket: Error on 'someone-just-left' for socket %s: %s",
+    //       socket.id,
+    //       e.message
+    //     );
+    //   }
+    // });
 
     socket.on("end-game", data => {
       try {
@@ -168,36 +168,36 @@ function setupSurveySockets(io) {
       );
     });
 
-    // data = { pin: pin, socketId: socketId }
-    socket.on("someone-just-left", data => {
-      try {
-        const roomNo = getRoomNo(data.pin, "survey");
-        surveyPlayerIO.in(roomNo).clients((err, clients) => {
-          if (!err) {
-            const nPlayers = clients.length;
-            const topFive = clients.slice(0, 5);
-            // Inform admin so she can display on UI
-            const payload = {
-              nPlayers: nPlayers,
-              topFive: topFive
-            };
-            surveyAdminIO.in(roomNo).emit("when-someone-just-left", data);
-          } else {
-            log.error(
-              "Server Socket: Error on 'someone-just-left' trying to get clients in room. Socket: %s: %s",
-              socket.id,
-              err.message
-            );
-          }
-        });
-      } catch (e) {
-        log.error(
-          "Server Socket: Error on 'someone-just-left' for socket %s: %s",
-          socket.id,
-          e.message
-        );
-      }
-    });
+    // // data = { pin: pin, socketId: socketId }
+    // socket.on("someone-just-left", data => {
+    //   try {
+    //     const roomNo = getRoomNo(data.pin, "survey");
+    //     surveyPlayerIO.in(roomNo).clients((err, clients) => {
+    //       if (!err) {
+    //         const nPlayers = clients.length;
+    //         const topFive = clients.slice(0, 5);
+    //         // Inform admin so she can display on UI
+    //         const payload = {
+    //           nPlayers: nPlayers,
+    //           topFive: topFive
+    //         };
+    //         surveyAdminIO.in(roomNo).emit("when-someone-just-left", data);
+    //       } else {
+    //         log.error(
+    //           "Server Socket: Error on 'someone-just-left' trying to get clients in room. Socket: %s: %s",
+    //           socket.id,
+    //           err.message
+    //         );
+    //       }
+    //     });
+    //   } catch (e) {
+    //     log.error(
+    //       "Server Socket: Error on 'someone-just-left' for socket %s: %s",
+    //       socket.id,
+    //       e.message
+    //     );
+    //   }
+    // });
 
     socket.on("disconnect", () => {
       leaveRoom(socket, "survey");

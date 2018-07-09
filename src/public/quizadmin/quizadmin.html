@@ -15,10 +15,6 @@
 </head>
 
 <body>
-
-    <div class="members">
-
-    </div>
     <div class="app">
         <div id="myNavBar"> </div>
         <div id='step1'>
@@ -72,78 +68,89 @@
                         </div>
                         <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 text-center mt-3">
                             <h4 class="text-secondary">Ready to play?</h4>
-                            <button id="gotoDummyBtn" blass="btn btn-success" onclick='showquest(event);'>Start</button>
+                            <button id="gotoDummyBtn" class="btn btn-lg btn-success" onclick='showquest(event);'>Start</button>
                             <hr class="mt-5">
                         </div>
                     </div>
                 </div>
-                <div id="disquest" style="display:none">
-                    <div class="container mt-4">
-                    <!-- <div class="row mt-4"> -->
-                        <div id="timekeeper" class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 text-center mt-3" style="display:none">
-                            <div class="col-5">Time alloted (sec):
-                                <h3 id="maxTimeCount" class="font-weight-bold text-brand-light font-small"></h3>
-                            </div>
-                            <div class="col-5">Time remaining (sec):
-                                <h2 id="timer" style="font-size:x-large; font-weight: bold">
-                                </h2>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mt-4">
-                        <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 text-center mt-3">
-                            <h4 class="text-secondary">
-                                <strong>Question
-                                    <span id="gamenum">0</span>
-                                </strong> of
-                                <span id="gametotal"></span>
-                            </h4>
-                            <h1 class="mt-4">
-                                <span id='quest'></span>
-                            </h1>
-                            <div class="row">
-                                <div class="col-md-6 my-2">
-                                    <h5>A.
-                                        <span id='opt1'></span>
-                                    </h5>
-                                </div>
-                                <div class="col-md-6 my-2">
-                                    <h5>B.
-                                        <span id='opt2'></span>
-                                    </h5>
-                                </div>
-                                <div class="col-md-6 my-2">
-                                    <h5>C.
-                                        <span id='opt3'></span>
-                                    </h5>
-                                </div>
-                                <div class="col-md-6 my-2">
-                                    <h5>D.
-                                        <span id='opt4'></span>
-                                    </h5>
-                                </div>
-                            </div>
-                            <button id="loadQuestion" onclick='loadNextQuestion(event)' class="btn btn-brand my-4 px-4">Next</button>
-                        </div>
-                    </div>
-                </div>
-                <div id="timeout" style="display:none">
-                    <div class="container mt-2">
+                <div id="qnShell" class="row mt-3" style="display:none">
+                    <div class="col-3 mt-3">
                         <div class="text-center">
-                            <div id="scoreboard" style="display:none"></div>
+                            <h1 id="nplayers">0</h1>
+                            <strong style="font-size: x-large">user(s) playing</strong>
+                            <hr />
+                            <div id="members" class="members col-12">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-9 mt-3">
+                        <div id="disquest" style="display:none">
+                            <div class="container mt-4">
+                                <!-- <div class="row mt-4"> -->
+                                <div id="timekeeper" class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 text-center mt-3" style="display:none">
+                                    <div class="col-5">Time alloted (sec):
+                                        <h3 id="maxTimeCount" class="font-weight-bold text-brand-light font-small"></h3>
+                                    </div>
+                                    <div class="col-5">Time remaining (sec):
+                                        <h2 id="timer" style="font-size:x-large; font-weight: bold">
+                                        </h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-4">
+                                <!-- <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 text-center mt-3"> -->
+                                <div class="col-12 text-center mt-3">
+                                    <h4 class="text-secondary">
+                                        <strong>Question
+                                            <span id="gamenum">0</span>
+                                        </strong> of
+                                        <span id="gametotal"></span>
+                                    </h4>
+                                    <h1 class="mt-4">
+                                        <span id='quest'></span>
+                                    </h1>
+                                    <div class="row">
+                                        <div class="col-md-6 my-2">
+                                            <h5>A.
+                                                <span id='opt1'></span>
+                                            </h5>
+                                        </div>
+                                        <div class="col-md-6 my-2">
+                                            <h5>B.
+                                                <span id='opt2'></span>
+                                            </h5>
+                                        </div>
+                                        <div class="col-md-6 my-2">
+                                            <h5>C.
+                                                <span id='opt3'></span>
+                                            </h5>
+                                        </div>
+                                        <div class="col-md-6 my-2">
+                                            <h5>D.
+                                                <span id='opt4'></span>
+                                            </h5>
+                                        </div>
+                                    </div>
+                                    <button id="loadQuestion" onclick='loadNextQuestion(event)' class="btn btn-brand my-4 px-4">Next</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="timeout" style="display:none">
+                            <div class="container mt-2">
+                                <div class="text-center">
+                                    <div id="scoreboard" style="display:none"></div>
 
-                            <div class="row">
-                                <div class="col-12">
-                                    <button onclick='loadNextQuestion(event)' class="btn btn-brand font-small">Go to next question</button>
+                                    <div class="row mt-4">
+                                        <div class="col-12">
+                                            <button onclick='loadNextQuestion(event)' class="btn btn-brand font-small">Go to next question</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 text-center mt-3">
-                    <h5>
-                        <strong id="nplayers"></strong> user(s) currently playing</h5>
-                </div>
+
             </div>
         </div>
 
