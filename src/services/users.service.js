@@ -98,21 +98,23 @@ export default class UserService extends BaseEntityService {
         }
       })
       .select();
-    const result = await this.dbPaging(playeyQuery, pagingOptions);
+    const result = await this.dbPaging(playeyQuery, {
+      perPage: perPage,
+      page: page
+    });
     return result; // = { data, pagination }
   }
 
   /**
-   *
-   * @param {*} pagingOptions { perPage: perPage, page: page, }
+   * Returns a db-paged list
+   * @param {*} payload { perPage: perPage, page: page, ...searchParams }
    */
   async getPlayers(payload) {
     const { perPage, page } = payload;
     const playeyQuery = this.connector
       .table(this.tableName)
       .where({
-        roles: Enums.UserRoleOptions.Players,
-        disabled: false
+        roles: Enums.UserRoleOptions.Players
       })
       .modify(queryBuilder => {
         if (payload.lastname) {

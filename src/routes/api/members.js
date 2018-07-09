@@ -1,8 +1,9 @@
 import Router from "koa-router";
 import { UserService } from "../../services";
-import * as validate from "./players.validate";
+import * as validate from "./members.validate";
+import { validateInteger, RequestError } from "../../utils/ValidationErrors";
 import Enums from "../../services/enums";
-const router = new Router({ prefix: "/api/user/players" });
+const router = new Router({ prefix: "/api/members" });
 
 router.post("/create", async ctx => {
   const payload = ctx.request.body;
@@ -72,26 +73,33 @@ router.post("/update", async ctx => {
   }
 });
 
-router.get("/", async ctx => {
-  const allMembers = await new UserService().getPlayers(ctx.request.body);
-  if (!allMembers) {
-    ctx.status = 503;
-  } else {
+router.get("/players", async ctx => {
+  try {
+    const allMembers = await new UserService().getPlayers(ctx.request.body);
     ctx.body = allMembers;
+  } catch (e) {
+    ctx.throw(e.status || 500, e);
+  }
+});
+
+router.get("/admins", async ctx => {
+  try {
+    const allMembers = await new UserService().getAdmins(ctx.request.body);
+    ctx.body = allMembers;
+  } catch (e) {
+    ctx.throw(e.status || 500, e);
   }
 });
 
 router.get("/:id", async ctx => {
   try {
-    const member = await new UserService().getById(ctx.params.id);
-    if (!member) {
-      ctx.throw(503);
-    } else {
-      ctx.body = member;
-    }
-  } catch (err) {
-    console.log(err);
-    ctx.throw(503, "No member with the given id found.");
+    const recordId = ctx.params.id;
+    validateInteger(recordId, "id", true);
+    const res = await new UserService().getById(recordId);
+    if (!res) throw new RequestError("No member with the given id found.");
+    ctx.body = res;
+  } catch (e) {
+    ctx.throw(e.status || 500, e);
   }
 });
 

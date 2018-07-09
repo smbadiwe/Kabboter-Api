@@ -1,7 +1,7 @@
 import Router from "koa-router";
 import { UserService } from "../../services";
 import { validateChangePassword } from "./userprofile.validate";
-import { validateUserOnAdd } from "./players.validate";
+import { validateUserOnAdd } from "./members.validate";
 
 const router = new Router({ prefix: "/api/user" });
 

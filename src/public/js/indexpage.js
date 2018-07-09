@@ -119,8 +119,6 @@ $(function() {
       feedbackDiv.html(`<div class="alert alert-danger">Last name is required</div`);
       return false;
     }
-    var email = $("#r-email").val();
-    var phone = $("#r-phone").val();
     var sec_que = $("#sec-que").val();
     if (!sec_que) {
       feedbackDiv.html(`<div class="alert alert-danger">Security question is required</div`);
@@ -131,10 +129,23 @@ $(function() {
       feedbackDiv.html(`<div class="alert alert-danger">Security answer is required</div`);
       return false;
     }
+    var country = $("#country").val();
+    if (!country) {
+      feedbackDiv.html(`<div class="alert alert-danger">Country is required</div`);
+      return false;
+    }
     //var username = $("#r-username").val();
     var pass = validatePassword();
     if (!pass) {
       feedbackDiv.html(`<div class="alert alert-danger">Password validation failed</div`);
+      return false;
+    }
+    var email = $("#r-email").val();
+    var phone = $("#r-phone").val();
+    if (!email && !phone) {
+      feedbackDiv.html(
+        `<div class="alert alert-danger">Enter email or phone number. We need a way to contact you if need be</div`
+      );
       return false;
     }
 
@@ -148,7 +159,7 @@ $(function() {
         lastname: lastname,
         email: email,
         phone: phone,
-        //username: username,
+        country: country,
         password: pass,
         securityanswer: ans,
         securityquestion: sec_que
