@@ -4,7 +4,7 @@ import { validatePlayerRegistration } from "../routes/api/public/noauth.validate
 import { RequestError, ValidationError, Required } from "../utils/ValidationErrors";
 import { sign } from "jsonwebtoken";
 import { compare, hashSync, genSaltSync } from "bcrypt";
-import { generatePin } from "../utils";
+import { generatePin, getKeyByValue } from "../utils";
 import Enums from "./enums";
 import log from "../utils/log";
 
@@ -88,12 +88,12 @@ export default class UserService extends BaseEntityService {
             .orWhere("firstname", "like", `%${payload.q}%`)
             .orWhere("username", "like", `%${payload.q}%`);
         }
-      })
-      .select();
+      });
     const result = await this.dbPaging(playerQuery, {
       perPage: perPage,
       page: page
     });
+
     return result; // = { data, pagination }
   }
 
@@ -190,7 +190,7 @@ export default class UserService extends BaseEntityService {
       phone: userRegInfo.phone,
       username: username,
       roles: Enums.UserRoleOptions.Moderator,
-      disabled: false, // Moderator cannot create quiz or polls if disabled.
+      disabled: true, // Moderator cannot create quiz or polls if disabled.
       passwordHash: hashSync(userRegInfo.password, genSaltSync()),
       usertype: userRegInfo.usertype,
       securityquestion: userRegInfo.securityquestion,

@@ -48,3 +48,7 @@ export function isArray(a) {
 export function isObject(a) {
   return !!a && a.constructor === Object;
 }
+
+export function getKeyByValue(object, value) {
+  return Object.keys(object).find(key => object[key] === value);
+}
