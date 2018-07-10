@@ -70,35 +70,27 @@ export default class UserService extends BaseEntityService {
   }
 
   /**
-   *
-   * @param {*} pagingOptions { perPage: perPage, page: page, }
+   * Returns a db-paged list
+   * @param {*} payload { perPage: perPage, page: page, ...searchParams  }
    */
-  async getAdmins(pagingOptions) {
-    const playeyQuery = this.connector
+  async getAdmins(payload) {
+    const { perPage, page } = payload;
+    const playerQuery = this.connector
       .table(this.tableName)
       .whereNot({
-        roles: Enums.UserRoleOptions.Players,
-        disabled: true
+        roles: Enums.UserRoleOptions.Players
+        //disabled: true
       })
       .modify(queryBuilder => {
-        if (payload.lastname) {
-          queryBuilder.where("lastname", "like", `%${payload.lastname}%`);
-        }
-        if (payload.firstname) {
-          queryBuilder.where("firstname", "like", `%${payload.firstname}%`);
-        }
-        if (payload.username) {
-          queryBuilder.where("username", "like", `%${payload.username}%`);
-        }
-        if (payload.email) {
-          queryBuilder.where("email", "like", `%${payload.email}%`);
-        }
-        if (payload.phone) {
-          queryBuilder.where("phone", "like", `%${payload.phone}%`);
+        if (payload.q) {
+          queryBuilder
+            .where("lastname", "like", `%${payload.q}%`)
+            .orWhere("firstname", "like", `%${payload.q}%`)
+            .orWhere("username", "like", `%${payload.q}%`);
         }
       })
       .select();
-    const result = await this.dbPaging(playeyQuery, {
+    const result = await this.dbPaging(playerQuery, {
       perPage: perPage,
       page: page
     });
@@ -117,20 +109,11 @@ export default class UserService extends BaseEntityService {
         roles: Enums.UserRoleOptions.Players
       })
       .modify(queryBuilder => {
-        if (payload.lastname) {
-          queryBuilder.where("lastname", "like", `%${payload.lastname}%`);
-        }
-        if (payload.firstname) {
-          queryBuilder.where("firstname", "like", `%${payload.firstname}%`);
-        }
-        if (payload.username) {
-          queryBuilder.where("username", "like", `%${payload.username}%`);
-        }
-        if (payload.email) {
-          queryBuilder.where("email", "like", `%${payload.email}%`);
-        }
-        if (payload.phone) {
-          queryBuilder.where("phone", "like", `%${payload.phone}%`);
+        if (payload.q) {
+          queryBuilder
+            .where("lastname", "like", `%${payload.q}%`)
+            .orWhere("firstname", "like", `%${payload.q}%`)
+            .orWhere("username", "like", `%${payload.q}%`);
         }
       });
     const result = await this.dbPaging(playeyQuery, {
@@ -242,7 +225,9 @@ export default class UserService extends BaseEntityService {
         i: user.id,
         l: user.lastname,
         f: user.firstname,
-        u: user.username
+        u: user.username,
+        e: user.email,
+        p: user.phone
       };
     }
     const username = await this.generateUsername(userRegInfo.lastname, userRegInfo.firstname);
@@ -261,7 +246,9 @@ export default class UserService extends BaseEntityService {
       i: userId,
       l: userRegInfo.lastname,
       f: userRegInfo.firstname,
-      u: username
+      u: username,
+      e: user.email,
+      p: user.phone
     };
   }
 

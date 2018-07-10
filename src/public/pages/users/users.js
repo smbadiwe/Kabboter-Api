@@ -4,7 +4,7 @@ function loadData(page = 1) {
   var myUrl = window.location.origin + "/api/user/admins";
 
   const queryData = {
-    title: $("#search").val(),
+    q: $("#search").val(),
     perPage: $("#perPage").val(),
     page: page
   };

@@ -1,6 +1,6 @@
 import { validateInteger, RequestError } from "../utils/ValidationErrors";
 import log from "../utils/log";
-import { UserService } from "./";
+import { UserService, QuizRunService, SurveyRunService } from "./";
 
 log.setNamespace("socketutils");
 
@@ -197,7 +197,8 @@ export async function authenticateGameAdmin(data, socket, playerIO, recordType, 
       recordType,
       roomNo
     );
-    playerIO.emit(`get-${recordType}run-info`, data);
+    // Send player the PIN [pin]
+    playerIO.emit(`get-${recordType}run-info`, { pin: data.pin });
   } catch (e) {
     log.error(
       "Server Socket: Error on %s 'authenticate' for socket %s: %s",
@@ -244,9 +245,40 @@ export async function authenticateGamePlayer(data, socket, playerIO, adminIO, re
 
     const roomExists = rooms.indexOf(roomNo) >= 0; // recordType === "quiz" ? quizRooms[roomNo] : surveyRooms[roomNo];
     if (roomExists) {
+      let gameRunInfo =
+        recordType === "quiz"
+          ? await new QuizRunService().getFirst({ pin: data.pin })
+          : await new SurveyRunService().getFirst({ pin: data.pin });
+      if (!gameRunInfo)
+        throw new RequestError(
+          "Game code does not exist yet. You may need to wait till the moderator starts the game."
+        ); // this should never happen.
+
+      if (!gameRunInfo.moderatorId)
+        throw new RequestError("Contact moderator to start the game afresh with new game code.");
+
+      const userService = new UserService();
+
+      const moderator = await userService.getById(gameRunInfo.moderatorId);
+      if (!moderator)
+        throw new RequestError(
+          "Moderator info not found. Contact moderator to start the game afresh with new game code."
+        );
+
+      if (
+        (data.phone && moderator.p === data.phone) ||
+        (data.email && moderator.e === data.email) ||
+        (data.username && moderator.u === data.username)
+      ) {
+        throw new RequestError(
+          "No cheating. You can't play in a game that you're also the moderator"
+        );
+      }
+
       // create user
       log.debug("Creating player record for player: %o", data);
-      const userInfo = await new UserService().processPlayerRegistration(data);
+      const userInfo = await userService.processPlayerRegistration(data);
+
       userInfo.pin = data.pin; // the quiz pin. Not part of player record, so, not set in 'processPlayerRegistration'
 
       socket.user = userInfo;
@@ -262,8 +294,21 @@ export async function authenticateGamePlayer(data, socket, playerIO, adminIO, re
 
       socket.authenticated = true;
 
-      // tell client auth is OK, hand it the user info
-      socket.emit("auth-success", userInfo);
+      const moderatorInfo = {
+        i: moderator.id,
+        f: moderator.firstname,
+        l: moderator.lastname,
+        r: moderator.roles,
+        u: moderator.username,
+        p: moderator.phone,
+        e: moderator.email
+      };
+      // tell client auth is OK, hand it the user info and the moderator info
+      socket.emit("auth-success", {
+        userInfo: userInfo,
+        moderator: moderatorInfo,
+        totalQuestions: gameRunInfo.totalQuestions
+      });
       // Tell admin someone just connected
       tellAdminThatSomeoneJustJoined(adminIO, playerIO, userInfo, roomNo);
       log.debug(
@@ -272,11 +317,11 @@ export async function authenticateGamePlayer(data, socket, playerIO, adminIO, re
       );
     } else {
       log.debug(
-        "Auth failure - invalid PIN from player socket - ID %s. Disconnecting socket...",
+        "Auth failure - invalid game code from player socket - ID %s. Disconnecting socket...",
         socket.id
       );
       if (onError) {
-        onError("Invalid credentials. Failed to authenticate.");
+        onError("Invalid game code. Failed to authenticate.");
       }
       socket.disconnect(true); // I may remove this if client can't see that auth failed.
     }
@@ -324,6 +369,9 @@ export async function getQuestion(
       data.gameId,
       answeredQuestionIds
     );
+    if (question) {
+      question.Number = !answeredQuestionIds ? 1 : answeredQuestionIds.length + 1;
+    }
     // send question to both moderators and players
     log.debug(`send %s question to both moderators and players. data = %o`, recordType, question);
     socket.emit("receive-next-question", question, recordType);

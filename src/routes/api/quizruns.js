@@ -8,10 +8,12 @@ const router = new Router({ prefix: "/api/user/quizruns" });
 
 router.post("/create", async ctx => {
   try {
-    validateQuizRunProps(ctx.request.body);
-    log.debug("Creating quiz run...");
-    const res = await new QuizRunService().save(ctx.request.body);
-    log.debug("Done creating quiz run...");
+    const gameParams = ctx.request.body;
+    validateQuizRunProps(gameParams);
+    gameParams.moderatorId = ctx.request.user.id;
+    validateInteger(gameParams.moderatorId, "moderatorId", true);
+
+    const res = await new QuizRunService().save(gameParams);
 
     ctx.body = res;
   } catch (e) {

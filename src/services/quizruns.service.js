@@ -49,7 +49,8 @@ export default class QuizRunService extends BaseEntityService {
       displayPin: record.displayPin,
       totalQuestions: totalQuestions,
       awardPoints: record.awardPoints,
-      awardBonus: record.awardBonus
+      awardBonus: record.awardBonus,
+      moderatorId: record.moderatorId
     };
 
     const res = await super.save(quizRun);

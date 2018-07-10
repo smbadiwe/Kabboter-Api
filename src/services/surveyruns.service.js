@@ -33,7 +33,8 @@ export default class SurveyRunService extends BaseEntityService {
       randomizeQuestions: record.randomizeQuestions,
       randomizeAnswers: record.randomizeAnswers,
       displayPin: record.displayPin,
-      totalQuestions: totalQuestions
+      totalQuestions: totalQuestions,
+      moderatorId: record.moderatorId
     };
 
     const res = await super.save(surveyRun);

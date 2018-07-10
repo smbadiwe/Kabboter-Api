@@ -32,25 +32,6 @@ function onGetPlayPin(playerInfo) {
 }
 
 /**
- * playerInfo: {
- *  pin: xxx,
- *  id: userId,
- *  lastname: xxx,
- *  firstname: xxx,
- *  username: xxx
- * }
- * @param {*} playerInfo
- */
-function onAuthSuccess(playerInfo) {
-  // Show the view where user can answer the questions.
-  console.log("onAuthSuccess called with feedback: ");
-  console.log(playerInfo);
-
-  localStorage.setItem("quizPlayerInfo", JSON.stringify(playerInfo));
-  showAnswerViewOnAuthSuccess(playerInfo);
-}
-
-/**
  * Submit answer to a quiz question via socket.
  * TODO: package the answerInfo object and pass it to this method. Do this when client clicks on an answer button.
  * answerInfo should be a JSON with these keys:
@@ -121,4 +102,6 @@ socket.on("disconnect", function(reason) {
   onPlayerDisconnect(socket, reason, "quiz");
 });
 
-socket.on("auth-success", onAuthSuccess);
+socket.on("auth-success", function(gameInfo) {
+  onAuthSuccess(gameInfo, "quiz");
+});

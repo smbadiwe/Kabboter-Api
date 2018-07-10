@@ -44,16 +44,6 @@ function startGamePlay(e) {
     }
   }
 
-  // if there's pin, there'll be moderator
-  const moderator = JSON.parse(localStorage.getItem("moderator"));
-  if (
-    (phone && moderator.p === phone) ||
-    (email && moderator.e === email) ||
-    (username && moderator.u === username)
-  ) {
-    alert("No cheating. You can't play in a game that you're also the moderator");
-    return;
-  }
   console.log("calling onGetPlayPin: PIN = " + pin);
   const playerInfo = {
     pin: pin,
@@ -67,18 +57,14 @@ function startGamePlay(e) {
   onGetPlayPin(playerInfo);
 }
 
-//  data = { pin: pin, userInfo: userInfo }
+//  data = { pin: pin }
 function onGetPlayerGameRunInfo(data) {
   console.log("onGetPlayerGameRunInfo: data = ");
   console.log(data);
-  localStorage.setItem("moderator", JSON.stringify(data.userInfo));
   // if we're still in the start page, set the pin
   if ($("input#pin").length) {
     $("input#pin").val(data.pin);
   }
-
-  $("#nplayers").html(0);
-  $("#gametotal").html(data.totalQuestions);
 }
 
 function onPlayerDisconnect(socket, reason, recordType) {
@@ -113,7 +99,8 @@ function onPlayerReceiveNextQuestion(question, game) {
       answered = false;
       $("#youranswer").hide();
 
-      let currentQuestionCount = 1 + (parseInt($("#gamenum").html()) || 0);
+      let currentQuestionCount = question.Number;
+      if (!currentQuestionCount) currentQuestionCount = 1 + (parseInt($("#gamenum").html()) || 0);
       $("#gamenum").html(currentQuestionCount);
 
       $("#question").html(question.question);
@@ -221,23 +208,47 @@ function submitAmswerChoice(event) {
 }
 
 /**
+ * @param {*} gameInfo
  * playerInfo: {
+ *  pin: xxx,
+ *  id: userId,
+ *  lastname: xxx,
+ *  firstname: xxx,
+ *  username: xxx
+ * }
+ * @param {*} game 'quiz' or 'survey'
+ */
+function onAuthSuccess(gameInfo, game) {
+  // Show the view where user can answer the questions.
+  console.log(game + " onAuthSuccess called with feedback: ");
+  console.log(gameInfo);
+
+  localStorage.setItem(game + "PlayerInfo", JSON.stringify(gameInfo.userInfo));
+  localStorage.setItem("moderator", JSON.stringify(gameInfo.moderator));
+  showAnswerViewOnAuthSuccess(gameInfo);
+}
+
+/**
+ * userInfo: {
  *  pin: xxx,
  *  i: userId,
  *  l: lastname,
  *  f: firstname,
  *  u: username
  * }
- * @param {*} playerInfo
+ * @param {*} data
  */
-function showAnswerViewOnAuthSuccess(playerInfo) {
+function showAnswerViewOnAuthSuccess(data) {
   // Show the view where user can answer the questions.
   //NB: Redirecting closes the socket. So, don't.
   //$("#register").hide();
+  const playerInfo = data.userInfo;
   $("#login").hide();
   $("#game").show();
   $("#timeout").hide();
 
+  $("#nplayers").html(0);
+  $("#gametotal").html(data.totalQuestions);
   $("span#pin").html(playerInfo.pin);
   $("span#gameplayer").html(playerInfo.u + " - " + playerInfo.f + " " + playerInfo.l);
 }
