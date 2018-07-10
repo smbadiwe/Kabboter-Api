@@ -104,7 +104,8 @@ function onPlayerReceiveNextQuestion(question, game) {
       $("#gamenum").html(currentQuestionCount);
 
       $("#question").html(question.question);
-      $("#qnPoints").html(question.points);
+      if (game === "quiz") $("#qnPoints").html(question.points);
+
       // Enable the buttons
       $("#option1").prop("disabled", false);
       $("#option2").prop("disabled", false);
@@ -115,7 +116,11 @@ function onPlayerReceiveNextQuestion(question, game) {
       startPlayerCountDown(game, question.timeLimit);
     } catch (e) {
       console.log(e);
-      $("#error").html(e);
+      if (confirm(e.message + "\nDo you want to refresh and start game afresh?")) {
+        reloadPage();
+      } else {
+        window.location = "/";
+      }
     }
   } else {
     showPlayerEndViewAndClearStorage(game);

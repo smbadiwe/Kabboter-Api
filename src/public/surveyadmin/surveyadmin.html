@@ -14,10 +14,6 @@
 </head>
 
 <body>
-
-    <div class="members">
-
-    </div>
     <div class="app">
         <div id="myNavBar"> </div>
         <div id='step1'>
@@ -51,27 +47,21 @@
                     <p class="text-secondary col-md-8 offset-md-2">
                         <span id='gamedescription'></span>
                     </p>
-                    <!-- <p class="text-secondary col-md-8 offset-md-2">
-                        Total Questions:
-                        <b>
-                            <span id="gametotalqns"></span>
-                        </b>
-                    </p> -->
                     <hr>
                 </div>
                 <div id="showpin">
-                    <div class="row mt-4 my-card">
+                    <div class="row mt-4">
                         <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1">
                             <div class="alert alert-warning text-center font-weight-bold">Visit
                                 <a href="../surveyplayer/surveyplayer.html">
                                     <span id="playGameUrl" style="font-weight: bold;"></span>
                                 </a> to join the game and insert the code below
-                                <h1 class="font-weight-bold pt-3 text-dark" id="unum"></h1>
+                                <h1 class="font-weight-bold pt-3 text-dark" id="pin"></h1>
                             </div>
                         </div>
                         <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 text-center mt-3">
                             <h4 class="text-secondary">Ready to play?</h4>
-                            <button id="gotoDummyBtn" blass="btn btn-success" onclick='showquest(event);'>Start</button>
+                            <button id="gotoDummyBtn" class="btn btn-lg btn-success" onclick='showquest(event);'>Start</button>
                             <hr class="mt-5">
                         </div>
                     </div>
@@ -88,19 +78,22 @@
                     </div>
                     <div class="col-9 mt-3">
                         <div id="disquest" style="display:none">
-                            <div class="row mt-4 my-card">
-                                <div id="timekeeper" class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 text-center mt-3" style="display:none">
-                                    <div class="col-5" style="font: bold;">Time alloted (sec):
-                                        <span id="maxTimeCount" style="margin-left: 5px;" class="font-weight-bold text-brand-light font-small"></span>
+                            <div class="container mt-2 my-card">
+                                <div id="timekeeper" class="row text-center" style="display:none">
+                                    <div class="col-md-4 my-3">Game Code:
+                                        <h2 id="gamecode" class="font-weight-bold text-brand-light"></h2>
                                     </div>
-                                    <div class="col-5" style="font: bold;">Time remaining (sec):
-                                        <span id="timer" style="font-size:x-large; font-weight: bold; margin-left: 5px;">
-                                        </span>
+                                    <div class="col-md-4 my-3">Time alloted (sec):
+                                        <h2 id="maxTimeCount" class="font-weight-bold text-brand-light"></h2>
+                                    </div>
+                                    <div class="col-md-4 my-3">Countdown:
+                                        <h2 id="timer" class="font-weight-bold text-brand-light" style="color: red;"></h2>
                                     </div>
                                 </div>
                             </div>
                             <div class="row mt-4 my-card">
-                                <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 text-center mt-3">
+                                <!-- <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 text-center mt-3"> -->
+                                <div class="col-12 text-center mt-3">
                                     <h4 class="text-secondary">
                                         <strong>Question
                                             <span id="gamenum">0</span>
@@ -132,17 +125,17 @@
                                             </h5>
                                         </div>
                                     </div>
-                                    <button onclick='loadNextQuestion(event)' class="btn btn-brand my-4 px-4">Next</button>
                                 </div>
                             </div>
                         </div>
                         <div id="timeout" style="display:none">
-                            <div class="container mt-2 my-card">
+                            <div class="container mt-2">
                                 <div class="text-center">
                                     <div id="scoreboard" style="display:none"></div>
-                                    <div class="row">
+                                    <div class="row mt-4">
                                         <div class="col-12">
-                                            <button id="loadQuestion" onclick='loadNextQuestion(event)' class="btn btn-brand font-small">Go to next question</button>
+                                            <button id="loadQuestion" onclick='loadNextQuestion(event)' class="btn btn-lg btn-brand">Go to next question</button>
+                                            <button onclick="endGame('survey')" class="btn btn-lg btn-danger">End game</button>
                                         </div>
                                     </div>
                                 </div>
@@ -158,12 +151,12 @@
                 <div class="text-center" style="margin-top: 70px;">
                     <h1 class="font-weight-light text-brand-light">That's all! Thank you for participating.</h1>
                     <div class="text-center">
-                        <button onclick="reloadPage()" class="btn btn-brand font-small">Play another game</button>
+                        <button onclick="reloadPage()" class="btn btn-lg btn-brand">Play another game</button>
+                        <button onclick="endGame('survey')" class="btn btn-lg btn-danger">End game</button>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
     <script src="../js/app.js"></script>
     <script src="../general.js"></script>

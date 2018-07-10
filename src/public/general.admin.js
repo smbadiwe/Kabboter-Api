@@ -174,9 +174,7 @@ function startAdminCountDown(game, maxCount = 20) {
       scoreboard(game);
       if ($("#gametotal").html() === $("#gamenum").html()) {
         // it means we've exhausted our list of questions. So...
-        setTimeout(function() {
-          showAdminEndViewAndClearStorage(game);
-        }, 5000);
+        $("#loadQuestion").hide();
       }
     }
   }, 1000);
@@ -223,18 +221,7 @@ function loadGameDropdownList(recordType) {
   });
 }
 
-// function setLoginInfo() {
-//   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-//   if (!userInfo) {
-//     logOut();
-//   } else {
-//     $("#dis-name").html(`${userInfo.f} ${userInfo.l}`);
-//   }
-// }
-
 function onAfterLoadingGameList() {
-  //setLoginInfo();
-
   loadNavBar();
   const id = getUrlParameter("id");
   if (id) {
@@ -242,6 +229,12 @@ function onAfterLoadingGameList() {
     $("#gamelist").val(id);
     console.log("onAfterLoadingGameList: Done setting gamelist val: " + $("#gamelist").val());
   }
+}
+
+function endGame(game) {
+  clearAdminGameStorages(game);
+  // TODO: emit even to close all player sockets
+  window.location = "/pages/dashboard.html";
 }
 
 /**
@@ -367,7 +360,8 @@ function SetGameRunInfoOnPage(info, game) {
   setGameRunInfo(game, info);
   $("div#step1").hide();
   $("div#step2").show();
-  $("#unum").html(info.pin);
+  $("#pin").html(info.pin);
+  $("#gamecode").html(info.pin);
   $("#nplayers").html(0);
   $("#gametotal").html(info.totalQuestions);
 
