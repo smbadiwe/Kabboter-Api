@@ -147,11 +147,11 @@ function setGameQuestionPropsOnPage(gamequestion, game) {
     $("#opt4").html(gamequestion.option4);
     startAdminCountDown(game, gamequestion.timeLimit);
   } else {
-    showAdminEndViewAndClearStorage(game);
+    showAdminEndView(game);
   }
 }
 
-function showAdminEndViewAndClearStorage(game) {
+function showAdminEndView(game) {
   $("#step1").hide();
   $("#step2").hide();
   $("#end").show();
@@ -231,9 +231,13 @@ function onAfterLoadingGameList() {
   }
 }
 
-function endGame(game) {
+/**
+ * Shut the whole game down. Should be called by a button at the 'end' page
+ * @param {*} game
+ */
+function closeGame(game) {
   clearAdminGameStorages(game);
-  // TODO: emit even to close all player sockets
+  // TODO: emit event to close all player sockets
   window.location = "/pages/dashboard.html";
 }
 
@@ -398,6 +402,7 @@ function setGameRunInfo(game, valueAsJson) {
 }
 
 function callbackOnGameAdminError(errorMessage) {
+  if (errorMessage === "Error: websocket error") errorMessage = "Player disconnected.";
   alert(errorMessage);
 }
 

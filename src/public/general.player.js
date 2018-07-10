@@ -263,7 +263,7 @@ function showAnswerViewOnAuthSuccess(data) {
  * @param {*} errorMessage A string describing the error
  */
 function callbackOnGamePlayerError(errorMessage) {
-  if (errorMessage === "websocket error") errorMessage = "Player disconnected.";
+  if (errorMessage === "Error: websocket error") errorMessage = "Player disconnected.";
   alert(errorMessage);
 }
 
