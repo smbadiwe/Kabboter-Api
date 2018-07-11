@@ -1,4 +1,5 @@
 function loadUserDetailsAndSetOnPage() {
+  loadNavBar();
   const token = localStorage.getItem("token");
   const userId = getUrlParameter("id");
   const myUrl = window.location.origin + "/api/members/" + userId;
@@ -15,16 +16,19 @@ function loadUserDetailsAndSetOnPage() {
       $("#result").html("Error fetching data. " + data.statusText);
     },
     success: function(data) {
-      console.log(data)
+      console.log(data);
 
-      $('#details').append(`
+      $("#details").append(
+        `
         
       <div class="row" style="margin-bottom:24px;">
         <div class="col-md-3">
           <b>Username</b>
         </div>
         <div class="col-md-9">
-          `+ data.username+`
+          ` +
+          data.username +
+          `
         </div>
       </div>
 
@@ -33,7 +37,11 @@ function loadUserDetailsAndSetOnPage() {
           <b>Name</b>
         </div>
         <div class="col-md-9">
-          `+ data.firstname+` `+data.lastname+`
+          ` +
+          data.firstname +
+          ` ` +
+          data.lastname +
+          `
         </div>
       </div>
 
@@ -42,7 +50,9 @@ function loadUserDetailsAndSetOnPage() {
           <b>Email address</b>
         </div>
         <div class="col-md-9">
-          `+ data.email+`
+          ` +
+          data.email +
+          `
         </div>
       </div>
 
@@ -51,7 +61,9 @@ function loadUserDetailsAndSetOnPage() {
           <b>Phone number</b>
         </div>
         <div class="col-md-9">
-          `+ data.phone+`
+          ` +
+          data.phone +
+          `
         </div>
       </div>
 
@@ -60,7 +72,9 @@ function loadUserDetailsAndSetOnPage() {
           <b>Country</b>
         </div>
         <div class="col-md-9">
-          `+ data.country+`
+          ` +
+          data.country +
+          `
         </div>
       </div>
 
@@ -69,7 +83,9 @@ function loadUserDetailsAndSetOnPage() {
           <b>Organization</b>
         </div>
         <div class="col-md-9">
-          `+ data.organization+`
+          ` +
+          data.organization +
+          `
         </div>
       </div>
 
@@ -78,12 +94,15 @@ function loadUserDetailsAndSetOnPage() {
           <b>Roles</b>
         </div>
         <div class="col-md-9">
-         <div class="badge badge-success"> `+ data.roles+`</div>
+         <div class="badge badge-success"> ` +
+          data.roles +
+          `</div>
         </div>
       </div>
       
       
-      `)
+      `
+      );
       //TODO: set page html elements. 'data' will be the user details.
       // write to console if you need to see what the JSON looks like
     }
