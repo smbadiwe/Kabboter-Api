@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -9,34 +9,27 @@
 
     <style>
         .word{
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 23px;
-            font-weight: bold;
+         
         }
     </style>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
-<!-- jQuery library -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
-</head>
+</head> -->
 
 <body style="background-color: lightgray">
 
     <div class="container" style="max-width: 500px;">
         <div class="well" style="margin-top: 30px;">
             <div class="welcome-header text-center">
-                <span class="word">Welcome {{ firstname }} {{ lastname }}</span>
+                <span style="   font-family: Arial, Helvetica, sans-serif;
+                font-size: 23px;
+                font-weight: bold;">Welcome {{ firstname }} {{ lastname }}</span>
             </div>
 
             <div class="welcome-body text-center" style="margin-top: 10px; padding: 10px;">
                 <div class="welcome-icon text-center">
                     <span class="fa fa-check" style="font-size: 70px; margin-top: 10px; margin-bottom: 10px; color: springgreen;"></span>
                 </div>       
-                Your player account have been created successfully, Your player ID is <b>{{playerid}}</b>
+                Your player account have been created successfully, Your player ID is <b>{{username}}</b>
             </div>
 
             <!-- <div class="welcome-footer text-center" style="margin: 30px">
@@ -47,11 +40,15 @@
 
         <p class="text-center"><a href="http://www.raoatech.com" style="color: #4e4e4e; text-decoration: none; ">Powered by Raoatech</a></p>
     </div>
+</body>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 
 <!-- Latest compiled JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-</body>
-
-</html>
