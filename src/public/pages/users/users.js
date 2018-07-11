@@ -15,6 +15,75 @@ function loadUserDetailsAndSetOnPage() {
       $("#result").html("Error fetching data. " + data.statusText);
     },
     success: function(data) {
+      console.log(data)
+
+      $('#details').append(`
+        
+      <div class="row" style="margin-bottom:24px;">
+        <div class="col-md-3">
+          <b>Username</b>
+        </div>
+        <div class="col-md-9">
+          `+ data.username+`
+        </div>
+      </div>
+
+      <div class="row" style="margin-bottom:24px;">
+        <div class="col-md-3">
+          <b>Name</b>
+        </div>
+        <div class="col-md-9">
+          `+ data.firstname+` `+data.lastname+`
+        </div>
+      </div>
+
+      <div class="row" style="margin-bottom:24px;">
+        <div class="col-md-3">
+          <b>Email address</b>
+        </div>
+        <div class="col-md-9">
+          `+ data.email+`
+        </div>
+      </div>
+
+      <div class="row" style="margin-bottom:24px;">
+        <div class="col-md-3">
+          <b>Phone number</b>
+        </div>
+        <div class="col-md-9">
+          `+ data.phone+`
+        </div>
+      </div>
+
+      <div class="row" style="margin-bottom:24px;">
+        <div class="col-md-3">
+          <b>Country</b>
+        </div>
+        <div class="col-md-9">
+          `+ data.country+`
+        </div>
+      </div>
+
+      <div class="row" style="margin-bottom:24px;">
+        <div class="col-md-3">
+          <b>Organization</b>
+        </div>
+        <div class="col-md-9">
+          `+ data.organization+`
+        </div>
+      </div>
+
+      <div class="row" style="margin-bottom:24px;">
+        <div class="col-md-3">
+          <b>Roles</b>
+        </div>
+        <div class="col-md-9">
+         <div class="badge badge-success"> `+ data.roles+`</div>
+        </div>
+      </div>
+      
+      
+      `)
       //TODO: set page html elements. 'data' will be the user details.
       // write to console if you need to see what the JSON looks like
     }

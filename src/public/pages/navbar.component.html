@@ -17,6 +17,7 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" id="profileLink" href="/pages/profile.html">View Profile</a>
                         <a class="dropdown-item" id="editProfileLink" href="/pages/settings.html">Edit Profile</a>
+                        <a class="dropdown-item" id="manageAdmin" href="#" >Manage admin</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="javascript:void();" onclick="logout(event);">Logout</a>
                     </div>
@@ -26,6 +27,14 @@
     </div>
 </nav>
 <script>
+
+    var usersUrl = 
+
+    $('#manageAdmin').click(function(){
+
+        window.location = window.location.origin+'/pages/users/users.html'
+    })
+
     const userInfo = JSON.parse(localStorage.getItem('userInfo'));
     if (userInfo) {
         $('#dis-name').html(`${userInfo.f} ${userInfo.l}`);
