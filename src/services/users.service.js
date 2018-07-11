@@ -4,7 +4,8 @@ import { validatePlayerRegistration } from "../routes/api/public/noauth.validate
 import { RequestError, ValidationError, Required } from "../utils/ValidationErrors";
 import { sign } from "jsonwebtoken";
 import { compare, hashSync, genSaltSync } from "bcrypt";
-import { generatePin, getKeyByValue } from "../utils";
+import { generatePin } from "../utils";
+import { sendWelcomeEmailToPlayer, sendWelcomeEmailToModerator } from "./sendemails";
 import Enums from "./enums";
 import log from "../utils/log";
 
@@ -199,6 +200,7 @@ export default class UserService extends BaseEntityService {
     };
     user.id = await this.save(user);
 
+    sendWelcomeEmailToModerator(user);
     // automatically log the user in.
     return this.setJwtAuth(user);
     // return {
@@ -240,10 +242,10 @@ export default class UserService extends BaseEntityService {
       roles: Enums.UserRoleOptions.Players,
       usertype: Enums.UserType.SocialUser
     };
-    const userId = await this.save(user);
-
+    user.id = await this.save(user);
+    sendWelcomeEmailToPlayer(user);
     return {
-      i: userId,
+      i: user.id,
       l: userRegInfo.lastname,
       f: userRegInfo.firstname,
       u: username,
@@ -363,6 +365,7 @@ export default class UserService extends BaseEntityService {
     });
     userInfo.f = user.firstname;
     userInfo.l = user.lastname;
+
     return {
       token: token,
       user: userInfo

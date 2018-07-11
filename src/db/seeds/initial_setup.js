@@ -14,14 +14,14 @@ export async function seed(knex) {
   await knex("emailaccounts").insert([
     {
       id: 1,
-      name: "GMail Account",
-      smtpHost: "smtp.gmail.com",
-      smtpUsername: "",
-      smtpPassword: "",
-      smtpPort: 587,
-      isDefault: true,
-      secureSsl: true,
-      useDefaultCredentials: false
+      name: process.env.EMAIL_ACCT,
+      smtpHost: process.env.EMAIL_ACCT_SMTP_HOST,
+      smtpUsername: process.env.EMAIL_ACCT_SMTP_USEERNAME,
+      smtpPassword: process.env.EMAIL_ACCT_SMTP_PASSWORD,
+      smtpPort: process.env.EMAIL_ACCT_SMTP_PORT,
+      secureSsl: process.env.EMAIL_ACCT_SECURE_SSL,
+      useDefaultCredentials: process.env.EMAIL_ACCT_USE_DEFAULT_CREDENTIALS,
+      isDefault: true
     }
   ]);
 

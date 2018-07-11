@@ -59,15 +59,20 @@ export default class Emailer {
    * @param {*} viewData
    */
   async sendEmail(emailOptions, htmlTemplatePath, viewData) {
-    if (!emailOptions) throw new RequestError("emailOptions required");
-    if (!emailOptions.to) throw new RequestError("emailOptions.to required");
-    htmlTemplatePath = path.resolve(__dirname, this.emailTemplateDirectory, htmlTemplatePath);
-    const template = fs.readFileSync(htmlTemplatePath, "utf8");
+    try {
+      if (!emailOptions) throw new RequestError("emailOptions required");
+      if (!emailOptions.to) throw new RequestError("emailOptions.to required");
+      htmlTemplatePath = path.resolve(__dirname, this.emailTemplateDirectory, htmlTemplatePath);
+      const template = fs.readFileSync(htmlTemplatePath, "utf8");
 
-    const htmlBody = mustache.to_html(template, viewData);
-    console.log(htmlBody);
-    const result = await this.sendEmailToClient(emailOptions, htmlBody);
-    return apiSuccess(result);
+      const htmlBody = mustache.to_html(template, viewData);
+      console.log(htmlBody);
+      const result = await this.sendEmailToClient(emailOptions, htmlBody);
+      return apiSuccess(result);
+    } catch (e) {
+      console.log("Error sending email..");
+      console.log(e);
+    }
   }
 
   /**
