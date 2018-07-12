@@ -336,7 +336,13 @@ export default class UserService extends BaseEntityService {
     // jwt sign
     //TODO: Figure out a way to expire tokens. For some ideas, visit
     // https://stackoverflow.com/questions/26739167/jwt-json-web-token-automatic-prolongation-of-expiration
-    const userInfo = { i: user.id, u: user.username, r: user.roles };
+    const userInfo = {
+      i: user.id,
+      u: user.username,
+      r: user.roles,
+      d: user.disabled,
+      del: user.deleted
+    };
     const token = sign(userInfo, process.env.APP_SECRET, {
       expiresIn: "12h"
     });
@@ -355,6 +361,9 @@ export default class UserService extends BaseEntityService {
 
     if (!user) {
       throw new RequestError("User detail is incorrect.");
+    }
+    if (user.deleted && user.roles !== Enums.UserRoleOptions.SuperAdmin) {
+      throw new RequestError("User has been suspended.");
     }
     if (user.disabled && user.roles !== Enums.UserRoleOptions.Moderator) {
       // In this app, 'disabled' for moderators means they can login but cannot create quiz or vote.

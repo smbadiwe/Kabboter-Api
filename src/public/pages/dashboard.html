@@ -14,7 +14,10 @@
     <div class="app">
         <div id="myNavBar"> </div>
 
-        <div class="container mt-5">
+        <div id="notEnabled" class="container mt-5" style="display: none">
+            <p>You've not been enabled by Super Admin to create polls or quizzes</p>
+        </div>
+        <div id="selectKahoot" class="container mt-5">
             <h1 class="font-weight-light text-center text-secondary">Select a Kaboot</h1>
             <div class="row mt-5 my-card">
                 <div class="col-md-8 border-right">
@@ -101,25 +104,32 @@
 
             loadNavBar();
 
-            var token = localStorage.getItem("token");
-            var myUrl = window.location.origin + '/api/user/profile';
+            var userInfo = JSON.parse(localStorage.getItem("userInfo"));
+            if (userInfo.d && userInfo.r === UserRoleOptions.Moderator) { // if moderator is not yet enabled
+                $("#selectKahoot").hide();
+                $("#notEnabled").show();
+            } else {
+                var token = localStorage.getItem("token");
+                var myUrl = window.location.origin + '/api/user/profile';
 
-            $.ajax({
-                headers: {
-                    Authorization: 'Bearer ' + token
-                },
-                url: myUrl,
-                type: 'get',
-                error: function (data) {
-                    $('#result').append('Error Fetching File');
-                },
-                success: function (data) {
-                    $('#nquiz').html(data.nQuizzes);
-                    $('#npoll').html(data.nSurveys);
-                    $('#aquiz').html(data.nQuizAnswered);
-                    $('#apoll').html(data.nSurveyAnswered);
-                }
-            });
+                $.ajax({
+                    headers: {
+                        Authorization: 'Bearer ' + token
+                    },
+                    url: myUrl,
+                    type: 'get',
+                    error: function (data) {
+                        $('#result').append('Error Fetching File');
+                    },
+                    success: function (data) {
+                        $('#nquiz').html(data.nQuizzes);
+                        $('#npoll').html(data.nSurveys);
+                        $('#aquiz').html(data.nQuizAnswered);
+                        $('#apoll').html(data.nSurveyAnswered);
+                    }
+                });
+
+            }
         });
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
