@@ -7,7 +7,6 @@ $(function() {
 
   var forgotPasswordBtn = document.getElementById("forgotPasswordBtn");
   var registerBtn = document.getElementById("registerBtn");
-  var loginBtn = document.getElementById("loginBtn");
 
   // OnAppInit
   forgotPasswordContainer.style.display = "none";
@@ -15,7 +14,6 @@ $(function() {
 
   // show Signup form
   registerBtn.addEventListener("click", showSignUpForm);
-  loginBtn.addEventListener("click", showLoginForm);
   forgotPasswordBtn.addEventListener("click", showForgotPasswordForm);
 
   // Callback functions
@@ -23,12 +21,6 @@ $(function() {
     loginContainer.style.display = "none";
     forgotPasswordContainer.style.display = "none";
     signUpContainer.style.display = "block";
-  }
-
-  function showLoginForm() {
-    loginContainer.style.display = "block";
-    forgotPasswordContainer.style.display = "none";
-    signUpContainer.style.display = "none";
   }
 
   function showForgotPasswordForm() {
