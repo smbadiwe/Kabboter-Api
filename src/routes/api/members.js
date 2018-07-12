@@ -71,12 +71,13 @@ router.post("/update", async ctx => {
 
 router.post("/enabledisable", async ctx => {
   const payload = ctx.request.body;
-  console.log("calling enable-disable with payload: ");
-  console.log(payload);
   try {
     if (!payload) throw new RequestError("No payload");
     validateInteger(payload.id, "id", true);
-    await new UserService().update({ id: payload.id, disabled: !payload.enabling });
+    console.log("/enabledisable - payload = ");
+    console.log(payload);
+    if (payload.enabling) payload.enabling = payload.enabling === "true";
+    await new UserService().update({ id: +payload.id, disabled: !payload.enabling });
   } catch (e) {
     ctx.throw(e.status || 500, e);
   }

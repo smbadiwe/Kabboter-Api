@@ -17,6 +17,7 @@ const visibleTo = {
 };
 //Object.freeze(visibleTo);
 
+// ALWAYS sync with the definition in /public/js/app.js
 const userRoleOptions = {
   Players: 1,
   Moderator: 2,

@@ -54,6 +54,12 @@ function getTokenFromHeaderOrQuerystring(req) {
 async function handleError(ctx, next) {
   try {
     await next();
+
+    if (!ctx.body && (ctx.method === "post" || ctx.method === "POST")) {
+      ctx.body = {
+        status: true
+      };
+    }
   } catch (err) {
     ctx.status = err.status || 500;
     ctx.message =

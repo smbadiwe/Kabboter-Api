@@ -101,3 +101,10 @@ function isModernBrowser() {
     "FileReader" in window
   );
 }
+
+// ALWAYS sync with the definition in /services/enums.js
+const UserRoleOptions = {
+  Players: 1,
+  Moderator: 2,
+  SuperAdmin: 3
+};

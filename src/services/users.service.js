@@ -79,8 +79,8 @@ export default class UserService extends BaseEntityService {
     const playerQuery = this.connector
       .table(this.tableName)
       .whereNot({
-        roles: Enums.UserRoleOptions.Players
-        //disabled: true
+        roles: Enums.UserRoleOptions.Players,
+        disabled: true
       })
       .modify(queryBuilder => {
         if (payload.q) {
@@ -108,6 +108,9 @@ export default class UserService extends BaseEntityService {
       .table(this.tableName)
       .where({
         roles: Enums.UserRoleOptions.Players
+      })
+      .whereNot({
+        disabled: true
       })
       .modify(queryBuilder => {
         if (payload.q) {
@@ -330,32 +333,6 @@ export default class UserService extends BaseEntityService {
   }
 
   setJwtAuth(user) {
-    // let roleIds = [];
-    // if (user.roles) {
-    //   roleIds = user.roles.split(",").map(p => +p);
-    // }
-    // const permissionIdsSet = new Set();
-    // let roleNames = "";
-    // const rolesObj = await new UserRoleService().getByIds(roleIds);
-    // if (rolesObj && rolesObj.length > 0) {
-    //   rolesObj.forEach(r => {
-    //     roleNames += `${r.name}, `;
-    //     if (r.permissionIds) {
-    //       const pids = r.permissionIds.split(",");
-    //       pids.forEach(p => {
-    //         permissionIdsSet.add(+p);
-    //       });
-    //     }
-    //   });
-    //   roleNames = roleNames.substring(0, roleNames.length - 2);
-    // }
-    // const permissions = await new PermissionService().getByIds([...permissionIdsSet]);
-    // const userPermissions = [];
-    // if (permissions && permissions.length > 0) {
-    //   permissions.forEach(p => {
-    //     userPermissions.push(p.name);
-    //   });
-    // }
     // jwt sign
     //TODO: Figure out a way to expire tokens. For some ideas, visit
     // https://stackoverflow.com/questions/26739167/jwt-json-web-token-automatic-prolongation-of-expiration

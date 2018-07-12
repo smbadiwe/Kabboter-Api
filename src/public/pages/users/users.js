@@ -144,19 +144,22 @@ function loadData(page = 1) {
       setPagingInfo(data.pagination);
     },
     complete: function() {
-      $("a.enabledisable").on("click", function(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        const target = event.target;
-        console.log(target);
-        const sno = target.getAttribute("sno");
-        const userId = target.getAttribute("userId");
-        const enabling = target.getAttribute("enabling");
-        console.log("sno = " + sno + " userId = " + userId + " enabling = " + enabling);
-        toggleUser(+sno, +userId, enabling);
-      });
+      $("a.enabledisable").on("click", onToggleBtnClicked);
     }
   });
+}
+
+// in users.html
+function onToggleBtnClicked(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  const target = event.target;
+  console.log(target);
+  const sno = target.getAttribute("sno");
+  const userId = target.getAttribute("userId");
+  const enabling = target.getAttribute("enabling");
+  console.log("sno = " + sno + " userId = " + userId + " enabling = " + enabling);
+  toggleUser(+sno, +userId, enabling);
 }
 
 // in users.html
@@ -178,53 +181,63 @@ function toggleUser(sno, userId, enabling) {
   const token = localStorage.getItem("token");
   const myUrl = window.location.origin + "/api/members/enabledisable";
   enabling = enabling ? true : false;
-  const data = {
+  const payload = {
     id: userId,
     enabling: enabling
   };
   console.log("calling enable-disable with payload: ");
-  console.log(data);
+  console.log(payload);
   $.ajax({
     headers: {
       Authorization: "Bearer " + token
     },
     url: myUrl,
     type: "POST",
-    data: data,
+    data: payload,
     error: function(data) {
       console.log(data);
       $("#result").show();
       $("#result").html(`Error ${enabling ? "enabling" : "disabling"} user. ${data.statusText}`);
     },
     success: function(data) {
-      console.log("calling enable-disable: back from server");
-      console.log(data);
-      $(`tr#${userId} td#${sno}`).html(
-        enabling ? "<span style='font-weight: bold; color: green;'>Yes</span>" : "No"
-      );
-      $(`tr#${userId} td#${sno}-btn`).html(getEnableDisableButton(userId, enabling, sno));
+      if (enabling) {
+        $(`tr#${userId} td#${sno}-txt`).html(
+          "<span style='font-weight: bold; color: green;'>Yes</span>"
+        );
+
+        $(`tr#${userId} td#${sno}-btn a.enabledisable`)
+          .removeAttr("enabling")
+          .removeClass("btn-success")
+          .addClass("btn-danger");
+      } else {
+        $(`tr#${userId} td#${sno}-txt`).html("No");
+
+        $(`tr#${userId} td#${sno}-btn a.enabledisable`)
+          .attr("enabling", "true")
+          .removeClass("btn-danger")
+          .addClass("btn-success");
+      }
     }
   });
 }
 
-function getEnableDisableButton(userId, enabled, sno) {
-  let btnLink = enabled
-    ? `<a href sno="${sno}", userId="${userId}", class="enabledisable btn btn-danger btn-block btn-sm">Disable</a>`
-    : `<a href sno="${sno}", userId="${userId}", enabling="true" class="enabledisable btn btn-success btn-block btn-sm">Enable</a>`;
-  return btnLink;
-}
-
 function getOneUserRow(key, user) {
   const sno = key + 1;
-  let btnLink = getEnableDisableButton(user.id, user.enabled, sno);
+  let btnLink = user.disabled
+    ? `<a href sno="${sno}", userId="${
+        user.id
+      }", enabling="true" class="enabledisable btn btn-success btn-block btn-sm">Enable</a>`
+    : `<a href sno="${sno}", userId="${
+        user.id
+      }", class="enabledisable btn btn-danger btn-block btn-sm">Disable</a>`;
 
   return `<tr id="${user.id}">
               <td scope="row">${sno}</td>
               <td>${user.username}</td>
               <td><a href="details.html?id=${user.id}">${user.firstname} ${user.lastname}</a></td>
               <td>${user.roles}</td>
-              <td id="${sno}">${
-    user.enabled ? "<span style='font-weight: bold; color: green;'>Yes</span>" : "No"
+              <td id="${sno}-txt">${
+    user.disabled ? "No" : "<span style='font-weight: bold; color: green;'>Yes</span>"
   }</td>
               <td id="${sno}-btn">${btnLink}</td>
           </tr>`;

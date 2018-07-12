@@ -17,7 +17,11 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" id="profileLink" href="/pages/profile.html">View Profile</a>
                         <a class="dropdown-item" id="editProfileLink" href="/pages/settings.html">Edit Profile</a>
-                        <a class="dropdown-item" id="manageAdmin" href="#" >Manage admin</a>
+                        <!-- Super Admins Only. 
+                        NB: They're marked with class: saOnly and style: display: none. Follow the convention when adding more links-->
+                        <div class="dropdown-divider saOnly" style="display: none;"></div>
+                        <a class="dropdown-item saOnly" id="manageAdmin" href="/pages/users/users.html" style="display: none;">Manage admins</a>
+                        <!-- End Super Admins Only. -->
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="javascript:void();" onclick="logout(event);">Logout</a>
                     </div>
@@ -27,16 +31,20 @@
     </div>
 </nav>
 <script>
-
-    var usersUrl = 
-
-    $('#manageAdmin').click(function(){
-
-        window.location = window.location.origin+'/pages/users/users.html'
-    })
-
-    const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+    let userInfo = localStorage.getItem('userInfo');
     if (userInfo) {
-        $('#dis-name').html(`${userInfo.f} ${userInfo.l}`);
+        try {
+            userInfo = JSON.parse(userInfo);
+            $('#dis-name').html(`${userInfo.f} ${userInfo.l}`);
+            if (+userInfo.r === UserRoleOptions.SuperAdmin) {
+                $('.saOnly').show();
+            }
+        } catch (e) {
+            console.log("Error loading navbar: ");
+            console.log(e);
+            logout();
+        }
+    } else {
+        logout();
     }
 </script>
