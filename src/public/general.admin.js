@@ -6,9 +6,9 @@ function onPlayerSubmittedAnswer(data, game) {
   // We use this info to update dashboard. That dashboard where you show
   // chart of the different options and how many players chose each.
   console.log("From " + game + " onPlayerSubmittedAnswer fn. data:");
-  console.log(data);
+  // console.log(data);
   if (data && data.choice && +data.choice) {
-    const tally = JSON.parse(localStorage.getItem(game + "question"));
+    const tally = JSON.parse(localStorage.getItem(game + "question"))
     if (tally.id === data.questionId) {
       tally["answer" + data.choice] = tally["answer" + data.choice] + 1;
 
@@ -26,6 +26,8 @@ function scoreboard(game) {
   $("#scoreboard").load("/pages/game/scoreboard.component.html", function() {
     $("#scoreboard").show();
     const data = JSON.parse(localStorage.getItem(game + "question"));
+
+
     /*
         Appends our questions and options to our views on the SCOREBOARD.HTML file
       */
@@ -45,35 +47,44 @@ function scoreboard(game) {
         ANSWERS ON THE Y-AXIS
         OPTIONS ON THE X-AXIS
     */
-    var ctx = document.getElementById("graph-div").getContext("2d");
-    var chart = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: [data.option1, data.option2, data.option3, data.option4],
-        datasets: [
-          {
-            data: [data.answer1, data.answer2, data.answer3, data.answer4], //These are tallies showing how many people chose a particular option
-            backgroundColor: ["aqua", "red", "palevioletred", "yellow"]
-          }
-        ]
-      },
-      options: {
-        legend: {
-          display: false
-        },
-        scales: {
-          yAxes: [
+
+    // if(data == null){
+    //   alert('data is null')
+    // }else{
+
+      var ctx = document.getElementById("graph-div").getContext("2d");
+      var chart = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: [data.option1, data.option2, data.option3, data.option4],
+          datasets: [
             {
-              ticks: {
-                beginAtZero: true,
-                stepSize: 1
-              }
+              data: [data.answer1, data.answer2, data.answer3, data.answer4], //These are tallies showing how many people chose a particular option
+              backgroundColor: ["aqua", "red", "palevioletred", "yellow"]
             }
           ]
+        },
+        options: {
+          legend: {
+            display: false
+          },
+          scales: {
+            yAxes: [
+              {
+                ticks: {
+                  beginAtZero: true,
+                  stepSize: 1
+                }
+              }
+            ]
+          }
         }
-      }
-    });
+      });
+      
+    // }
+  
   });
+
 }
 
 function loadNextQuestion(e) {
