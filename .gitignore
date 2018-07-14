@@ -10,6 +10,7 @@ public_html
 web.config
 *.yaml
 *.pem
+for-azure.*
 
 # test db
 dev.sqlite3
