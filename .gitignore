@@ -3,11 +3,13 @@ node_modules
 
 # build folder
 dist
+public_html
 
 # config file
 *.env
 web.config
 *.yaml
+*.pem
 
 # test db
 dev.sqlite3

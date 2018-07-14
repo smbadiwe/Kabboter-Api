@@ -19,8 +19,8 @@ export async function seed(knex) {
       smtpUsername: process.env.EMAIL_ACCT_SMTP_USEERNAME,
       smtpPassword: process.env.EMAIL_ACCT_SMTP_PASSWORD,
       smtpPort: process.env.EMAIL_ACCT_SMTP_PORT,
-      secureSsl: process.env.EMAIL_ACCT_SECURE_SSL,
-      useDefaultCredentials: process.env.EMAIL_ACCT_USE_DEFAULT_CREDENTIALS,
+      secureSsl: process.env.EMAIL_ACCT_SECURE_SSL === "true",
+      useDefaultCredentials: process.env.EMAIL_ACCT_USE_DEFAULT_CREDENTIALS === "true",
       isDefault: true
     }
   ]);

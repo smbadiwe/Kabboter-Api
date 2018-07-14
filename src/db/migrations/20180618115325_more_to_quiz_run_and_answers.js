@@ -6,11 +6,13 @@ export async function up(knex) {
       t.string("quiztitle");
       t.string("quizdescription");
       t.integer("totalQuestions");
+      t.integer("moderatorId");
     })
     .table("surveyruns", t => {
       t.string("surveytitle");
       t.string("surveydescription");
       t.integer("totalQuestions");
+      t.integer("moderatorId");
     })
     .table("quizquestions", t => {
       t.integer("points").defaultTo(0);

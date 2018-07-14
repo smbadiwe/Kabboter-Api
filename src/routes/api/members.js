@@ -83,6 +83,19 @@ router.post("/enabledisable", async ctx => {
   }
 });
 
+router.post("/changerole", async ctx => {
+  const payload = ctx.request.body;
+  try {
+    if (!payload) throw new RequestError("No payload");
+    validateInteger(payload.id, "id", true);
+    if (payload.demoting) payload.demoting = payload.demoting === "true";
+    const newData = await new UserService().promoteOrDemoteUserRole(+payload.id, payload.demoting);
+    ctx.body = newData;
+  } catch (e) {
+    ctx.throw(e.status || 500, e);
+  }
+});
+
 router.get("/players", async ctx => {
   try {
     const allMembers = await new UserService().getPlayers(ctx.request.query);

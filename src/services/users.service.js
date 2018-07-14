@@ -14,6 +14,18 @@ export default class UserService extends BaseEntityService {
     super("users");
   }
 
+  async promoteOrDemoteUserRole(userId, isDemoting) {
+    await this.connector
+      .table(this.tableName)
+      .where("id", userId)
+      .update(
+        {
+          roles: this.connector.raw(isDemoting ? "?? - 1" : "?? + 1", ["roles"])
+        },
+        ["id", "roles"] // this doesn't work in mysql; but lets just leave it here
+      );
+  }
+
   async processResetPassword(payload) {
     const { username, password } = payload;
 
@@ -80,7 +92,7 @@ export default class UserService extends BaseEntityService {
       .table(this.tableName)
       .whereNot({
         roles: Enums.UserRoleOptions.Players,
-        disabled: true
+        deleted: true
       })
       .modify(queryBuilder => {
         if (payload.q) {
@@ -110,7 +122,7 @@ export default class UserService extends BaseEntityService {
         roles: Enums.UserRoleOptions.Players
       })
       .whereNot({
-        disabled: true
+        deleted: true
       })
       .modify(queryBuilder => {
         if (payload.q) {

@@ -62,10 +62,12 @@ async function handleError(ctx, next) {
     }
   } catch (err) {
     ctx.status = err.status || 500;
-    ctx.message =
-      ctx.status === 500
-        ? "Hey! Looks like someone stepped on the wire. We'll fix it ASAP, but not without nabbing and dealing with the guy who did this. Promise."
-        : err.message;
+    // ctx.message =
+    //   ctx.status === 500
+    //     ? "Hey! Looks like someone stepped on the wire. We'll fix it ASAP, but not without nabbing and dealing with the guy who did this. Promise."
+    //     : err.message;
+    ctx.body = err;
+    ctx.message = err.message;
     ctx.app.emit("error", err, ctx);
   }
 }

@@ -102,6 +102,13 @@ function isModernBrowser() {
   );
 }
 
+function getKeyByValue(object, value) {
+  for (let key of Object.keys(object)) {
+    if (object[key] === value) return key;
+  }
+  return undefined;
+}
+
 // ALWAYS sync with the definition in /services/enums.js
 const UserRoleOptions = {
   Players: 1,
