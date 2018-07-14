@@ -59,9 +59,10 @@ function loadData(page = 1) {
       $("#result").html("Error fetching data. " + data.statusText);
     },
     success: function(data) {
-      var rows = "";
+      let rows = "";
       $.each(data.data, function(key, val) {
-        rows += getOneUserRow(key, val);
+        const sno = data.pagination.from + key;
+        rows += getOneUserRow(sno, val);
       });
       $("table tbody").html(rows);
 
@@ -208,8 +209,7 @@ function toggleUser(sno, userId, enabling) {
   });
 }
 
-function getOneUserRow(key, user) {
-  const sno = key + 1;
+function getOneUserRow(sno, user) {
   let enableOrDisableBtnLink = user.disabled
     ? `<a href sno="${sno}", userId="${
         user.id

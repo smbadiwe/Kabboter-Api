@@ -61,13 +61,13 @@ function setPagingInfo(paging) {
   $("#pg_last").attr("pgInd", paging.lastPage);
   if (paging.currentPage > 1) {
     $("#pg_previous").attr("pgInd", paging.currentPage - 1);
-    $("#pg_next").attr("pgInd", Math.min(paging.lastPage, paging.currentPage + 1));
     $("#pg_previous").removeClass("disabled");
     $("#pg_first").removeClass("disabled");
-    if (paging.currentPage < paging.lastPage) {
-      $("#pg_next").removeClass("disabled");
-      $("#pg_last").removeClass("disabled");
-    }
+  }
+  if (paging.currentPage < paging.lastPage) {
+    $("#pg_next").attr("pgInd", Math.min(paging.lastPage, paging.currentPage + 1));
+    $("#pg_next").removeClass("disabled");
+    $("#pg_last").removeClass("disabled");
   }
 }
 

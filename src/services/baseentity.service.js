@@ -34,8 +34,8 @@ export class BaseEntityService {
     }
    */
   async dbPaging(query, pagingInfo) {
-    const perPage = pagingInfo.perPage || 10;
-    let page = pagingInfo.page || 1;
+    const perPage = +(pagingInfo.perPage || 10);
+    let page = +(pagingInfo.page || 1);
 
     const countQuery = knex.count("* as total").from(query.clone().as("inner"));
 

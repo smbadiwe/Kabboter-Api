@@ -157,6 +157,8 @@ function loadData(page = 1) {
     success: function(data) {
       var rows = "";
       $.each(data.data, function(key, val) {
+        const sno = data.pagination.from + key;
+
         let btnLink = val.published
           ? `<a href="/quizadmin/quizadmin.html?id=${
               val.id
@@ -164,11 +166,8 @@ function loadData(page = 1) {
           : `<a href="details.html?id=${
               val.id
             }" class="btn btn-success btn-block btn-sm">Publish</a>`;
-        rows +=
-          `<tr>
-                            <td scope="row">` +
-          (key + 1) +
-          `</td>
+        rows += `<tr>
+                            <td scope="row">${sno}</td>
                             <td>${val.title}</td>
                             <td>${val.description}</td>
                             <td>${
