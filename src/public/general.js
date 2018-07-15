@@ -40,8 +40,8 @@ function getSocketOptions() {
     reconnectionDelay: 1000,
     reconnection: true,
     reconnectionAttempts: 10,
-    // transports: ["websocket", "polling"],
-    transports: ["polling", "websocket"],
+    transports: ["websocket", "polling"],
+    //transports: ["polling", "websocket"],
     agent: false,
     upgrade: false,
     rejectUnauthorized: false
