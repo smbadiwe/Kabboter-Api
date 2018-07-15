@@ -235,7 +235,7 @@ function onAfterLoadingGameList() {
  * Shut the whole game down. Should be called by a button at the 'end' page
  * @param {*} game
  */
-function closeGame(game) {
+function endGame(game) {
   clearAdminGameStorages(game);
   // TODO: emit event to close all player sockets
   window.location = "/pages/dashboard.html";
