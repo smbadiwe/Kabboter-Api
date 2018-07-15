@@ -11,6 +11,7 @@ web.config
 *.yaml
 *.pem
 for-azure.*
+lhgengage.*
 
 # test db
 dev.sqlite3
