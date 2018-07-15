@@ -192,6 +192,7 @@ function loadData(page = 1) {
 // in quiz.html
 function initQuiz() {
   loadNavBar();
+  loadGridFooter();
   loadData();
   $("#search").on("input", function() {
     loadData();

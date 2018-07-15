@@ -45,7 +45,8 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-12">
-                                <table id="example" class="table table-hover table-borderless table-striped dataTable" style="width: 100%;" role="grid" aria-describedby="example_info">
+                                <table id="example" class="table table-responsive table-hover table-borderless table-striped dataTable" style="width: 100%;"
+                                    role="grid" aria-describedby="example_info">
                                     <thead class="thead-dark">
                                         <tr>
                                             <th scope="col" class="font-bold">#</th>
@@ -62,32 +63,7 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-sm-12 col-md-5">
-                                <div class="dataTables_info" id="pg_info" role="status" aria-live="polite"></div>
-                            </div>
-                            <div class="col-sm-12 col-md-7">
-                                <div class="dataTables_paginate paging_simple_numbers" id="pg_paginate">
-                                    <ul class="pagination">
-                                        <li class="paginate_button page-item previous disabled" id="pg_first" pgInd="1">
-                                            <a href="#" class="page-link">First</a>
-                                        </li>
-                                        <li class="paginate_button page-item previous disabled" id="pg_previous">
-                                            <a href="#" class="page-link">Previous</a>
-                                        </li>
-                                        <li class="paginate_button2 page-item active" id="pg_current">
-                                            <a href="javascript:void();" class="page-link">1</a>
-                                        </li>
-                                        <li class="paginate_button page-item next disabled" id="pg_next">
-                                            <a href="#" class="page-link">Next</a>
-                                        </li>
-                                        <li class="paginate_button page-item next disabled" id="pg_last">
-                                            <a href="#" class="page-link">Last</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+                        <div id="gridFooter"></div>
                     </div>
                 </div>
             </div>

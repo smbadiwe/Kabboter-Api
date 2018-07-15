@@ -103,6 +103,7 @@ function onPromoteDemoteBtnClicked(event) {
 // in users.html
 function initUsers() {
   loadNavBar();
+  loadGridFooter();
   loadData();
   $("#search").on("input", function() {
     loadData();

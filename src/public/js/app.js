@@ -9,8 +9,13 @@ function fadeOutLoader() {
 }
 
 function loadNavBar() {
-  const navBarUrl = window.location.origin + "/pages/navbar.component.html";
-  $("#myNavBar").load(navBarUrl);
+  const url = "/pages/navbar.component.html";
+  $("#myNavBar").load(url);
+}
+
+function loadGridFooter() {
+  const url = "/pages/gridfooter.component.html";
+  $("#gridFooter").load(url);
 }
 
 function getUrlParameter(sParam) {

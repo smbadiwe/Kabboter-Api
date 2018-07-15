@@ -45,7 +45,8 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-12">
-                                <table id="example" class="table table-hover table-borderless table-striped dataTable" style="width: 100%;" role="grid" aria-describedby="example_info">
+                                <table id="example" class="table table-responsive table-hover table-borderless table-striped dataTable" style="width: 100%;"
+                                    role="grid" aria-describedby="example_info">
                                     <thead class="thead-dark">
                                         <tr>
                                             <th scope="col" class="font-bold">#</th>
@@ -61,32 +62,7 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-sm-12 col-md-5">
-                                <div class="dataTables_info" id="pg_info" role="status" aria-live="polite"></div>
-                            </div>
-                            <div class="col-sm-12 col-md-7">
-                                <div class="dataTables_paginate paging_simple_numbers" id="pg_paginate">
-                                    <ul class="pagination">
-                                        <li class="paginate_button page-item previous disabled" id="pg_first" pgInd="1">
-                                            <a href="#" class="page-link">First</a>
-                                        </li>
-                                        <li class="paginate_button page-item previous disabled" id="pg_previous">
-                                            <a href="#" class="page-link">Previous</a>
-                                        </li>
-                                        <li class="paginate_button2 page-item active" id="pg_current">
-                                            <a href="javascript:void();" class="page-link">1</a>
-                                        </li>
-                                        <li class="paginate_button page-item next disabled" id="pg_next">
-                                            <a href="#" class="page-link">Next</a>
-                                        </li>
-                                        <li class="paginate_button page-item next disabled" id="pg_last">
-                                            <a href="#" class="page-link">Last</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+                        <div id="gridFooter"></div>
                     </div>
                 </div>
             </div>
@@ -97,68 +73,10 @@
     </div>
     <script src="/js/jquery.min.js"></script>
     <script src="../../js/app.js"></script>
+    <script src="./quiz.js"></script>
     <script>
-        function editId(val) {
-            window.location = `addedit.html?id=${val}`;
-        }
-
-        function loadData(page = 1) {
-            var token = localStorage.getItem("token");
-            var myUrl = window.location.origin + '/api/user/surveys/my';
-
-            const queryData = {
-                title: $("#search").val(),
-                perPage: $("#perPage").val(),
-                page: page
-            };
-            $.ajax({
-                headers: {
-                    Authorization: 'Bearer ' + token
-                },
-                url: myUrl,
-                type: 'get',
-                data: queryData,
-                error: function (data) {
-                    console.log(data);
-                    $('#result').append('Error fetching surveys');
-                },
-                success: function (data) {
-                    const sno = data.pagination.from + key;
-                    var rows = "";
-                    $.each(data.data, function (key, val) {
-                        let btnLink = val.published ?
-                            `<a href="/surveyadmin/surveyadmin.html?id=${val.id}" class="btn btn-success btn-block btn-sm">Play game</a>`
-                            : `<a href="details.html?id=${val.id}" class="btn btn-success btn-block btn-sm">Publish</a>`;
-                        rows += (`<tr>
-                                    <td scope="row">${sno}</td>
-                                    <td>${val.title}</td>
-                                    <td>${val.description}</td>
-                                    <td>${val.published ? "<span style='font-weight: bold; color: green;'>Yes</span>" : "No"}</td>
-                                    <td>${btnLink}</td>
-                                    <td><a href="details.html?id=${val.id}" class="btn btn-danger btn-block btn-sm">View details</a></td>
-                                </tr>`);
-                    });
-                    $('table tbody').html(rows);
-
-                    // set paging narrative and nav buttons
-                    setPagingInfo(data.pagination);
-                }
-            });
-        }
-
         $(function () {
-            loadNavBar();
-            loadData();
-            $("#search").on('input', function () {
-                loadData();
-            });
-            $("#perPage").on('change', function () {
-                loadData();
-            });
-            $("li.paginate_button").on('click', function () {
-                if (!$(this).hasClass("disabled"))
-                    loadData(parseInt($(this).attr('pgInd')));
-            });
+            initQuiz();
         });
     </script>
     <script src="/js/bootstrap.min.js"></script>
