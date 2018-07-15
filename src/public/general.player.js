@@ -136,8 +136,8 @@ function showPlayerEndViewAndClearStorage(game) {
   $("#feedback").show();
   $("#feedbackText").html("That's all! Thank you for participating.");
 
-  GamePlayerData[recordType + "PlayerInfo"] = undefined;
-  GamePlayerData[recordType + "question"] = undefined;
+  GamePlayerData[game + "PlayerInfo"] = undefined;
+  GamePlayerData[game + "question"] = undefined;
   GamePlayerData["moderator"] = undefined;
 }
 
@@ -169,11 +169,18 @@ function startPlayerCountDown(game, maxCount = 20) {
 }
 
 function submitAmswerChoice(event) {
-  answered = true;
   event.preventDefault();
   event.stopPropagation();
-  const id = event.target.id;
-
+  const id = $(this).attr("id") || "option0";
+  const choice = parseInt(id.substr(id.length - 1)); // value will be 1,2,3 or 4
+  if (!choice) {
+    alert("Please select an answer again");
+    console.log(
+      `We failed to get the user's answer choice. We read ansChosen = ${ansChosen} from btn id = ${id}`
+    );
+    return false;
+  }
+  answered = true;
   // Disable the buttons
   $("#option1").prop("disabled", true);
   $("#option2").prop("disabled", true);
@@ -186,8 +193,6 @@ function submitAmswerChoice(event) {
 
   // hide counter div
   $("#timekeeper").hide();
-
-  const choice = parseInt(id.substr(id.length - 1)); // value will be 1,2,3 or 4
 
   let ansChosen;
   switch (choice) {
@@ -203,6 +208,12 @@ function submitAmswerChoice(event) {
     case 4:
       ansChosen = "D";
       break;
+    default:
+      alert("Code Error. So sorry you can't continue playing the ga,e at this time.");
+      console.log(
+        `We failed to get the user's answer choice. We read ansChosen = ${ansChosen} from btn id = ${id}`
+      );
+      return false;
   }
   $("#youranswer").show();
   $("#youranswer").html("Your answer: " + ansChosen);

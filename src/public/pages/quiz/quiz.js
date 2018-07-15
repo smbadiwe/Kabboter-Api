@@ -35,7 +35,7 @@ function saveQuestion(e) {
     $("#result").html("Select correct option");
     return false;
   }
-  const ctrlId = e.target.id;
+  const ctrlId = $(this).attr("id");
 
   const token = localStorage.getItem("token");
 
