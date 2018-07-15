@@ -40,7 +40,7 @@ function loadData(page = 1) {
                             <td>${
                               val.published
                                 ? "<span style='font-weight: bold; color: green;'>Yes</span>"
-                                : "No"
+                                : "<span style='font-weight: bold; color: red;'>No</span>"
                             }</td>
                             <td>${btnLink}</td>
                             <td><a href="details.html?id=${

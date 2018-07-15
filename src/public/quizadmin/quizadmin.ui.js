@@ -37,9 +37,8 @@ function onGetQuizRunInfo(info) {
 
 function getTopScores() {
   $("#topscores").load("/pages/game/topscores.component.html", function() {
-    $("#topscores").show();
     const token = localStorage.getItem("token");
-    const quizRunInfo = JSON.parse(localStorage.getItem("quizruninfo"));
+    const quizRunInfo = GameAdminData["quizruninfo"];
     $.ajax({
       headers: {
         Authorization: "Bearer " + token
@@ -71,6 +70,9 @@ function getTopScores() {
         });
 
         $("#topscores #topScoresTable tbody").html(rows);
+      },
+      complete: function() {
+        $("#topscores").show();
       }
     });
   });

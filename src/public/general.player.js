@@ -1,3 +1,6 @@
+(function(glob) {
+  glob.GamePlayerData = {};
+})(this); // 'this' will be 'window' or 'module' or ... depending on the client
 /**
  * The method runs when a quiz or survey player clicks Start Game button after PIN is gotten.
  * @param {*} e The button event
@@ -69,9 +72,9 @@ function onGetPlayerGameRunInfo(data) {
 
 function onPlayerDisconnect(socket, reason, recordType) {
   console.log(recordType + " onPlayerDisconnect: reason - " + reason);
-  localStorage.removeItem(recordType + "PlayerInfo");
-  localStorage.removeItem(recordType + "question");
-  localStorage.removeItem("moderator");
+  GamePlayerData[recordType + "PlayerInfo"] = undefined;
+  GamePlayerData[recordType + "question"] = undefined;
+  GamePlayerData["moderator"] = undefined;
   // See https://github.com/socketio/socket.io-client/blob/HEAD/docs/API.md#socketdisconnect
   if (reason === "io server disconnect") {
     // the disconnection was initiated by the server. If you need to reconnect manually, call
@@ -112,7 +115,7 @@ function onPlayerReceiveNextQuestion(question, game) {
       $("#option3").prop("disabled", false);
       $("#option4").prop("disabled", false);
 
-      localStorage.setItem(game + "question", JSON.stringify(question));
+      GamePlayerData[game + "question"] = question;
       startPlayerCountDown(game, question.timeLimit);
     } catch (e) {
       console.log(e);
@@ -132,12 +135,10 @@ function showPlayerEndViewAndClearStorage(game) {
   $("#game").hide();
   $("#feedback").show();
   $("#feedbackText").html("That's all! Thank you for participating.");
-  localStorage.removeItem(game + "question");
-  localStorage.removeItem(game + "PlayerInfo");
-  localStorage.removeItem(game + "pin");
-  localStorage.removeItem("token");
-  localStorage.removeItem("userInfo");
-  localStorage.removeItem("moderator");
+
+  GamePlayerData[recordType + "PlayerInfo"] = undefined;
+  GamePlayerData[recordType + "question"] = undefined;
+  GamePlayerData["moderator"] = undefined;
 }
 
 function startPlayerCountDown(game, maxCount = 20) {
@@ -228,8 +229,8 @@ function onAuthSuccess(gameInfo, game) {
   console.log(game + " onAuthSuccess called with feedback: ");
   console.log(gameInfo);
 
-  localStorage.setItem(game + "PlayerInfo", JSON.stringify(gameInfo.userInfo));
-  localStorage.setItem("moderator", JSON.stringify(gameInfo.moderator));
+  GamePlayerData[game + "PlayerInfo"] = gameInfo.userInfo;
+  GamePlayerData["moderator"] = gameInfo.moderator;
   showAnswerViewOnAuthSuccess(gameInfo);
 }
 

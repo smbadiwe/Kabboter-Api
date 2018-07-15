@@ -1,3 +1,7 @@
+(function(glob) {
+  glob.GameAdminData = {};
+})(this); // 'this' will be 'window' or 'module' or ... depending on the client
+
 function onPlayerSubmittedAnswer(data, game) {
   //data: {
   //     questionId: data.quizQuestionId,
@@ -8,11 +12,10 @@ function onPlayerSubmittedAnswer(data, game) {
   console.log("From " + game + " onPlayerSubmittedAnswer fn. data:");
   // console.log(data);
   if (data && data.choice && +data.choice) {
-    const tally = JSON.parse(localStorage.getItem(game + "question"))
+    const tally = GameAdminData[game + "question"];
     if (tally.id === data.questionId) {
       tally["answer" + data.choice] = tally["answer" + data.choice] + 1;
-
-      localStorage.setItem(game + "question", JSON.stringify(tally));
+      GameAdminData[game + "question"] = tally;
     }
   }
 }
@@ -25,8 +28,8 @@ function onPlayerSubmittedAnswer(data, game) {
 function scoreboard(game) {
   $("#scoreboard").load("/pages/game/scoreboard.component.html", function() {
     $("#scoreboard").show();
-    const data = JSON.parse(localStorage.getItem(game + "question"));
 
+    const data = GameAdminData[game + "question"];
 
     /*
         Appends our questions and options to our views on the SCOREBOARD.HTML file
@@ -52,39 +55,37 @@ function scoreboard(game) {
     //   alert('data is null')
     // }else{
 
-      var ctx = document.getElementById("graph-div").getContext("2d");
-      var chart = new Chart(ctx, {
-        type: "bar",
-        data: {
-          labels: [data.option1, data.option2, data.option3, data.option4],
-          datasets: [
+    var ctx = document.getElementById("graph-div").getContext("2d");
+    var chart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: [data.option1, data.option2, data.option3, data.option4],
+        datasets: [
+          {
+            data: [data.answer1, data.answer2, data.answer3, data.answer4], //These are tallies showing how many people chose a particular option
+            backgroundColor: ["aqua", "red", "palevioletred", "yellow"]
+          }
+        ]
+      },
+      options: {
+        legend: {
+          display: false
+        },
+        scales: {
+          yAxes: [
             {
-              data: [data.answer1, data.answer2, data.answer3, data.answer4], //These are tallies showing how many people chose a particular option
-              backgroundColor: ["aqua", "red", "palevioletred", "yellow"]
+              ticks: {
+                beginAtZero: true,
+                stepSize: 1
+              }
             }
           ]
-        },
-        options: {
-          legend: {
-            display: false
-          },
-          scales: {
-            yAxes: [
-              {
-                ticks: {
-                  beginAtZero: true,
-                  stepSize: 1
-                }
-              }
-            ]
-          }
         }
-      });
-      
-    // }
-  
-  });
+      }
+    });
 
+    // }
+  });
 }
 
 function loadNextQuestion(e) {
@@ -116,7 +117,7 @@ function onReceiveNextQuestion(gamequestion, game) {
     gamequestion.answer2 = 0;
     gamequestion.answer3 = 0;
     gamequestion.answer4 = 0;
-    localStorage.setItem(game + "question", JSON.stringify(gamequestion));
+    GameAdminData[game + "question"] = gamequestion;
     updateAnsweredQuestionsList(gamequestion.id);
   }
   setGameQuestionPropsOnPage(gamequestion, game);
@@ -125,11 +126,14 @@ function onReceiveNextQuestion(gamequestion, game) {
 function updateAnsweredQuestionsList(newQuestionId) {
   //TODO: If you so desire, use this to update count or list of answered question.
   // Note that the code commented out is not tested and probably buggy.
-  let list = sessionStorage.getItem("answeredquestionlist");
-  if (list) {
-    sessionStorage.setItem("answeredquestionlist", `${list}${newQuestionId},`);
-  } else {
-    sessionStorage.setItem("answeredquestionlist", `${newQuestionId},`);
+  if (newQuestionId) {
+    newQuestionId = +newQuestionId;
+    let list = GameAdminData["answeredquestionlist"];
+    if (list) {
+      GameAdminData["answeredquestionlist"].push(newQuestionId);
+    } else {
+      GameAdminData["answeredquestionlist"] = [newQuestionId];
+    }
   }
 }
 
@@ -258,10 +262,10 @@ function endGame(game) {
  * @param {*} game 'quiz' or 'survey'
  */
 function clearAdminGameStorages(game) {
-  localStorage.removeItem(game + "runinfo");
-  localStorage.removeItem(game + "question");
-  sessionStorage.removeItem("answeredquestionlist");
-  sessionStorage.removeItem("userData");
+  GameAdminData[game + "runinfo"] = undefined;
+  GameAdminData[game + "question"] = undefined;
+  GameAdminData["answeredquestionlist"] = undefined;
+  GameAdminData["userData"] = undefined;
 }
 
 /**
@@ -402,14 +406,14 @@ function SetGameRunInfoOnPage(info, game) {
  * @param {*} game 'quiz' or 'survey'
  */
 function getGameRunInfo(game) {
-  const info = localStorage.getItem(game + "runinfo");
+  const info = GameAdminData[game + "runinfo"];
   if (!info) throw new Error(game + "runinfo not yet created");
 
-  return JSON.parse(info);
+  return info;
 }
 
 function setGameRunInfo(game, valueAsJson) {
-  localStorage.setItem(game + "runinfo", JSON.stringify(valueAsJson));
+  GameAdminData[game + "runinfo"] = valueAsJson;
 }
 
 function callbackOnGameAdminError(errorMessage) {
@@ -423,15 +427,6 @@ function callbackOnGameAdminError(errorMessage) {
  */
 function emitGetNextQuestionEvent(socket, game) {
   const gameRunInfo = getGameRunInfo(game);
-  let answeredQuestionIds = [];
-  const ids = sessionStorage.getItem("answeredquestionlist");
-  if (ids) {
-    const idsSplit = ids.split(",");
-    idsSplit.forEach(i => {
-      if (i) {
-        answeredQuestionIds.push(+i);
-      }
-    });
-  }
+  const answeredQuestionIds = GameAdminData["answeredquestionlist"];
   socket.emit("get-next-question", gameRunInfo, answeredQuestionIds, callbackOnGameAdminError);
 }

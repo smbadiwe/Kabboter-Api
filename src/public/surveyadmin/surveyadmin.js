@@ -6,7 +6,9 @@
 // to the page BEFORE importing this js file. That's where io is defined.
 
 // Sockets now
-const socket = io("/surveyadmin", getSocketOptions());
+(function(glob) {
+  glob.socket = io("/surveyadmin", getSocketOptions());
+})(this); // 'this' will be 'window' or 'module' or ... depending on the client
 
 /**
  * Call this function as soon as you can on page load.

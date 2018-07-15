@@ -50,10 +50,12 @@ function logout(event) {
  * @param {*} game 'quiz' or 'survey'
  */
 function clearAdminGameStorages(game) {
-  localStorage.removeItem(game + "runinfo");
-  localStorage.removeItem(game + "question");
-  sessionStorage.removeItem("answeredquestionlist");
-  sessionStorage.removeItem("userData");
+  if (GameAdminData) {
+    GameAdminData[game + "runinfo"] = undefined;
+    GameAdminData[game + "question"] = undefined;
+    GameAdminData["answeredquestionlist"] = undefined;
+    GameAdminData["userData"] = undefined;
+  }
 }
 
 function setPagingInfo(paging) {

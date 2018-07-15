@@ -7,11 +7,13 @@ function onAnswerSubmitted(feedback) {
   console.log(feedback);
   // If all went well, 'feedback' will just be a string saying "Submitted".
   //TODO: You decide. You can clear input fields or reset data used for the just-submitted question.
-  localStorage.removeItem("surveyquestion");
+  GamePlayerData["surveyquestion"] = undefined;
   refreshFieldsAfterAnswerIsSubmitted();
 }
 
-const socket = io("/surveyplayer", getSocketOptions());
+(function(glob) {
+  glob.socket = io("/surveyplayer", getSocketOptions());
+})(this); // 'this' will be 'window' or 'module' or ... depending on the client
 
 /**
  * playerInfo = {
@@ -39,8 +41,8 @@ function onGetPlayPin(playerInfo) {
  * @param {*} answerInfo
  */
 function submitAnswer(answerInfo) {
-  const surveyPlayerInfo = JSON.parse(localStorage.getItem("surveyPlayerInfo"));
-  const surveyquestion = JSON.parse(localStorage.getItem("surveyquestion"));
+  const surveyPlayerInfo = GamePlayerData["surveyPlayerInfo"];
+  const surveyquestion = GamePlayerData["surveyquestion"];
 
   const answerToSubmit = {
     userId: surveyPlayerInfo.i,
