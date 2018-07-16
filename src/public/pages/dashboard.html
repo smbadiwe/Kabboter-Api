@@ -42,7 +42,7 @@
                                 <h1 class="font-large font-extra-bold">
                                     <span id='nquiz'></span>
                                 </h1>
-                                Quizzes
+                                Quizzes Created
                                 <br>
                                 <a role="button" href="quiz/quiz.html" class="btn btn-brand btn-sm btn-block">View details</a>
                             </div>
@@ -50,7 +50,7 @@
                                 <h1 class="font-large font-extra-bold">
                                     <span id='npoll'></span>
                                 </h1>
-                                Polls
+                                Polls Created
                                 <br>
                                 <a role="button" href="vote/vote.html" class="btn btn-brand btn-sm btn-block">View details</a>
                             </div>
@@ -81,15 +81,15 @@
                                 <h1 class="font-large font-extra-bold">
                                     <span id='aquiz'></span>
                                 </h1>
-                                Answered Quiz
-                                <button class="btn btn-brand btn-sm btn-block">View details</button>
+                                Quizzes Answered
+                                <!-- <button class="btn btn-brand btn-sm btn-block">View details</button> -->
                             </div>
                             <div class="col-6">
                                 <h1 class="font-large font-extra-bold">
                                     <span id='apoll'></span>
                                 </h1>
-                                Answered Polls
-                                <button class="btn btn-brand btn-sm btn-block">View details</button>
+                                Polls Answered
+                                <!-- <button class="btn btn-brand btn-sm btn-block">View details</button> -->
                             </div>
                         </div>
                     </div>
@@ -101,7 +101,6 @@
     <script src="../js/app.js"></script>
     <script>
         $(function () {
-
             loadNavBar();
 
             var userInfo = JSON.parse(localStorage.getItem("userInfo"));
@@ -119,7 +118,9 @@
                     url: myUrl,
                     type: 'get',
                     error: function (data) {
-                        $('#result').append('Error Fetching File');
+                        console.log("Error fetching dashboard data: ");
+                        console.log(data);
+                        alert('Error fetching data. Logout and login again');
                     },
                     success: function (data) {
                         $('#nquiz').html(data.nQuizzes);

@@ -50,7 +50,7 @@ function logout(event) {
  * @param {*} game 'quiz' or 'survey'
  */
 function clearAdminGameStorages(game) {
-  if (GameAdminData) {
+  if (typeof GameAdminData !== "undefined") {
     GameAdminData[game + "runinfo"] = undefined;
     GameAdminData[game + "question"] = undefined;
     GameAdminData["answeredquestionlist"] = undefined;
