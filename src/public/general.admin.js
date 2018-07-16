@@ -305,14 +305,18 @@ function onWhenSomeoneJustJoined(payload, game) {
   setGameRunInfo(game, gameRunInfo);
 }
 
+/**
+ *
+ * @param {*} payload  = {
+ *   nPlayers: nPlayers,
+ *   newPlayer: data.userInfo, // the user that joined
+ *   pin: data.pin
+ * };
+ * @param {*} game 'quiz' or 'survey'
+ */
 function onWhenSomeoneJustLeft(payload, game) {
   console.log("onWhenSomeoneJustLeft. payload = ");
   console.log(payload);
-  // payload = {
-  //   nPlayers: nPlayers,
-  //   userInfo: data.userInfo, // the user that left
-  //   pin: data.pin
-  // };
 
   $("#nplayers").html(payload.nPlayers);
   const gameRunInfo = getGameRunInfo(game);
@@ -342,6 +346,7 @@ function renderPlayerListRows(lastXPlayers, limit) {
     if (i === limit) break;
     rows += `<div class="row d-flex my-card p-1 mt-2 align-items-center">${lastXPlayers[i]}</div>`;
   }
+
   $("#members").html(rows);
 }
 

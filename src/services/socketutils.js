@@ -118,7 +118,10 @@ export function tellAdminThatSomeoneJustJoined(adminIO, playerIO, userInfo, room
   try {
     //log.debug("Players in room %s: %O", roomNo, playerIO.in(roomNo).sockets);
     const totalPlayers = Object.keys(playerIO.in(roomNo).sockets).length;
-
+    // log.debug("Players in the game at the moment: ");
+    // Object.keys(playerIO.in(roomNo).sockets).forEach(key => {
+    //   log.debug("%s - %o", key, playerIO.in(roomNo).sockets[key].user);
+    // });
     const payload = {
       nPlayers: totalPlayers,
       newPlayer: userInfo

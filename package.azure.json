@@ -31,7 +31,7 @@
   },
   "private": true,
   "scripts": {
-    "start": "set DEBUG=Kabooter:* && node index.js"
+    "start": "set DEBUG=LHGengage:* && node index.js"
   },
   "engines": {
     "node": ">=8.9.4"

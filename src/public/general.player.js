@@ -101,6 +101,8 @@ function onPlayerReceiveNextQuestion(question, game) {
     try {
       answered = false;
       $("#youranswer").hide();
+      $("#timeoutBox").hide();
+      $("#optionsBox").show();
 
       let currentQuestionCount = question.Number;
       if (!currentQuestionCount) currentQuestionCount = 1 + (parseInt($("#gamenum").html()) || 0);
@@ -157,8 +159,14 @@ function startPlayerCountDown(game, maxCount = 20) {
         $("#option3").prop("disabled", true);
         $("#option4").prop("disabled", true);
         if (maxCount === 0) {
-          alert("Time up!");
           $("#timer").html("Time up!");
+
+          const qn = GamePlayerData[game + "question"];
+          if (game === "quiz") {
+            $("#theAns").html(getAnswerChoiceLetter(+qn.correctOptions) || "-");
+          }
+          $("#optionsBox").hide();
+          $("#timeoutBox").show();
         }
       }
     } else {
@@ -166,6 +174,20 @@ function startPlayerCountDown(game, maxCount = 20) {
       maxCount--;
     }
   }, 1000);
+}
+
+function getAnswerChoiceLetter(choiceAsNumber) {
+  switch (choiceAsNumber) {
+    case 1:
+      return "A";
+    case 2:
+      return "B";
+    case 3:
+      return "C";
+    case 4:
+      return "D";
+  }
+  return undefined;
 }
 
 function submitAmswerChoice(event) {
@@ -194,26 +216,13 @@ function submitAmswerChoice(event) {
   // hide counter div
   $("#timekeeper").hide();
 
-  let ansChosen;
-  switch (choice) {
-    case 1:
-      ansChosen = "A";
-      break;
-    case 2:
-      ansChosen = "B";
-      break;
-    case 3:
-      ansChosen = "C";
-      break;
-    case 4:
-      ansChosen = "D";
-      break;
-    default:
-      alert("Code Error. So sorry you can't continue playing the ga,e at this time.");
-      console.log(
-        `We failed to get the user's answer choice. We read ansChosen = ${ansChosen} from btn id = ${id}`
-      );
-      return false;
+  const ansChosen = getAnswerChoiceLetter(choice);
+  if (!ansChosen) {
+    alert("Code Error. So sorry you can't continue playing the game at this time.");
+    console.log(
+      `We failed to get the user's answer choice. We read ansChosen = ${ansChosen} from btn id = ${id}`
+    );
+    return false;
   }
   $("#youranswer").show();
   $("#youranswer").html("Your answer: " + ansChosen);
