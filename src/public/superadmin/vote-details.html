@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Quiz details</title>
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-brand dashboard-header">
+        <a class="navbar-brand active" href="../superadmin/index.html">Super admin</a>
+    </nav>
+
+    <div class="container">
+
+        <div class="text-center mt-4">
+            <h1>Vote Details</h1>
+        </div>
+
+        <div class="row mt-4">
+
+            <div class="col-md-5 mt-4">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Details</h2>
+                    </div>
+                    <card class="body">
+                        <div class="list-group">
+
+                                <div class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <b>Title</b>
+                                        </div>
+                                        <div class="col-md-8">
+                                            Best Player in the world
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <b>Description</b>
+                                        </div>
+                                        <div class="col-md-8">
+                                        A poll to get the ultimaum best player of the year 2018
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <b>Players</b>
+                                        </div>
+                                        <div class="col-md-8">
+                                            10
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <b>Date</b>
+                                        </div>
+                                        <div class="col-md-8">
+                                            21st May, 2018
+                                        </div>
+                                    </div>
+                                </div>
+            
+                            </div>
+                    </card>
+                </div>
+                
+
+            </div>
+
+            <div class="col-md-7 mt-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Graph details</h2>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="graph-div"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    
+
+
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/popper.min.js"></script>
+    <script src="../js/Chart.min.js"></script>
+    <script>
+         var ctx = document.getElementById("graph-div").getContext("2d");
+    var chart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: ["Ronaldo", "Messi", "Hazard", "Neymar"],
+        datasets: [
+          {
+            data: [5, 10, 20, 15], //These are tallies showing how many people chose a particular option
+            backgroundColor: ["aqua", "red", "palevioletred", "yellow"]
+          }
+        ]
+      },
+      options: {
+        legend: {
+          display: false
+        },
+        scales: {
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: true,
+                stepSize: 1
+              }
+            }
+          ]
+        }
+      }
+    });
+
+    </script>
+</body>
+</html>

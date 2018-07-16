@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Super admin</title>
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet" type="text/css">
+    <style>
+        div.list-group-item:hover{
+            background: lightgrey;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-brand dashboard-header">
+            <a class="navbar-brand active" href="#">Super admin</a>
+        </nav>
+
+        <div class="container-fluid">
+         
+            <div class="row mt-4">
+                
+                <div class="col-md-3">
+
+                    <div class="list-group">
+                        <div class="list-group-item" id="nav-user">All users</div>
+                        <div class="list-group-item" id="nav-quiz">All Quiz</div>
+                        <div class="list-group-item" id="nav-vote">All Vote</div>
+                    </div>
+                </div>
+
+                <div class="col-md-9">
+
+                    <div class="card">
+
+                        <div class="card-header">
+                            <h2>All Users</h2>
+                        </div>
+
+                        <div class="card-body">
+
+                            <div class="table-responsive">
+
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>First name</th>
+                                            <th>Last name</th>
+                                            <th>Email</th>
+                                            <th>Role</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody id="result">
+                                       
+                                    </tbody>
+                                </table>
+                            
+                            </div>
+
+                        </div>
+                       
+
+                    </div>
+
+                  
+
+                </div>
+
+            </div>
+        </div>
+    
+
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/popper.min.js"></script>
+    <script src="../superadmin/superadmin.js"></script>
+    <script>
+    
+        $(function(){
+            loadUsers();
+        })
+
+    </script>
+</body>
+</html>

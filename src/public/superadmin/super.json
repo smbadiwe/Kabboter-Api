@@ -1,0 +1,19 @@
+{
+    "quiz" : [
+        {"id": "1", "title": "Education", "description": "A quiz to test audience on their level of education", "date": "21-05-2018:15:47", "users": 10},
+        {"id": "1", "title": "Education", "description": "A quiz to test audience on their level of education", "date": "21-05-2018:16:00", "users": 10}
+    ],
+
+    "users" : [
+
+        {"id": 1, "firstname": "Test", "lastname": "Tester", "phone": "019102222", "email": "tester@gmail.com", "role": "admin"},
+        {"id": 1, "firstname": "Test", "lastname": "Tester", "phone": "019102222", "email": "tester@gmail.com", "role": "admin"}
+
+    ],
+
+    "vote" : [
+        {"id": 1, "title": "Best footballer of the year", "description": "A poll to get the ultimaum best player of the year 2018", "users": 20 , "poll": 4},
+        {"id": 1, "title": "Best footballer of the year", "description": "A poll to get the ultimaum best player of the year 2018", "users": 20 , "poll": 4}
+
+    ]
+}
