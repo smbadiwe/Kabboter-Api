@@ -149,7 +149,6 @@ function setGameQuestionPropsOnPage(gamequestion, game) {
   console.log(gamequestion);
   if (gamequestion) {
     $("#timeout").hide();
-    $("div#youranswer").hide();
     $("#disquest").show();
     // quizRunInfo = { id: <the quizRun id>, quizId: quizId, pin: pin, totalQuestions: totalQuestions };
     let currentQuestionCount = 1 + (parseInt($("#gamenum").html()) || 0);
