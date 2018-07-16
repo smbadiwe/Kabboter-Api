@@ -85,7 +85,7 @@
                         securityanswer: securityanswer
                     },
                     error: function (data) {
-                        $('#result').html(data.responseText);
+                        $('#result').html(`<div class="alert alert-danger">`+data.statusText+`</div`);
                         console.log(data);
                     },
                     success: function (data) {
