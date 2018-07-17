@@ -1,5 +1,4 @@
 function loadUserDetailsAndSetOnPage() {
-  loadNavBar();
   const token = localStorage.getItem("token");
   const userId = getUrlParameter("id");
   const myUrl = window.location.origin + "/api/members/" + userId;
@@ -102,7 +101,6 @@ function onPromoteDemoteBtnClicked(event) {
 }
 // in users.html
 function initUsers() {
-  loadNavBar();
   loadGridFooter();
   loadData();
   $("#search").on("input", function() {
