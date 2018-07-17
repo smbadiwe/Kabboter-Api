@@ -53,7 +53,7 @@ $(function() {
         password: password
       },
       error: function(data) {
-        feedbackDiv.html(`<div class="alert alert-danger">${data.responseText}</div`);
+        feedbackDiv.html(`<div class="alert alert-danger">${data.statusText}</div`);
       },
       success: function(data) {
         localStorage.setItem("userInfo", JSON.stringify(data.user));
@@ -160,7 +160,7 @@ $(function() {
       async: false,
       error: function(data) {
         console.log(data);
-        feedbackDiv.html(`<div class="alert alert-danger">` + data.responseText + `</div`);
+        feedbackDiv.html(`<div class="alert alert-danger">${data.statusText}</div`);
       },
       success: function(data) {
         // On success, we log user in automatically.

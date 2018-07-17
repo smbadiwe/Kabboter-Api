@@ -342,7 +342,7 @@ function saveOrUpdateGame(e, recordType) {
     error: function(data) {
       console.log(data);
       $("#result").show();
-      $("#result").html(data.responseText);
+      $("#result").html(data.statusText);
     },
     success: function(data) {
       //NB: 'id' querystring key refers to the quiz/survey id; NOT the question id
