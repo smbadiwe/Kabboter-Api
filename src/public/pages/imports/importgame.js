@@ -166,7 +166,7 @@ $(function() {
                     console.log(data);
                     $form.removeClass("is-uploading");
                     $form.addClass("is-error");
-                    $errorMsg.text(data.responseText);
+                    $errorMsg.text(data.statusText);
                   },
                   success: function(data) {
                     $form.addClass("is-success");

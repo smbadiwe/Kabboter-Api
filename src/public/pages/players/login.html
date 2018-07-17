@@ -162,7 +162,7 @@
                 dataType: 'json',
                 async: false,
                 error: function (data) {
-                    $('#result').html(`<div class="alert alert-warning">` + data.responseText + `</div`);
+                    $('#result').html(`<div class="alert alert-warning">` + data.statusText + `</div`);
                 },
                 success: function (data) {
                     $('#result').html(`<div class="success alert-success">` + 'Authentication Successful' + `</div`);

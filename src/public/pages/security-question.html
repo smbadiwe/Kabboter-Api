@@ -30,11 +30,11 @@
                                 <input type="text" class="form-control" id="ans">
                             </div>
                             <div class="form-group">
-                            <a role="button" href="javascript:history.go(-1);" class="btn btn-brand px-4 mt-3">Back</a>
-                            <a role="button" href="javascript:void();" id='verify'  style="float: right;" class="btn btn-brand px-4 mt-3">Verify</a>
-                            
+                                <a role="button" href="javascript:history.go(-1);" class="btn btn-brand px-4 mt-3">Back</a>
+                                <a role="button" href="javascript:void();" id='verify' style="float: right;" class="btn btn-brand px-4 mt-3">Verify</a>
+
                             </div>
-                        
+
                         </form>
                     </div>
                 </div>
@@ -54,7 +54,7 @@
                 dataType: 'json',
                 async: false,
                 error: function (data) {
-                    alert(data.responseText);
+                    alert(data.statusText);
                     window.location.href = "/";
                 },
                 success: function (data) {
@@ -85,7 +85,7 @@
                         securityanswer: securityanswer
                     },
                     error: function (data) {
-                        $('#result').html(`<div class="alert alert-danger">`+data.statusText+`</div`);
+                        $('#result').html(`<div class="alert alert-danger">${data.statusText}</div`);
                         console.log(data);
                     },
                     success: function (data) {

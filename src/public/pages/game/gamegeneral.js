@@ -142,7 +142,7 @@ function saveOrUpdateGame(e, recordType) {
     error: function(data) {
       console.log(data);
       $("#result").show();
-      $("#result").html(data.responseText);
+      $("#result").html(data.statusText);
     },
     success: function(data) {
       window.location = `questions.html?id=${data.id}`;
