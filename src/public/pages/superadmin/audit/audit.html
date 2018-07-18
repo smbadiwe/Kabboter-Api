@@ -1,0 +1,71 @@
+<link href="/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<div class="card">
+    <div class="card-header">
+        <h3>Audit Trail</h3>
+    </div>
+    <div class="card-body">
+        <div id="result" class="alert alert-danger" style="display: none">
+        </div>
+        <div id="example_wrapper" class="dataTables_wrapper dt-bootstrap4">
+            <div class="row">
+                <div class="col-sm-12 col-md-4">
+                    <div class="dataTables_length">
+                        <label>Show
+                            <select id="perPage" name="perPage" class="custom-select custom-select-sm form-control form-control-sm">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select> entries</label>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                    <div class="dataTables_filter">
+                        <label>
+                            From:
+                            <input id="start_date" type="date" class="form-control form-control-sm" />
+                        </label>
+                    </div>
+                    <div class="dataTables_filter">
+                        <select id="ddAction" name="ddAction" placeHolder="Select action" class="form-control form-control-sm">
+                            <option value="100">Do me</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                    <div class="dataTables_filter">
+                        <label>To:
+                            <input id="end_date" type="date" class="form-control form-control-sm" />
+                        </label>
+                    </div>
+                    <div class="dataTables_filter">
+                        <select id="ddAction" name="ddAction" placeHolder="Select action" class="form-control form-control-sm">
+                            <option value="100">Do you</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- <div class="col-sm-12 col-md-2">
+                </div> -->
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <table class="table table-hover table-striped dataTable" style="width: 100%;" role="grid" aria-describedby="example_info">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="font-bold">#</th>
+                                <th scope="col" class="font-bold">Username</th>
+                                <th scope="col" class="font-bold">Action</th>
+                                <th scope="col" class="font-bold">Entity</th>
+                                <th scope="col" class="font-bold">Action date</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="gridFooter"></div>
+        </div>
+    </div>
+</div>

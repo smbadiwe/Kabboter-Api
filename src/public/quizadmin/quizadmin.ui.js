@@ -53,13 +53,8 @@ function getTopScores() {
         console.log(data);
       },
       success: function(data) {
-        console.log("/api/user/quizruns/topscores data = ");
-        console.log(data);
         let rows = "";
         $.each(data, function(i, element) {
-          console.log(i);
-          console.log(element);
-          console.log("=======================");
           rows += `
         <tr>
             <td>${i + 1}</td>

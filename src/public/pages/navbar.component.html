@@ -31,20 +31,22 @@
     </div>
 </nav>
 <script>
-    let userInfo = localStorage.getItem('userInfo');
-    if (userInfo) {
-        try {
-            userInfo = JSON.parse(userInfo);
-            $('#dis-name').html(`${userInfo.f} ${userInfo.l}`);
-            if (+userInfo.r === UserRoleOptions.SuperAdmin) {
-                $('.saOnly').show();
+    (function () {
+        let userInfo = localStorage.getItem('userInfo');
+        if (userInfo) {
+            try {
+                userInfo = JSON.parse(userInfo);
+                $('#dis-name').html(`${userInfo.f} ${userInfo.l}`);
+                if (+userInfo.r === UserRoleOptions.SuperAdmin) {
+                    $('.saOnly').show();
+                }
+            } catch (e) {
+                console.log("Error loading navbar: ");
+                console.log(e);
+                logout();
             }
-        } catch (e) {
-            console.log("Error loading navbar: ");
-            console.log(e);
+        } else {
             logout();
         }
-    } else {
-        logout();
-    }
+    })();
 </script>

@@ -10,6 +10,10 @@ $("#nav-quiz").click(function() {
   $("#viewDiv").load("quiz.html");
 });
 
+$("#nav-audit").click(function() {
+  $("#viewDiv").load("audit/audit.html");
+});
+
 function loadQuizzes() {
   const myUrl = "super.json";
 

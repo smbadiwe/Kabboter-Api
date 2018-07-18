@@ -1,4 +1,4 @@
-import config from "knex";
+import config from "../../../../../Users/SuperUser/AppData/Local/Microsoft/TypeScript/2.9/node_modules/@types/knex";
 import * as knexfile from "./knexfile";
 import log from "../utils/log";
 
