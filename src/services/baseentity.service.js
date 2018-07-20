@@ -1,6 +1,7 @@
 import knex from "../db/connection";
 import { isArray, isObject } from "../utils";
 import { validateInteger } from "../utils/ValidationErrors";
+import * as audit from "./AuditLogListener";
 
 export class BaseEntityService {
   constructor(tableName) {
@@ -139,6 +140,8 @@ export class BaseEntityService {
     return await this.connector.table(this.tableName).whereIn("id", entityIds);
   }
 
+  //NB: Unless otherwise stated, I'm using trx as a query builder:
+
   /**
    * Inserts the supplied record(s) to the table and return the id of the inserted record.
    * @param {*} record An object to be inserted.
@@ -147,9 +150,21 @@ export class BaseEntityService {
   async save(record, requestData) {
     if (isObject(record)) {
       if ("id" in record) delete record.id;
+      const id = await this.connector.transaction(async function(trx) {
+        const idd = await trx.table(this.tableName).insert(record, "id");
+        const newRecordId = idd[0];
+        await audit.onEntityAdded({
+          requestData: requestData,
+          entityName: this.tableName,
+          record: record,
+          id: newRecordId,
+          knex: trx
+        });
 
-      const id = await this.connector.table(this.tableName).insert(record, "id");
-      return id[0];
+        return newRecordId;
+      });
+
+      return id;
     }
   }
 
@@ -164,7 +179,27 @@ export class BaseEntityService {
         if ("id" in r) delete r.id;
       });
 
-      const ids = await this.connector.table(this.tableName).insert(records, "id");
+      const ids = await this.connector.transaction(async function(trx) {
+        //NB: Here, I'm using trx as a transaction object. We'll explicitly call commit or rollback:
+        try {
+          const idss = await this.connector
+            .transacting(trx)
+            .batchInsert(this.tableName, records)
+            .returning("id");
+          await audit.onEntityListAdded({
+            requestData: requestData,
+            entityName: this.tableName,
+            ids: idss,
+            knex: trx
+          });
+          trx.commit();
+          return idss;
+        } catch (e) {
+          console.log(e);
+          trx.rollback();
+        }
+      });
+
       return ids;
     }
   }

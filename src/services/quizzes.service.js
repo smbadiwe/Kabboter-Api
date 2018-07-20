@@ -65,14 +65,15 @@ export default class QuizService extends BaseEntityService {
 
   /**
    * Create survey and return the id or the newly-created record.
-   * @param {*} userId
-   * @param {*} payload
+   * @param {*} requestData ctx.request
    */
-  async createBatch(userId, payload, requestData) {
+  async createBatch(requestData) {
+    const payload = requestData.body;
     const existing = await this.getFirst({ title: payload.title });
     if (existing) throw new RequestError(`A quiz with the title ${payload.title} already exists`);
 
     //TODO: Put this create thing in one db transaction
+    const userId = requestData.user.id;
     const quiz = {
       title: payload.title,
       description: payload.description,
@@ -85,26 +86,38 @@ export default class QuizService extends BaseEntityService {
     const quizId = await this.save(quiz, requestData);
 
     const questionList = [];
-    payload.questions.forEach(q => {
-      const qn = {
-        question: q.question,
-        timeLimit: q.timeLimit,
-        quizId: quizId,
-        option1: q.option1,
-        option2: q.option2,
-        option3: q.option3,
-        option4: q.option4,
-        correctOptions: q.correctOptions,
-        points: q.points,
-        maxBonus: q.maxBonus,
-        introLink: q.introLink,
-        creditResources: q.creditResources
-      };
-      questionList.push(qn);
-    });
+    if (payload.questions && payload.questions.length > 0) {
+      try {
+        payload.questions.forEach(q => {
+          const qn = {
+            question: q.question,
+            timeLimit: q.timeLimit,
+            quizId: quizId,
+            option1: q.option1,
+            option2: q.option2,
+            option3: q.option3,
+            option4: q.option4,
+            correctOptions: q.correctOptions,
+            points: q.points,
+            maxBonus: q.maxBonus,
+            introLink: q.introLink,
+            creditResources: q.creditResources
+          };
+          questionList.push(qn);
+        });
 
-    await new QuizQuestionService().saveList(questionList, requestData);
-
+        await new QuizQuestionService().saveList(questionList, requestData);
+      } catch (e) {
+        log.error("Error creating quiz questiond. %o", e);
+        throw new RequestError(
+          `We SUCCESSFULLY created quiz with the title ${
+            payload.title
+          }. BUT we could not create the associated ${
+            payload.questions.length
+          } questions. Please add the questions manually.`
+        );
+      }
+    }
     return { id: quizId, nQuestions: questionList.length }; // the id of the newly saved record
   }
 

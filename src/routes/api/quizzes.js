@@ -21,8 +21,7 @@ router.post("/batchcreate", async ctx => {
   try {
     validateQuizBatchCreateProps(ctx.request.body);
 
-    const userId = ctx.request.user.id;
-    const res = await new QuizService().createBatch(userId, ctx.request.body);
+    const res = await new QuizService().createBatch(ctx.request);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
