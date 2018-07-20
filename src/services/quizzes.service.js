@@ -29,15 +29,16 @@ export default class QuizService extends BaseEntityService {
     return await this.dbPaging(query, { page: queryParams.page, perPage: queryParams.perPage });
   }
 
-  async deleteRecord(id) {
+  async deleteRecord(id, requestData) {
     const hasRun = await new QuizRunService().hasQuizBeenRun(id);
     if (hasRun)
       throw new RequestError(
         "The quiz you want to delete has been played and the scores exist. You can no longer delete it."
       );
 
-    await new QuizQuestionService().deletePermanently({ quizId: id });
-    await super.deleteRecord(id);
+    //TODO: Put all these in one db transaction
+    await new QuizQuestionService().deletePermanently({ quizId: id }, requestData);
+    await super.deleteRecord(id, requestData);
   }
 
   /**
@@ -45,7 +46,7 @@ export default class QuizService extends BaseEntityService {
    * @param {*} userId
    * @param {*} payload
    */
-  async create(userId, payload) {
+  async create(userId, payload, requestData) {
     const existing = await this.getFirst({ title: payload.title });
     if (existing) throw new RequestError(`A quiz with the title ${payload.title} already exists`);
 
@@ -58,7 +59,7 @@ export default class QuizService extends BaseEntityService {
       creditResources: payload.creditResources,
       userId: userId
     };
-    const res = await this.save(quiz);
+    const res = await this.save(quiz, requestData);
     return { id: res }; // the id of the newly saved record
   }
 
@@ -67,10 +68,11 @@ export default class QuizService extends BaseEntityService {
    * @param {*} userId
    * @param {*} payload
    */
-  async createBatch(userId, payload) {
+  async createBatch(userId, payload, requestData) {
     const existing = await this.getFirst({ title: payload.title });
     if (existing) throw new RequestError(`A quiz with the title ${payload.title} already exists`);
 
+    //TODO: Put this create thing in one db transaction
     const quiz = {
       title: payload.title,
       description: payload.description,
@@ -80,7 +82,7 @@ export default class QuizService extends BaseEntityService {
       creditResources: payload.creditResources,
       userId: userId
     };
-    const quizId = await this.save(quiz);
+    const quizId = await this.save(quiz, requestData);
 
     const questionList = [];
     payload.questions.forEach(q => {
@@ -101,12 +103,12 @@ export default class QuizService extends BaseEntityService {
       questionList.push(qn);
     });
 
-    await new QuizQuestionService().saveList(questionList);
+    await new QuizQuestionService().saveList(questionList, requestData);
 
     return { id: quizId, nQuestions: questionList.length }; // the id of the newly saved record
   }
 
-  async update(payload) {
+  async update(payload, requestData) {
     const existing = await this.getFirst({ title: payload.title });
     if (existing && existing.id !== payload.id) {
       log.debug("Running quizservice.update. payload = %o", payload);
@@ -122,17 +124,17 @@ export default class QuizService extends BaseEntityService {
       visibleTo: payload.visibleTo || Enums.VisibleTo.Everyone,
       creditResources: payload.creditResources
     };
-    await super.update(quiz);
+    await super.update(quiz, requestData);
     return { id: quiz.id };
   }
 
-  async publish(id) {
-    await super.update({ id: id, published: true });
+  async publish(id, requestData) {
+    await super.update({ id: id, published: true }, requestData);
     return { id: id };
   }
 
-  async unpublish(id) {
-    await super.update({ id: id, published: false });
+  async unpublish(id, requestData) {
+    await super.update({ id: id, published: false }, requestData);
     return { id: id };
   }
 

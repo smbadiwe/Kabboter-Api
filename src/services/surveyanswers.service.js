@@ -49,7 +49,7 @@ select count(*) as total from (
    * Save survey answer. If user has answered this survey before, we update the record.
    * @param {*} record
    */
-  async save(record) {
+  async save(record, requestData) {
     const surveyRun = await new SurveyRunService().getFirst({
       pin: record.pin
     });
@@ -64,7 +64,7 @@ select count(*) as total from (
     if (existing && existing.length) {
       existing.choice = record.choice;
 
-      await super.update(existing);
+      await super.update(existing, requestData);
     } else {
       const newRecord = {
         surveyId: record.surveyId,
@@ -73,7 +73,7 @@ select count(*) as total from (
         userId: record.userId,
         choice: record.choice
       };
-      await super.save(newRecord);
+      await super.save(newRecord, requestData);
     }
   }
 

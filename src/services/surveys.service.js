@@ -32,17 +32,21 @@ export default class SurveyService extends BaseEntityService {
     });
   }
 
-  async deleteRecord(id) {
+  async deleteRecord(id, requestData) {
     const hasRun = await new SurveyRunService().hasSurveyBeenRun(id);
     if (hasRun)
       throw new RequestError(
         "The survey you want to delete has been played and the scores exist. You can no longer delete it."
       );
 
-    await new SurveyQuestionService().deletePermanently({
-      surveyId: id
-    });
-    await super.deleteRecord(id);
+    //TODO: Put in one db transaction
+    await new SurveyQuestionService().deletePermanently(
+      {
+        surveyId: id
+      },
+      requestData
+    );
+    await super.deleteRecord(id, requestData);
   }
 
   /**
@@ -50,7 +54,7 @@ export default class SurveyService extends BaseEntityService {
    * @param {*} userId
    * @param {*} payload
    */
-  async create(userId, payload) {
+  async create(userId, payload, requestData) {
     const existing = await this.getFirst({ title: payload.title });
     if (existing) throw new RequestError(`A survey with the title ${payload.title} already exists`);
 
@@ -63,7 +67,7 @@ export default class SurveyService extends BaseEntityService {
       creditResources: payload.creditResources,
       userId: userId
     };
-    const res = await this.save(survey);
+    const res = await this.save(survey, requestData);
     return { id: res }; // the id of the newly saved record
   }
 
@@ -72,7 +76,7 @@ export default class SurveyService extends BaseEntityService {
    * @param {*} userId
    * @param {*} payload
    */
-  async createBatch(userId, payload) {
+  async createBatch(userId, payload, requestData) {
     const existing = await this.getFirst({ title: payload.title });
     if (existing) throw new RequestError(`A survey with the title ${payload.title} already exists`);
 
@@ -85,7 +89,9 @@ export default class SurveyService extends BaseEntityService {
       creditResources: payload.creditResources,
       userId: userId
     };
-    const surveyId = await this.save(survey);
+
+    //TODO: Put all these in one db transaction
+    const surveyId = await this.save(survey, requestData);
 
     const questionList = [];
     payload.questions.forEach(q => {
@@ -103,12 +109,12 @@ export default class SurveyService extends BaseEntityService {
       questionList.push(qn);
     });
 
-    await new SurveyQuestionService().saveList(questionList);
+    await new SurveyQuestionService().saveList(questionList, requestData);
 
     return { id: surveyId, nQuestions: questionList.length }; // the id of the newly saved record
   }
 
-  async update(payload) {
+  async update(payload, requestData) {
     const existing = await this.getFirst({ title: payload.title });
     if (existing && existing.id !== payload.id)
       throw new RequestError(`A survey with the title ${payload.title} already exists`);
@@ -122,16 +128,16 @@ export default class SurveyService extends BaseEntityService {
       visibleTo: payload.visibleTo || Enums.VisibleTo.Everyone,
       creditResources: payload.creditResources
     };
-    await super.update(survey);
+    await super.update(survey, requestData);
   }
 
-  async publish(id) {
-    await super.update({ id: id, published: true });
+  async publish(id, requestData) {
+    await super.update({ id: id, published: true }, requestData);
     return { id: id };
   }
 
-  async unpublish(id) {
-    await super.update({ id: id, published: false });
+  async unpublish(id, requestData) {
+    await super.update({ id: id, published: false }, requestData);
     return { id: id };
   }
 

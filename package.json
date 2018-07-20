@@ -43,13 +43,15 @@
     "copy-files": "powershell -ExecutionPolicy ByPass -File copy-files-and-azure-configs.ps1",
     "copy-files-a2h": "powershell -ExecutionPolicy ByPass -File copy-files-and-a2h-configs.ps1",
     "delete-dist": "powershell -ExecutionPolicy ByPass -File delete-old-dist-files.ps1",
-    "build": "npm run delete-dist && babel src -d dist --ignore src/public/* --copy-files && npm run copy-files",
+    "build": "npm run delete-dist && babel src -d dist --ignore src/public/* --copy-files",
+    "build-azure": "npm run build && npm run copy-files",
+    "build-a2h": "npm run build && npm run copy-files-a2h",
     "serve": "set DEBUG=LHGengage:* && node dist/index.js",
     "test": "mocha --require babel-register",
     "migrate-db": "knex migrate:latest --knexfile ./src/db/knexfile.js",
     "seed-db": "knex seed:run --knexfile ./src/db/knexfile.js",
     "load-db": "npm run migrate-db && npm run seed-db",
-    "runapp": "npm run build "
+    "runapp": "npm run build"
   },
   "author": "Soma Mbadiwe",
   "license": "ISC"

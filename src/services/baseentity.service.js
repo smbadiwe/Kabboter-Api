@@ -142,10 +142,11 @@ export class BaseEntityService {
   /**
    * Inserts the supplied record(s) to the table and return the id of the inserted record.
    * @param {*} record An object to be inserted.
+   * @param {*} requestData [Optional] the request; will usually be ctx.request
    */
-  async save(record) {
+  async save(record, requestData) {
     if (isObject(record)) {
-      delete record.id;
+      if ("id" in record) delete record.id;
 
       const id = await this.connector.table(this.tableName).insert(record, "id");
       return id[0];
@@ -155,11 +156,12 @@ export class BaseEntityService {
   /**
    * Inserts the supplied record(s) to the table and return array of the id(s) of the inserted record.
    * @param {*} records An array of objects to be inserted.
+   * @param {*} requestData [Optional] the request; will usually be ctx.request
    */
-  async saveList(records) {
+  async saveList(records, requestData) {
     if (isArray(records)) {
       records.forEach(r => {
-        delete r.id;
+        if ("id" in r) delete r.id;
       });
 
       const ids = await this.connector.table(this.tableName).insert(records, "id");
@@ -170,8 +172,9 @@ export class BaseEntityService {
   /**
    * Returns the number of records updated
    * @param {*} record
+   * @param {*} requestData [Optional] the request; will usually be ctx.request
    */
-  async update(record) {
+  async update(record, requestData) {
     if (isObject(record) && record.id > 0) {
       const id = record.id;
       delete record.id;
@@ -188,7 +191,7 @@ export class BaseEntityService {
     }
   }
 
-  async deleteRecord(id) {
+  async deleteRecord(id, requestData) {
     validateInteger(id, "id", true);
     return await this.connector
       .table(this.tableName)
@@ -199,8 +202,10 @@ export class BaseEntityService {
   /**
    * Delete all record that match the given equality conditions. E.g. {id: 4 }.
    * All fields must be within the table. No joins.
+   * @param {*} equalityConditions
+   * @param {*} requestData [Optional] the request; will usually be ctx.request
    */
-  async deletePermanently(equalityConditions) {
+  async deletePermanently(equalityConditions, requestData) {
     if (equalityConditions) {
       return await this.connector
         .table(this.tableName)

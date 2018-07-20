@@ -14,7 +14,8 @@ export default class UserService extends BaseEntityService {
     super("users");
   }
 
-  async promoteOrDemoteUserRole(userId, isDemoting) {
+  async promoteOrDemoteUserRole(userId, isDemoting, requestData) {
+    // TODO: Implement audit trail here
     await this.connector
       .table(this.tableName)
       .where("id", userId)
@@ -26,7 +27,7 @@ export default class UserService extends BaseEntityService {
       );
   }
 
-  async processResetPassword(payload) {
+  async processResetPassword(payload, requestData) {
     const { username, password } = payload;
 
     const user = await this.getByUsernameOrEmailOrPhone(username);
@@ -35,7 +36,7 @@ export default class UserService extends BaseEntityService {
     }
 
     const record = { id: user.id, passwordHash: hashSync(password, genSaltSync()) };
-    await super.update(record);
+    await super.update(record, requestData);
   }
 
   async validateSecurityQuestion(payload) {
@@ -58,7 +59,7 @@ export default class UserService extends BaseEntityService {
     if (!isValid) throw new ValidationError("Answer to security question not correct.");
   }
 
-  async updateUserProfile(userId, payload) {
+  async updateUserProfile(userId, payload, requestData) {
     const user = await this.getById(userId);
     if (!user) throw new RequestError("Invalid user id");
     // if security question has changed, then answer must be supplied
@@ -79,7 +80,7 @@ export default class UserService extends BaseEntityService {
       updateValues.securityquestion = payload.securityquestion;
       updateValues.securityanswer = hashSync(payload.securityanswer, genSaltSync());
     }
-    await this.update(updateValues);
+    await this.update(updateValues, requestData);
   }
 
   /**
@@ -171,7 +172,7 @@ export default class UserService extends BaseEntityService {
     return result;
   }
 
-  async changePassword(uid, oldPwd, newPwd) {
+  async changePassword(uid, oldPwd, newPwd, requestData) {
     const user = await this.getById(uid);
     if (!user) throw new RequestError("Invalid user id");
     if (user.disabled)
@@ -183,14 +184,14 @@ export default class UserService extends BaseEntityService {
     if (!isPwdSame) throw new RequestError("Wrong password specified for current password");
 
     user.passwordHash = hashSync(newPwd, genSaltSync());
-    await this.update(user);
+    await this.update(user, requestData);
   }
 
   /**
    * This is for admin users
    * @param {*} userRegInfo
    */
-  async processUserRegistration(userRegInfo) {
+  async processUserRegistration(userRegInfo, requestData) {
     let user = await this.getByEmailOrPhone(userRegInfo.email, userRegInfo.phone);
     if (user) {
       throw new RequestError(
@@ -213,7 +214,7 @@ export default class UserService extends BaseEntityService {
       securityanswer: hashSync(userRegInfo.securityanswer, genSaltSync()),
       country: userRegInfo.country
     };
-    user.id = await this.save(user);
+    user.id = await this.save(user, requestData);
 
     sendWelcomeEmailToModerator(user);
     // automatically log the user in.
@@ -229,7 +230,7 @@ export default class UserService extends BaseEntityService {
    * This is for players
    * @param {*} userRegInfo
    */
-  async processPlayerRegistration(userRegInfo) {
+  async processPlayerRegistration(userRegInfo, requestData) {
     validatePlayerRegistration(userRegInfo);
     let user;
     if (userRegInfo.username) {
@@ -257,7 +258,7 @@ export default class UserService extends BaseEntityService {
       roles: Enums.UserRoleOptions.Players,
       usertype: Enums.UserType.SocialUser
     };
-    user.id = await this.save(user);
+    user.id = await this.save(user, requestData);
     sendWelcomeEmailToPlayer(user);
     return {
       i: user.id,

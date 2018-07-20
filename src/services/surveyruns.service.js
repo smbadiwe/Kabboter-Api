@@ -11,7 +11,7 @@ export default class SurveyRunService extends BaseEntityService {
    * Returns { id: <the quizRun id>, surveyId: surveyId, pin: pin, totalQuestions: totalQuestions };
    * @param {*} record
    */
-  async save(record) {
+  async save(record, requestData) {
     const survey = await new SurveyService().getById(record.surveyId);
     if (!survey) throw new RequestError("Invalid survey id");
 
@@ -37,7 +37,7 @@ export default class SurveyRunService extends BaseEntityService {
       moderatorId: record.moderatorId
     };
 
-    const res = await super.save(surveyRun);
+    const res = await super.save(surveyRun, requestData);
 
     return {
       gameRunId: res,
