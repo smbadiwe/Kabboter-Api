@@ -56,7 +56,7 @@ select count(*) as total from (
    * Save quiz answer. If user has answered this quiz before, we update the record.
    * @param {*} record
    */
-  async save(record, requestData) {
+  async save(record) {
     log.debug(`save: record: %O`, record);
     const quizRun = await new QuizRunService().getFirst({
       pin: record.pin
@@ -77,7 +77,7 @@ select count(*) as total from (
       existing.bonus = record.bonus;
 
       log.debug(`save: existing record being updated: %O`, existing);
-      await super.update(existing, requestData);
+      await super.update(existing);
     } else {
       const newRecord = {
         quizId: record.quizId,
@@ -90,7 +90,7 @@ select count(*) as total from (
         bonus: record.bonus
       };
       log.debug(`save: new record being saved: %O`, newRecord);
-      await super.save(newRecord, requestData);
+      await super.save(newRecord);
     }
   }
 

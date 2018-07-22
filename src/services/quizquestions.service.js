@@ -15,9 +15,10 @@ export default class QuizQuestionService extends BaseEntityService {
 
   /**
    * Save quiz question
-   * @param {*} payload
+   * @param {*} requestObject
    */
-  async save(payload, requestData) {
+  async save(requestObject) {
+    const payload = requestObject.body;
     const quiz = await new QuizService().getById(payload.quizId);
     if (!quiz) throw new RequestError("Invalid quiz id");
 
@@ -35,25 +36,26 @@ export default class QuizQuestionService extends BaseEntityService {
       introLink: payload.introLink,
       creditResources: payload.creditResources
     };
-    const res = await super.save(quizQn, requestData);
+    const res = await super.save(quizQn, requestObject);
     return { id: res, points: payload.points, maxBonus: payload.maxBonus }; // the id of the newly saved record
   }
 
-  async daleteRecord(id, requestData) {
+  async daleteRecord(id, requestObject) {
     const answered = await new QuizAnswerService().hasQuizQuestionBeenAnswered(id);
     if (answered)
       throw new RequestError(
         "The quiz question you want to delete has been answered and the scores exist. You can no longer delete it."
       );
 
-    await super.deleteRecord(id, requestData);
+    await super.deleteRecord(id, requestObject);
   }
 
   /**
    * Update quiz question
-   * @param {*} record
+   * @param {*} requestObject
    */
-  async update(record, requestData) {
+  async update(requestObject) {
+    const record = requestObject.body;
     const quiz = await new QuizService().getById(record.quizId);
     if (!quiz) throw new RequestError("Invalid quiz id");
 
@@ -72,7 +74,7 @@ export default class QuizQuestionService extends BaseEntityService {
       introLink: record.introLink,
       creditResources: record.creditResources
     };
-    await super.update(quizQn, requestData);
+    await super.update(quizQn, requestObject);
   }
 
   async getBy(equalityConditions) {

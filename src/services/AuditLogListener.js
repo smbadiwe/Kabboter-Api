@@ -2,13 +2,9 @@ export async function onEntityAdded(eventData) {
   if (eventData && eventData.requestData) {
     const auditEntry = {
       eventType: EventType.Create,
-      entityName: eventData.entityName,
-      entityIds: eventData.id,
-      userId: eventData.requestData.user.id,
-      username: eventData.requestData.user.username,
       newRecord: { id: eventData.id, ...eventData.record }
     };
-
+    setExtraAuditEntryFields(auditEntry, eventData);
     await eventData.knex.insert(auditEntry).into("auditlogs");
   }
 }
@@ -16,13 +12,9 @@ export async function onEntityAdded(eventData) {
 export async function onEntityListAdded(eventData) {
   if (eventData && eventData.requestData) {
     const auditEntry = {
-      eventType: EventType.BatchCreate,
-      entityName: eventData.entityName,
-      entityIds: eventData.ids,
-      userId: eventData.requestData.user.id,
-      username: eventData.requestData.user.username
+      eventType: EventType.BatchCreate
     };
-
+    setExtraAuditEntryFields(auditEntry, eventData);
     await eventData.knex.insert(auditEntry).into("auditlogs");
   }
 }
@@ -31,20 +23,31 @@ async function onEntityModified(eventType, eventData) {
   if (eventData && eventData.requestData) {
     const auditEntry = {
       eventType: eventType,
-      entityName: eventData.entityName,
-      entityIds: eventData.id,
-      userId: eventData.requestData.user.id,
-      username: eventData.requestData.user.username,
       oldRecord: eventData.oldRecord,
       newRecord: eventData.newRecord
     };
 
+    setExtraAuditEntryFields(auditEntry, eventData);
     await eventData.knex.insert(auditEntry).into("auditlogs");
   }
 }
 
+function setExtraAuditEntryFields(auditEntry, eventData) {
+  auditEntry.entityName = eventData.entityName;
+  auditEntry.entityIds = eventData.ids;
+  auditEntry.userId = eventData.requestData.user.id;
+  auditEntry.username = eventData.requestData.user.username;
+  auditEntry.requestType = eventData.requestData.method;
+  auditEntry.requestUrl = eventData.requestData.url;
+  auditEntry.requestBody = eventData.requestData.body || eventData.requestData.query;
+}
+
 export async function onEntityUpdated(eventData) {
   await onEntityModified(EventType.Update, eventData);
+}
+
+export async function onEntityDeleted(eventData) {
+  await onEntityModified(EventType.Delete, eventData);
 }
 
 export async function onEntityEnabled(eventData) {

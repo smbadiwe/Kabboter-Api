@@ -9,8 +9,7 @@ router.post("/create", async ctx => {
   try {
     validateSurveyProps(ctx.request.body);
 
-    const userId = ctx.request.user.id;
-    const res = await new SurveyService().create(userId, ctx.request.body);
+    const res = await new SurveyService().create(ctx.request);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
@@ -21,8 +20,7 @@ router.post("/batchcreate", async ctx => {
   try {
     validateSurveyBatchCreateProps(ctx.request.body);
 
-    const userId = ctx.request.user.id;
-    const res = await new SurveyService().createBatch(userId, ctx.request.body);
+    const res = await new SurveyService().createBatch(ctx.request);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
@@ -33,7 +31,7 @@ router.post("/update", async ctx => {
   try {
     validateSurveyProps(ctx.request.body, true);
 
-    const res = await new SurveyService().update(ctx.request.body);
+    const res = await new SurveyService().update(ctx.request);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
@@ -53,9 +51,8 @@ router.post("/publish", async ctx => {
   try {
     const payload = ctx.request.body;
     validateInteger(payload.id, "id", true);
-    payload.id = +payload.id;
 
-    const res = await new SurveyService().publish(payload.id);
+    const res = await new SurveyService().publish(ctx.request);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
@@ -66,9 +63,7 @@ router.post("/unpublish", async ctx => {
   try {
     const payload = ctx.request.body;
     validateInteger(payload.id, "id", true);
-    payload.id = +payload.id;
-
-    const res = await new SurveyService().unpublish(payload.id);
+    const res = await new SurveyService().unpublish(ctx.request);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
@@ -78,7 +73,7 @@ router.post("/unpublish", async ctx => {
 router.post("/delete/:id", async ctx => {
   try {
     validateInteger(ctx.params.id, "id", true);
-    const res = await new SurveyService().deleteRecord(ctx.params.id);
+    const res = await new SurveyService().deleteRecord(ctx.params.id, ctx.request);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);

@@ -9,6 +9,9 @@ export async function up(knex) {
     t.string("username", 20);
     t.json("oldRecord");
     t.json("newRecord");
+    t.string("requestType");
+    t.string("requestUrl");
+    t.json("requestBody");
   });
 }
 

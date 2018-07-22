@@ -29,7 +29,7 @@ export default class QuizService extends BaseEntityService {
     return await this.dbPaging(query, { page: queryParams.page, perPage: queryParams.perPage });
   }
 
-  async deleteRecord(id, requestData) {
+  async deleteRecord(id, requestObject) {
     const hasRun = await new QuizRunService().hasQuizBeenRun(id);
     if (hasRun)
       throw new RequestError(
@@ -37,19 +37,20 @@ export default class QuizService extends BaseEntityService {
       );
 
     //TODO: Put all these in one db transaction
-    await new QuizQuestionService().deletePermanently({ quizId: id }, requestData);
-    await super.deleteRecord(id, requestData);
+    await new QuizQuestionService().deletePermanently({ quizId: id }, requestObject);
+    await super.deleteRecord(id, requestObject);
   }
 
   /**
    * Create quiz and return the id or the newly-created record.
-   * @param {*} userId
-   * @param {*} payload
+   * @param {*} requestObject
    */
-  async create(userId, payload, requestData) {
+  async create(requestObject) {
+    const payload = requestObject.body;
     const existing = await this.getFirst({ title: payload.title });
     if (existing) throw new RequestError(`A quiz with the title ${payload.title} already exists`);
 
+    const userId = requestObject.user.id;
     const quiz = {
       title: payload.title,
       description: payload.description,
@@ -59,21 +60,21 @@ export default class QuizService extends BaseEntityService {
       creditResources: payload.creditResources,
       userId: userId
     };
-    const res = await this.save(quiz, requestData);
+    const res = await this.save(quiz, requestObject);
     return { id: res }; // the id of the newly saved record
   }
 
   /**
    * Create survey and return the id or the newly-created record.
-   * @param {*} requestData ctx.request
+   * @param {*} requestObject ctx.request
    */
-  async createBatch(requestData) {
-    const payload = requestData.body;
+  async createBatch(requestObject) {
+    const payload = requestObject.body;
     const existing = await this.getFirst({ title: payload.title });
     if (existing) throw new RequestError(`A quiz with the title ${payload.title} already exists`);
 
     //TODO: Put this create thing in one db transaction
-    const userId = requestData.user.id;
+    const userId = requestObject.user.id;
     const quiz = {
       title: payload.title,
       description: payload.description,
@@ -83,7 +84,7 @@ export default class QuizService extends BaseEntityService {
       creditResources: payload.creditResources,
       userId: userId
     };
-    const quizId = await this.save(quiz, requestData);
+    const quizId = await this.save(quiz, requestObject);
 
     const questionList = [];
     if (payload.questions && payload.questions.length > 0) {
@@ -106,7 +107,7 @@ export default class QuizService extends BaseEntityService {
           questionList.push(qn);
         });
 
-        await new QuizQuestionService().saveList(questionList, requestData);
+        await new QuizQuestionService().saveList(questionList, requestObject);
       } catch (e) {
         log.error("Error creating quiz questiond. %o", e);
         throw new RequestError(
@@ -121,7 +122,8 @@ export default class QuizService extends BaseEntityService {
     return { id: quizId, nQuestions: questionList.length }; // the id of the newly saved record
   }
 
-  async update(payload, requestData) {
+  async update(requestObject) {
+    const payload = requestObject.body;
     const existing = await this.getFirst({ title: payload.title });
     if (existing && existing.id !== payload.id) {
       log.debug("Running quizservice.update. payload = %o", payload);
@@ -137,17 +139,19 @@ export default class QuizService extends BaseEntityService {
       visibleTo: payload.visibleTo || Enums.VisibleTo.Everyone,
       creditResources: payload.creditResources
     };
-    await super.update(quiz, requestData);
+    await super.update(quiz, requestObject);
     return { id: quiz.id };
   }
 
-  async publish(id, requestData) {
-    await super.update({ id: id, published: true }, requestData);
+  async publish(requestObject) {
+    const id = +requestObject.body.id;
+    await super.update({ id: id, published: true }, requestObject);
     return { id: id };
   }
 
-  async unpublish(id, requestData) {
-    await super.update({ id: id, published: false }, requestData);
+  async unpublish(requestObject) {
+    const id = +requestObject.body.id;
+    await super.update({ id: id, published: false }, requestObject);
     return { id: id };
   }
 

@@ -9,7 +9,7 @@ router.post("/create", async ctx => {
   try {
     validateSurveyQuestionProps(ctx.request.body);
 
-    const res = await new SurveyQuestionService().save(ctx.request.body);
+    const res = await new SurveyQuestionService().save(ctx.request);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
@@ -20,7 +20,7 @@ router.post("/update", async ctx => {
   try {
     validateSurveyQuestionProps(ctx.request.body, true);
 
-    const res = await new SurveyQuestionService().update(ctx.request.body);
+    const res = await new SurveyQuestionService().update(ctx.request);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);
@@ -30,7 +30,7 @@ router.post("/update", async ctx => {
 router.post("/delete/:id", async ctx => {
   try {
     validateInteger(ctx.params.id, "id", true);
-    const res = await new SurveyQuestionService().daleteRecord(ctx.params.id);
+    const res = await new SurveyQuestionService().daleteRecord(ctx.params.id, ctx.request);
     ctx.body = res;
   } catch (e) {
     ctx.throw(e.status || 500, e);

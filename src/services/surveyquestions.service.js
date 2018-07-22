@@ -9,9 +9,10 @@ export default class SurveyQuestionService extends BaseEntityService {
 
   /**
    * Save survey question
-   * @param {*} payload
+   * @param {*} requestObject
    */
-  async save(payload, requestData) {
+  async save(requestObject) {
+    const payload = requestObject.body;
     const survey = await new SurveyService().getById(payload.surveyId);
     if (!survey) throw new RequestError("Invalid survey id");
 
@@ -26,15 +27,17 @@ export default class SurveyQuestionService extends BaseEntityService {
       introLink: payload.introLink,
       creditResources: payload.creditResources
     };
-    const res = await super.save(surveyQn, requestData);
+    const res = await super.save(surveyQn, requestObject);
     return { id: res, question: payload.question, timeLimit: payload.timeLimit }; // the id of the newly saved record
   }
 
   /**
    * Update survey question
-   * @param {*} record
+   * @param {*} requestObject
    */
-  async update(record, requestData) {
+  async update(requestObject) {
+    const record = requestObject.body;
+
     const survey = await new SurveyService().getById(record.surveyId);
     if (!survey) throw new RequestError("Invalid survey id");
 
@@ -53,17 +56,17 @@ export default class SurveyQuestionService extends BaseEntityService {
       introLink: record.introLink,
       creditResources: record.creditResources
     };
-    await super.update(surveyQn, requestData);
+    await super.update(surveyQn, requestObject);
   }
 
-  async daleteRecord(id, requestData) {
+  async daleteRecord(id, requestObject) {
     const answered = await new SurveyAnswerService().hasSurveyQuestionBeenAnswered(id);
     if (answered)
       throw new RequestError(
         "The survey question you want to delete has been answered and the records exist. You can no longer delete it."
       );
 
-    await super.deleteRecord(id, requestData);
+    await super.deleteRecord(id, requestObject);
   }
 
   async getTotalSurveyQuestions(surveyId) {

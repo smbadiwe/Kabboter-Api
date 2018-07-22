@@ -157,13 +157,14 @@ export class BaseEntityService {
           requestData: requestData,
           entityName: this.tableName,
           record: record,
-          id: newRecordId,
+          ids: newRecordId,
           knex: trx
         });
 
         return newRecordId;
       });
 
+      console.log("save(): id = " + id);
       return id;
     }
   }
@@ -200,6 +201,8 @@ export class BaseEntityService {
         }
       });
 
+      console.log("saveList(): ids = ");
+      console.log(ids);
       return ids;
     }
   }
@@ -214,10 +217,32 @@ export class BaseEntityService {
       const id = record.id;
       delete record.id;
       try {
-        return await this.connector
-          .table(this.tableName)
-          .where({ id: id })
-          .update(record);
+        let oldRecord = undefined;
+        if (requestData) {
+          oldRecord = await this.connector
+            .table(this.tableName)
+            .where({ id: id })
+            .select(Object.keys(record));
+        }
+
+        // ADD transaction
+        await this.connector.transaction(async function(trx) {
+          await trx
+            .table(this.tableName)
+            .where({ id: id })
+            .update(record);
+
+          if (oldRecord && oldRecord.length) {
+            await audit.onEntityUpdated({
+              requestData: requestData,
+              entityName: this.tableName,
+              oldRecord: oldRecord[0],
+              newRecord: record,
+              ids: id,
+              knex: trx
+            });
+          }
+        });
       } finally {
         record.id = id;
       }
@@ -228,10 +253,7 @@ export class BaseEntityService {
 
   async deleteRecord(id, requestData) {
     validateInteger(id, "id", true);
-    return await this.connector
-      .table(this.tableName)
-      .where({ id: id })
-      .del();
+    return await this.deletePermanently({ id: id }, requestData);
   }
 
   /**
@@ -241,11 +263,32 @@ export class BaseEntityService {
    * @param {*} requestData [Optional] the request; will usually be ctx.request
    */
   async deletePermanently(equalityConditions, requestData) {
-    if (equalityConditions) {
-      return await this.connector
-        .table(this.tableName)
-        .where(equalityConditions)
-        .del();
+    if (isObject(equalityConditions)) {
+      let oldRecord = undefined;
+      if (requestData) {
+        oldRecord = await this.connector
+          .table(this.tableName)
+          .where(equalityConditions)
+          .select(Object.keys(record));
+      }
+
+      // ADD transaction
+      await this.connector.transaction(async function(trx) {
+        await trx
+          .table(this.tableName)
+          .where(equalityConditions)
+          .del();
+
+        if (oldRecord && oldRecord.length) {
+          await audit.onEntityDeleted({
+            requestData: requestData,
+            entityName: this.tableName,
+            oldRecord: oldRecord.length === 1 ? oldRecord[0] : oldRecord,
+            ids: oldRecord.length === 1 ? oldRecord[0].id : oldRecord.map(x => x.id),
+            knex: trx
+          });
+        }
+      });
     }
   }
 }
