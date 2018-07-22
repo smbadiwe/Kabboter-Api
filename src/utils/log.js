@@ -1,4 +1,4 @@
-import debug from "../../../../../Users/SuperUser/AppData/Local/Microsoft/TypeScript/2.9/node_modules/@types/debug";
+import debug from "debug";
 import util from "util";
 
 const debug_ = debug(`${process.env.APP_NAME}:debug`);

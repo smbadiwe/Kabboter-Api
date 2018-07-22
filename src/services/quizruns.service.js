@@ -23,9 +23,10 @@ export default class QuizRunService extends BaseEntityService {
 
   /**
    * Returns { id: <the quizRun id>, quizId: quizId, pin: pin, totalQuestions: totalQuestions };
-   * @param {*} record
+   * @param {*} requestData
    */
-  async save(record, requestData) {
+  async save(requestData) {
+    const record = requestData.body;
     log.debug("Getting quiz by quizId");
     const quiz = await new QuizService().getById(record.quizId);
     log.debug("Done getting quiz by quizId");
@@ -50,7 +51,7 @@ export default class QuizRunService extends BaseEntityService {
       totalQuestions: totalQuestions,
       awardPoints: record.awardPoints,
       awardBonus: record.awardBonus,
-      moderatorId: record.moderatorId
+      moderatorId: requestData.user.id
     };
 
     const res = await super.save(quizRun, requestData);

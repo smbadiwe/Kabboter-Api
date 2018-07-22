@@ -41,6 +41,7 @@ router.post("/create", async ctx => {
   }
 });
 
+//TODO: Fix or Remove
 router.post("/update", async ctx => {
   const payload = ctx.request.body;
   try {

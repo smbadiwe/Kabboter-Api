@@ -10,10 +10,7 @@ router.post("/create", async ctx => {
   try {
     const gameParams = ctx.request.body;
     validateQuizRunProps(gameParams);
-    gameParams.moderatorId = ctx.request.user.id;
-    validateInteger(gameParams.moderatorId, "moderatorId", true);
-
-    const res = await new QuizRunService().save(gameParams);
+    const res = await new QuizRunService().save(ctx.request);
 
     ctx.body = res;
   } catch (e) {

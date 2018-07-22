@@ -1,5 +1,5 @@
 // in addeditquestions.html
-function saveQuestion(e) {
+function saveQuestion(e, refreshPage) {
   e.preventDefault();
   var quizId = getUrlParameter("id");
   if (!quizId) {
@@ -35,7 +35,6 @@ function saveQuestion(e) {
     $("#result").html("Select correct option");
     return false;
   }
-  const ctrlId = $(this).attr("id");
 
   const token = localStorage.getItem("token");
 
@@ -68,7 +67,7 @@ function saveQuestion(e) {
       $("#result").html(data.statusText);
     },
     success: function(data) {
-      if (ctrlId === "saveAndAdd") {
+      if (refreshPage) {
         setTimeout(function() {
           window.location.reload(true);
         });

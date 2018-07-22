@@ -150,12 +150,14 @@ export class BaseEntityService {
   async save(record, requestData) {
     if (isObject(record)) {
       if ("id" in record) delete record.id;
+
+      const tblName = this.tableName;
       const id = await this.connector.transaction(async function(trx) {
-        const idd = await trx.table(this.tableName).insert(record, "id");
+        const idd = await trx.table(tblName).insert(record, "id");
         const newRecordId = idd[0];
         await audit.onEntityAdded({
           requestData: requestData,
-          entityName: this.tableName,
+          entityName: tblName,
           record: record,
           ids: newRecordId,
           knex: trx
@@ -180,16 +182,17 @@ export class BaseEntityService {
         if ("id" in r) delete r.id;
       });
 
+      const tblName = this.tableName;
       const ids = await this.connector.transaction(async function(trx) {
         //NB: Here, I'm using trx as a transaction object. We'll explicitly call commit or rollback:
         try {
           const idss = await this.connector
             .transacting(trx)
-            .batchInsert(this.tableName, records)
+            .batchInsert(tblName, records)
             .returning("id");
           await audit.onEntityListAdded({
             requestData: requestData,
-            entityName: this.tableName,
+            entityName: tblName,
             ids: idss,
             knex: trx
           });
@@ -212,10 +215,11 @@ export class BaseEntityService {
    * @param {*} record
    * @param {*} requestData [Optional] the request; will usually be ctx.request
    */
-  async update(record, requestData) {
+  async update(record, requestData, updateType) {
     if (isObject(record) && record.id > 0) {
       const id = record.id;
       delete record.id;
+      updateType = updateType || audit.EventType.Update;
       try {
         let oldRecord = undefined;
         if (requestData) {
@@ -226,16 +230,17 @@ export class BaseEntityService {
         }
 
         // ADD transaction
+        const tblName = this.tableName;
         await this.connector.transaction(async function(trx) {
           await trx
-            .table(this.tableName)
+            .table(tblName)
             .where({ id: id })
             .update(record);
 
           if (oldRecord && oldRecord.length) {
-            await audit.onEntityUpdated({
+            await audit.onEntityModified(updateType, {
               requestData: requestData,
-              entityName: this.tableName,
+              entityName: tblName,
               oldRecord: oldRecord[0],
               newRecord: record,
               ids: id,
@@ -273,16 +278,17 @@ export class BaseEntityService {
       }
 
       // ADD transaction
+      const tblName = this.tableName;
       await this.connector.transaction(async function(trx) {
         await trx
-          .table(this.tableName)
+          .table(tblName)
           .where(equalityConditions)
           .del();
 
         if (oldRecord && oldRecord.length) {
           await audit.onEntityDeleted({
             requestData: requestData,
-            entityName: this.tableName,
+            entityName: tblName,
             oldRecord: oldRecord.length === 1 ? oldRecord[0] : oldRecord,
             ids: oldRecord.length === 1 ? oldRecord[0].id : oldRecord.map(x => x.id),
             knex: trx

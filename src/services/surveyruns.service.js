@@ -9,9 +9,10 @@ export default class SurveyRunService extends BaseEntityService {
 
   /**
    * Returns { id: <the quizRun id>, surveyId: surveyId, pin: pin, totalQuestions: totalQuestions };
-   * @param {*} record
+   * @param {*} requestData
    */
-  async save(record, requestData) {
+  async save(requestData) {
+    const record = requestData.body;
     const survey = await new SurveyService().getById(record.surveyId);
     if (!survey) throw new RequestError("Invalid survey id");
 
@@ -34,7 +35,7 @@ export default class SurveyRunService extends BaseEntityService {
       randomizeAnswers: record.randomizeAnswers,
       displayPin: record.displayPin,
       totalQuestions: totalQuestions,
-      moderatorId: record.moderatorId
+      moderatorId: requestData.user.id
     };
 
     const res = await super.save(surveyRun, requestData);

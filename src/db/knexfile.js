@@ -3,7 +3,7 @@ require("babel-register");
 const path = require("path");
 const fs = require("fs");
 const BASE_PATH = __dirname;
-const dotenv = require("../../../../../Users/SuperUser/AppData/Local/Microsoft/TypeScript/2.9/node_modules/@types/dotenv");
+const dotenv = require("dotenv");
 dotenv.load({ path: path.join(BASE_PATH, "../../.env") });
 module.exports = {
   test: {

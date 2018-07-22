@@ -1,11 +1,13 @@
 export async function onEntityAdded(eventData) {
   if (eventData && eventData.requestData) {
+    const rec = eventData.record;
+    rec.id = eventData.id;
     const auditEntry = {
       eventType: EventType.Create,
-      newRecord: { id: eventData.id, ...eventData.record }
+      newRecord: JSON.stringify(rec)
     };
     setExtraAuditEntryFields(auditEntry, eventData);
-    await eventData.knex.insert(auditEntry).into("auditlogs");
+    await eventData.knex.table("auditlogs").insert(auditEntry);
   }
 }
 
@@ -15,31 +17,33 @@ export async function onEntityListAdded(eventData) {
       eventType: EventType.BatchCreate
     };
     setExtraAuditEntryFields(auditEntry, eventData);
-    await eventData.knex.insert(auditEntry).into("auditlogs");
+    await eventData.knex.table("auditlogs").insert(auditEntry);
   }
 }
 
-async function onEntityModified(eventType, eventData) {
+export async function onEntityModified(eventType, eventData) {
   if (eventData && eventData.requestData) {
     const auditEntry = {
       eventType: eventType,
-      oldRecord: eventData.oldRecord,
-      newRecord: eventData.newRecord
+      oldRecord: JSON.stringify(eventData.oldRecord),
+      newRecord: JSON.stringify(eventData.newRecord)
     };
 
     setExtraAuditEntryFields(auditEntry, eventData);
-    await eventData.knex.insert(auditEntry).into("auditlogs");
+    await eventData.knex.table("auditlogs").insert(auditEntry);
   }
 }
 
 function setExtraAuditEntryFields(auditEntry, eventData) {
   auditEntry.entityName = eventData.entityName;
-  auditEntry.entityIds = eventData.ids;
+  auditEntry.entityIds = JSON.stringify(eventData.ids);
   auditEntry.userId = eventData.requestData.user.id;
   auditEntry.username = eventData.requestData.user.username;
   auditEntry.requestType = eventData.requestData.method;
   auditEntry.requestUrl = eventData.requestData.url;
-  auditEntry.requestBody = eventData.requestData.body || eventData.requestData.query;
+  auditEntry.requestBody = JSON.stringify(
+    eventData.requestData.body || eventData.requestData.query
+  );
 }
 
 export async function onEntityUpdated(eventData) {

@@ -3,6 +3,8 @@ import { QuizQuestionService, QuizRunService } from "./";
 import Enums from "./enums";
 import log from "../utils/log";
 import { RequestError } from "../utils/ValidationErrors";
+import { EventType } from "./AuditLogListener";
+
 export default class QuizService extends BaseEntityService {
   constructor() {
     super("quizzes");
@@ -145,13 +147,13 @@ export default class QuizService extends BaseEntityService {
 
   async publish(requestObject) {
     const id = +requestObject.body.id;
-    await super.update({ id: id, published: true }, requestObject);
+    await super.update({ id: id, published: true }, requestObject, EventType.Publish);
     return { id: id };
   }
 
   async unpublish(requestObject) {
     const id = +requestObject.body.id;
-    await super.update({ id: id, published: false }, requestObject);
+    await super.update({ id: id, published: false }, requestObject, EventType.Unpublish);
     return { id: id };
   }
 
