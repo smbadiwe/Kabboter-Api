@@ -1,5 +1,5 @@
 import { BaseEntityService } from "./baseentity.service";
-import { QuizService, SurveyService, QuizAnswerService, SurveyAnswerService } from "./";
+import { QuizService, SurveyService, QuizAnswerService, SurveyAnswerService } from ".";
 import { validatePlayerRegistration } from "../routes/api/public/noauth.validate";
 import { RequestError, ValidationError, Required } from "../utils/ValidationErrors";
 import { sign } from "jsonwebtoken";

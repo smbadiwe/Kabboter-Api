@@ -92,6 +92,8 @@ async function authorizeRequest(ctx, next) {
   const verifyAuth =
     url.startsWith("/api/") &&
     !url.startsWith("/api/public/") &&
+    !url.endsWith("/api/user/quizruns/authplayer") &&
+    !url.endsWith("/api/user/surveyruns/authplayer") &&
     !url.endsWith(".js") &&
     !url.endsWith(".woff") &&
     !url.endsWith(".woff2") &&

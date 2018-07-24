@@ -63,22 +63,6 @@ $(function() {
     });
   });
 
-  /*
-      BUTTON TO NAVIGATE PLAYERS TO QUIZ VIEW 
-  */
-  $("#playQuizBtn").click(function(e) {
-    e.preventDefault();
-    window.location = window.location.origin + "/playquiz";
-  });
-
-  /*
-      BUTTON TO NAVIGATE PLAYERS TO VOTE/SURVEY VIEW 
-  */
-  $("#playVoteBtn").click(function(e) {
-    e.preventDefault();
-    window.location = window.location.origin + "/playvote";
-  });
-
   function validatePassword() {
     var pass = $("#r-pass").val();
     var cpass = $("#r-cpass").val();

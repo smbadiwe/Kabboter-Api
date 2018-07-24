@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Game App</title>
+    <title>LHGengage</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/styles.css" type="text/css">
@@ -30,7 +30,7 @@
                                 </select>
                             </div>
 
-                            <button class="btn btn-brand-light px-4 mt-2" onclick="startSurveyAdmin(event);">Start Vote</button>
+                            <button class="btn btn-brand-light px-4 mt-2" onclick="startGameAdmin(event, 'survey');">Start Vote</button>
                             <a role="button" href='javascript:history.go(-1);' class="btn mt-2">Cancel</a>
                         </form>
                     </div>
@@ -134,7 +134,7 @@
                                     <div id="scoreboard" style="display:none"></div>
                                     <div class="row mt-4">
                                         <div class="col-12">
-                                            <button id="loadQuestion" onclick='loadNextQuestion(event)' class="btn btn-lg btn-brand">Go to next question</button>
+                                            <button id="loadQuestion" onclick="loadNextQuestion(event, 'survey')" class="btn btn-lg btn-brand">Go to next question</button>
                                             <button onclick="showAdminEndView('survey')" class="btn btn-lg btn-danger">End Vote</button>
                                         </div>
                                     </div>
@@ -166,8 +166,6 @@
     <script src="/js/popper.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
     <script src="/js/Chart.min.js"></script>
-    <script>
-    </script>
 </body>
 
 </html>

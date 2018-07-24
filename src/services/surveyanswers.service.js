@@ -1,5 +1,5 @@
 import { BaseEntityService } from "./baseentity.service";
-import { SurveyRunService, SurveyQuestionService } from "./";
+import { SurveyRunService, SurveyQuestionService } from ".";
 import { RequestError } from "../utils/ValidationErrors";
 import log from "../utils/log";
 

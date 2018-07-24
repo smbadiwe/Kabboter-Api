@@ -1,60 +1,3 @@
-// Sample client code for game player
-// Add this:
-// <script src="/socket.io/socket.io.js"></script>
-// to the page BEFORE importing this js file. That's where io is defined.
-
-function onAnswerSubmitted(feedback) {
-  console.log(feedback);
-  // If all went well, 'feedback' will just be a string saying "Submitted".
-  //TODO: You decide. You can clear input fields or reset data used for the just-submitted question.
-  GamePlayerData["surveyquestion"] = undefined;
-  refreshFieldsAfterAnswerIsSubmitted();
-}
-
-(function(glob) {
-  glob.socket = io("/surveyplayer", getSocketOptions());
-})(this); // 'this' will be 'window' or 'module' or ... depending on the client
-
-/**
- * playerInfo = {
-        pin: pin,
-        username: username,
-        lastname: lastname,
-        firstname: firstname,
-        email: email,
-        phone: phone
-    };
- * @param {*} playerInfo 
- */
-function onGetPlayPin(playerInfo) {
-  socket.emit("authenticate", playerInfo, error => {
-    alert(error);
-    return false;
-  });
-}
-
-/**
- * Submit answer to a survey question via socket.
- * TODO: package the answerInfo object and pass it to this method. Do this when client clicks on an answer button.
- * answerInfo should be a JSON with these keys:
- * { timeCount: 2, choice: 1 }
- * @param {*} answerInfo
- */
-function submitAnswer(answerInfo) {
-  const surveyPlayerInfo = GamePlayerData["surveyPlayerInfo"];
-  const surveyquestion = GamePlayerData["surveyquestion"];
-
-  const answerToSubmit = {
-    userId: surveyPlayerInfo.i,
-    pin: surveyPlayerInfo.pin,
-    surveyId: surveyquestion.surveyId,
-    surveyQuestionId: surveyquestion.id,
-    choice: answerInfo.choice
-  };
-  answerToSubmit.bonus = getBonus(0, surveyquestion.timeLimit, answerInfo.timeCount, true);
-  socket.emit("submit-answer", answerToSubmit, callbackOnGamePlayerError);
-}
-
 /**
  * Calculate the bonus score to award player when answer is correct.
  * @param {*} maxBonus Max bonus to be awarded a player for answering correctly.
@@ -84,18 +27,4 @@ function getBonus(maxBonus, maxTimeCount, timeCount, answeredCorrectly = true) {
   return Math.ceil(bonus);
 }
 
-socket.on("receive-next-question", onPlayerReceiveNextQuestion);
-
-socket.on("answer-submitted", onAnswerSubmitted);
-
-socket.on("get-surveyrun-info", onGetPlayerGameRunInfo);
-
-socket.on("error", callbackOnGamePlayerError);
-
-socket.on("disconnect", function(reason) {
-  onPlayerDisconnect(socket, reason, "survey");
-});
-
-socket.on("auth-success", function(gameInfo) {
-  onAuthSuccess(gameInfo, "survey");
-});
+setupGeneralChannel("survey");

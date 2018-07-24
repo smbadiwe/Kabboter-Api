@@ -1,5 +1,5 @@
 import { BaseEntityService } from "./baseentity.service";
-import { SurveyService, SurveyQuestionService } from "./";
+import { SurveyService, SurveyQuestionService } from ".";
 import { generatePin } from "../utils";
 
 export default class SurveyRunService extends BaseEntityService {

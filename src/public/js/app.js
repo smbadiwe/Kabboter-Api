@@ -9,12 +9,12 @@ function fadeOutLoader() {
 }
 
 function loadNavBar() {
-  const url = "/pages/navbar.component.html";
+  const url = "/pages/game/navbar.component.html";
   $("#myNavBar").load(url);
 }
 
 function loadGridFooter() {
-  const url = "/pages/gridfooter.component.html";
+  const url = "/pages/game/gridfooter.component.html";
   $("#gridFooter").load(url);
 }
 
@@ -122,3 +122,8 @@ const UserRoleOptions = {
   Moderator: 2,
   SuperAdmin: 3
 };
+
+// Turn off console logging in production
+if (window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1") {
+  console.log = function() {};
+}

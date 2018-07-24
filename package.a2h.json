@@ -8,8 +8,6 @@
     "bcrypt": "^2.0.1",
     "debug": "^3.1.0",
     "dotenv": "^6.0.0",
-    "from": "^0.1.7",
-    "import": "0.0.6",
     "jsonwebtoken": "^8.2.2",
     "knex": "^0.14.6",
     "koa": "^2.5.1",
@@ -27,13 +25,14 @@
     "mysql": "^2.15.0",
     "nodemailer": "^4.6.7",
     "nodemon": "^1.17.5",
+    "pusher": "^2.0.1",
     "socket.io": "^2.1.1",
     "upath": "^1.1.0",
     "validator": "^10.2.0"
   },
   "scripts": {
-    "start": "set DEBUG=Kabooter:* && node index.js",
-    "start-debug": "set DEBUG=Kabooter:* && npm start",
+    "start": "set DEBUG=LHGengage:* && node index.js",
+    "start-debug": "set DEBUG=LHGengage:* && npm start",
     "migrate-db": "knex migrate:latest --knexfile ./src/db/knexfile.js",
     "seed-db": "knex seed:run --knexfile ./src/db/knexfile.js",
     "load-db": "npm run migrate-db && npm run seed-db"

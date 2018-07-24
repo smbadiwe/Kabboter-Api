@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Quiz Player</title>
+    <title>LHGengage - Quiz Player</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/styles.css" type="text/css">
-    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
     <script src="/js/jquery.min.js"></script>
 </head>
 
@@ -85,7 +85,7 @@
                                 />
                             </div>
                             <div class="col-md-12">
-                                <a role="button" id="" onclick="startGamePlay(event);" href class="btn btn-brand px-5 py-2 btn-block">Play Game</a>
+                                <a role="button" onclick="startGamePlay(event, 'quiz');" href class="btn btn-brand px-5 py-2 btn-block">Play Game</a>
                                 <br />
                             </div>
                         </div>
@@ -114,7 +114,7 @@
             </div>
             <div id="youranswer" class="text-center" style="color: white; display: none;">
             </div>
-            <div id="optionsBox" class="row">
+            <div id="optionsBox" gameType="quiz" class="row">
                 <button id="option1" class="col-6 question d-flex align-items-center justify-content-center bg-blue text-white" disabled="disabled">
                     <h1 class="font-large">A</h1>
                 </button>
@@ -171,14 +171,10 @@
             </p>
         </div>
     </div>
+    <script src="../pusher-init.js"></script>
     <script src="../general.player.js"></script>
     <script src="../general.js"></script>
-    <script src="./quizplayer.ui.js"></script>
     <script src="./quizplayer.js"></script>
-    <script>
-    </script>
-    <script src="../assets/js/app.js"></script>
-    <!-- <script src="../assets/js/player.js"></script> -->
 
     <!-- Popper JS -->
     <script src="/js/popper.min.js"></script>

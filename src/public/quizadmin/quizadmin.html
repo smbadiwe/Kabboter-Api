@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Game App</title>
+    <title>LHGengage</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link href="/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/styles.css" type="text/css">
-    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
     <script src="/js/jquery.min.js"></script>
 </head>
 
@@ -31,7 +31,7 @@
                                 </select>
                             </div>
 
-                            <button class="btn btn-brand-light px-4 mt-2" onclick="startQuizAdmin(event);">Start Quiz</button>
+                            <button class="btn btn-brand-light px-4 mt-2" onclick="startGameAdmin(event, 'quiz');">Start Quiz</button>
                             <a role="button" href='javascript:history.go(-1);' class="btn mt-2">Cancel</a>
                         </form>
                     </div>
@@ -54,7 +54,7 @@
                     <div class="row mt-4">
                         <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1">
                             <div class="alert alert-warning text-center font-weight-bold">Visit
-                                <a href="../quizplayer/quizplayer.html">
+                                <a href="../quizplayer-pusher/quizplayer.html">
                                     <span id="playGameUrl" style="font-weight: bold;"></span>
                                 </a> to join the game and insert the code below
                                 <h1 class="font-weight-bold pt-3 text-dark" id="pin"></h1>
@@ -135,7 +135,7 @@
                                     <div id="scoreboard" style="display:none"></div>
                                     <div class="row mt-4">
                                         <div class="col-12">
-                                            <button id="loadQuestion" onclick='loadNextQuestion(event)' class="btn btn-lg btn-brand">Go to next question</button>
+                                            <button id="loadQuestion" onclick="loadNextQuestion(event, 'quiz')" class="btn btn-lg btn-brand">Go to next question</button>
                                             <button onclick="showAdminEndView('quiz')" class="btn btn-lg btn-danger">End game</button>
                                         </div>
                                     </div>
@@ -162,6 +162,7 @@
         </div>
     </div>
     <script src="../js/app.js"></script>
+    <script src="../pusher-init.js"></script>
     <script src="../general.js"></script>
     <script src="../general.admin.js"></script>
     <script src="./quizadmin.ui.js"></script>
@@ -169,8 +170,6 @@
     <script src="/js/popper.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
     <script src="/js/Chart.min.js"></script>
-    <script>
-    </script>
 </body>
 
 </html>

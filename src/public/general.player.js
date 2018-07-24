@@ -1,11 +1,29 @@
 (function(glob) {
   glob.GamePlayerData = {};
 })(this); // 'this' will be 'window' or 'module' or ... depending on the client
+
+/**
+ *
+ * @param {*} recordType 'quiz' or 'survey'
+ */
+function setupGeneralChannel(recordType) {
+  channel = pusher.subscribe(`${recordType}-player`);
+
+  channel.bind(`get-${recordType}run-info`, onGetPlayerGameRunInfo);
+
+  channel.bind("error", callbackOnGamePlayerError);
+
+  channel.bind("disconnect", function(reason) {
+    onPlayerDisconnect(reason, recordType);
+  });
+}
+
 /**
  * The method runs when a quiz or survey player clicks Start Game button after PIN is gotten.
  * @param {*} e The button event
+ * @param {*} game 'quiz' or 'survey'
  */
-function startGamePlay(e) {
+function startGamePlay(e, game) {
   e.preventDefault();
 
   const pin = $("#pin")
@@ -57,7 +75,37 @@ function startGamePlay(e) {
     phone: phone
   };
   console.log(playerInfo);
-  onGetPlayPin(playerInfo);
+  onGetPlayPin(playerInfo, game);
+}
+
+/**
+ * playerInfo = {
+        pin: pin,
+        username: username,
+        lastname: lastname,
+        firstname: firstname,
+        email: email,
+        phone: phone
+    };
+ * @param {*} playerInfo 
+ * @param {*} recordType 'quiz' or 'survey'
+ */
+function onGetPlayPin(playerInfo, recordType) {
+  $.ajax({
+    type: "POST",
+    url: `/api/user/${recordType}runs/authplayer`,
+    data: playerInfo,
+    error: function(error) {
+      alert(JSON.stringify(error));
+    },
+    success: function(gameInfo) {
+      localStorage.setItem("token", gameInfo.token);
+      gameChannel = pusher.subscribe(`${recordType}player-${gameInfo.userInfo.pin}`);
+      gameChannel.bind("receive-next-question", onPlayerReceiveNextQuestion);
+
+      onAuthSuccess(gameInfo, recordType);
+    }
+  });
 }
 
 //  data = { pin: pin }
@@ -70,7 +118,7 @@ function onGetPlayerGameRunInfo(data) {
   }
 }
 
-function onPlayerDisconnect(socket, reason, recordType) {
+function onPlayerDisconnect(reason, recordType) {
   console.log(recordType + " onPlayerDisconnect: reason - " + reason);
   GamePlayerData[recordType + "PlayerInfo"] = undefined;
   GamePlayerData[recordType + "question"] = undefined;
@@ -89,9 +137,9 @@ let answered = false;
 /**
  *
  * @param {*} question The question
- * @param {*} game Values: 'quiz' or 'survey'
  */
-function onPlayerReceiveNextQuestion(question, game) {
+function onPlayerReceiveNextQuestion(question) {
+  const game = question.recordType; //Values: 'quiz' or 'survey'
   // This is a question object as defined in the API doc.
   // Render fields on a page as you would like it. Depending, you may,
   // want to only render the answers. Whatever!
@@ -230,7 +278,9 @@ function submitAmswerChoice(event) {
     timeCount: timeCount,
     choice: choice
   };
-  submitAnswer(answerInfo);
+
+  const game = $("#optionsBox").attr("gameType");
+  submitAnswer(answerInfo, game);
 }
 
 /**
@@ -251,6 +301,7 @@ function onAuthSuccess(gameInfo, game) {
 
   GamePlayerData[game + "PlayerInfo"] = gameInfo.userInfo;
   GamePlayerData["moderator"] = gameInfo.moderator;
+
   showAnswerViewOnAuthSuccess(gameInfo);
 }
 
@@ -286,6 +337,52 @@ function showAnswerViewOnAuthSuccess(data) {
 function callbackOnGamePlayerError(errorMessage) {
   if (errorMessage === "Error: websocket error") errorMessage = "Player disconnected.";
   alert(errorMessage);
+}
+
+/**
+ * Submit answer to a quiz question via socket.
+ * Package the answerInfo object and pass it to this method. Do this when client clicks on an answer button.
+ * answerInfo should be a JSON with these keys:
+ * { timeCount: 2, choice: 1 }
+ * @param {*} answerInfo
+ */
+function submitAnswer(answerInfo, game) {
+  const gamePlayerInfo = GamePlayerData[`${game}PlayerInfo`];
+  const gamequestion = GamePlayerData[`${game}question`];
+  const answerToSubmit = {
+    userId: gamePlayerInfo.i,
+    pin: gamePlayerInfo.pin,
+    points: gamequestion.points,
+    choice: answerInfo.choice,
+    correct: true
+  };
+  answerToSubmit[`${game}QuestionId`] = gamequestion.id;
+  answerToSubmit[`${game}Id`] = gamequestion[`${game}Id`];
+  if (game === "quiz") {
+    answerToSubmit.correct = gamequestion.correctOptions.indexOf(answerInfo.choice) >= 0;
+  }
+  answerToSubmit.bonus = getBonus(
+    gamequestion.maxBonus,
+    gamequestion.timeLimit,
+    answerInfo.timeCount,
+    answerToSubmit.correct
+  );
+  $.ajax({
+    type: "POST",
+    url: `/api/user/${game}runs/submitanswer`,
+    data: answerToSubmit,
+    beforeSend: setAuthToken,
+    error: function(error) {
+      console.log(error);
+      alert(error);
+    },
+    success: function(feedback) {
+      console.log(feedback);
+      // If all went well, 'feedback' will just be a string saying "Submitted".
+      //TODO: You decide. You can clear input fields or reset data used for the just-submitted question.
+      GamePlayerData[`${game}question`] = undefined;
+    }
+  });
 }
 
 $(function() {

@@ -1,5 +1,5 @@
 import { BaseEntityService } from "./baseentity.service";
-import { QuizRunService, QuizQuestionService } from "./";
+import { QuizRunService, QuizQuestionService } from ".";
 import { RequestError } from "../utils/ValidationErrors";
 import log from "../utils/log";
 

@@ -1,5 +1,5 @@
 import { BaseEntityService } from "./baseentity.service";
-import { QuizService, QuizQuestionService, QuizAnswerService } from "./";
+import { QuizService, QuizQuestionService, QuizAnswerService } from ".";
 import { generatePin } from "../utils";
 import log from "../utils/log";
 import { RequestError, Required } from "../utils/ValidationErrors";
@@ -28,9 +28,9 @@ export default class QuizRunService extends BaseEntityService {
   async save(requestData) {
     const record = requestData.body;
     log.debug("Getting quiz by quizId");
-    const quiz = await new QuizService().getById(record.quizId);
+    const quiz = await new QuizService().getById(record.gameId);
     log.debug("Done getting quiz by quizId");
-    if (!quiz) throw new RequestError("Invalid quiz id");
+    if (!quiz) throw new RequestError("Invalid game id");
 
     let pin;
     let exist;
@@ -39,9 +39,9 @@ export default class QuizRunService extends BaseEntityService {
       exist = await this.getFirst({ pin: pin });
     } while (exist);
 
-    const totalQuestions = await new QuizQuestionService().getTotalQuizQuestions(record.quizId);
+    const totalQuestions = await new QuizQuestionService().getTotalQuizQuestions(record.gameId);
     const quizRun = {
-      quizId: record.quizId,
+      quizId: record.gameId,
       quiztitle: quiz.title,
       quizdescription: quiz.description,
       pin: pin,
@@ -58,7 +58,7 @@ export default class QuizRunService extends BaseEntityService {
 
     return {
       gameRunId: res,
-      gameId: record.quizId,
+      gameId: record.gameId,
       gametitle: quiz.title,
       gamedescription: quiz.description,
       pin: pin,

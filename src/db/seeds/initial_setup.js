@@ -1,6 +1,6 @@
 import { getRoutesRequiringAuthorization } from "../../routes";
 import Enums from "../../services/enums";
-import { hashSync, genSaltSync } from "bcrypt";
+import { hashSync, genSaltSync } from "../bcrypt";
 
 export async function seed(knex) {
   // Deletes ALL existing entries

@@ -1,5 +1,5 @@
 import { BaseEntityService } from "./baseentity.service";
-import { QuizQuestionService, QuizRunService } from "./";
+import { QuizQuestionService, QuizRunService } from ".";
 import Enums from "./enums";
 import log from "../utils/log";
 import { RequestError } from "../utils/ValidationErrors";

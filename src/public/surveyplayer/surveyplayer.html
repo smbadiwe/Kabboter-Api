@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Vote Player</title>
+    <title>LHGengage - Vote Player</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/styles.css" type="text/css">
@@ -85,7 +85,7 @@
                                 />
                             </div>
                             <div class="col-md-12">
-                                <a role="button" id="" onclick="startGamePlay(event);" href class="btn btn-brand px-5 py-2 btn-block">Play Game</a>
+                                <a role="button" onclick="startGamePlay(event, 'survey');" href class="btn btn-brand px-5 py-2 btn-block">Play Game</a>
                                 <br />
                             </div>
                         </div>
@@ -113,7 +113,7 @@
             </div>
             <div id="youranswer" class="text-center" style="color: white; display: none;">
             </div>
-            <div id="optionsBox" class="row">
+            <div id="optionsBox" gameType="survey" class="row">
                 <button id="option1" class="col-6 question d-flex align-items-center justify-content-center bg-blue text-white" disabled="disabled">
                     <h1 class="font-large">A</h1>
                 </button>
@@ -166,9 +166,7 @@
     </div>
     <script src="../general.player.js"></script>
     <script src="../general.js"></script>
-    <script src="./surveyplayer.ui.js"></script>
     <script src="./surveyplayer.js"></script>
-    <script src="../assets/js/app.js"></script>
     <script src="/js/popper.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
 </body>
