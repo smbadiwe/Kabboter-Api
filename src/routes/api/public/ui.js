@@ -50,11 +50,35 @@ router.get("/register", function(ctx) {
 });
 
 router.get("/playquiz", ctx => {
-  ctx.redirect("/quizplayer/quizplayer.html");
+  if (process.env.USE_SOCKET_IO === "true") {
+    ctx.redirect("/socketio/quizplayer/quizplayer.html");
+  } else {
+    ctx.redirect("/pusher/quizplayer/quizplayer.html");
+  }
 });
 
 router.get("/playvote", ctx => {
-  ctx.redirect("/surveyplayer/surveyplayer.html");
+  if (process.env.USE_SOCKET_IO === "true") {
+    ctx.redirect("/socketio/surveyplayer/surveyplayer.html");
+  } else {
+    ctx.redirect("/pusher/surveyplayer/surveyplayer.html");
+  }
+});
+
+router.get("/moderatequiz", ctx => {
+  if (process.env.USE_SOCKET_IO === "true") {
+    ctx.redirect("/socketio/quizadmin/quizadmin.html" + ctx.request.search);
+  } else {
+    ctx.redirect("/pusher/quizadmin/quizadmin.html" + ctx.request.search);
+  }
+});
+
+router.get("/moderatevote", ctx => {
+  if (process.env.USE_SOCKET_IO === "true") {
+    ctx.redirect("/socketio/surveyadmin/surveyadmin.html" + ctx.request.search);
+  } else {
+    ctx.redirect("/pusher/surveyadmin/surveyadmin.html" + ctx.request.search);
+  }
 });
 
 // Don't change this to ES6 style. We use 'require' to auto-register routes

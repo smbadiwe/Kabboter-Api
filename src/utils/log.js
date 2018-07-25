@@ -1,5 +1,4 @@
 import debug from "debug";
-import util from "util";
 
 const debug_ = debug(`${process.env.APP_NAME}:debug`);
 debug_.log = console.log.bind(console);

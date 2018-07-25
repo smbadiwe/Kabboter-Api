@@ -1,6 +1,6 @@
-import { validateInteger, RequestError } from "../utils/ValidationErrors";
-import log from "../utils/log";
-import { UserService, QuizRunService, SurveyRunService } from ".";
+import { validateInteger, RequestError } from "../../utils/ValidationErrors";
+import log from "../../utils/log";
+import { UserService, QuizRunService, SurveyRunService } from "../";
 import { sign } from "jsonwebtoken";
 
 log.setNamespace("socketutils");

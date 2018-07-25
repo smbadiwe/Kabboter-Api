@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>LHGengage - Vote Player</title>
+    <title>Quiz Player</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/styles.css" type="text/css">
@@ -24,7 +24,7 @@
             <div class="container mt-2">
                 <div class="row">
                     <div class="col-lg-8 offset-lg-2 my-card bg-white pt-2 px-5">
-                        <h3 class="font-bold text-center text-secondary">Answer Vote</h3>
+                        <h3 class="font-bold text-center text-secondary">Answer Quiz</h3>
                         <div class="mt-4">
                             <div class="mt-4 row text-center">
                                 <div class="col-md-6">
@@ -55,11 +55,11 @@
                         <hr>
                         <div class="mt-4">
                             <div class="form-group pt-3">
-                                <input type="text" class="form-control" id="firstname" placeholder="Enter your First Name" required="required" style="text-align:center;"
-                                />
+                                <input type="text" class="form-control" id="firstname" placeholder="Enter your first name (required)" required="required"
+                                    style="text-align:center;" />
                             </div>
                             <div class="form-group pt-3">
-                                <input type="text" class="form-control" id="lastname" placeholder="Enter your Last name" required="required" style="text-align:center;"
+                                <input type="text" class="form-control" id="lastname" placeholder="Enter your last name (required)" required="required" style="text-align:center;"
                                 />
                             </div>
                             <div class="form-group pt-3">
@@ -85,7 +85,7 @@
                                 />
                             </div>
                             <div class="col-md-12">
-                                <a role="button" onclick="startGamePlay(event, 'survey');" href class="btn btn-brand px-5 py-2 btn-block">Play Game</a>
+                                <a role="button" id="" onclick="startGamePlay(event);" href class="btn btn-brand px-5 py-2 btn-block">Play Game</a>
                                 <br />
                             </div>
                         </div>
@@ -100,7 +100,8 @@
                 <strong>Question
                     <span id="gamenum">0</span>
                 </strong> of
-                <span id="gametotal"></span>:
+                <span id="gametotal"></span>:&nbsp; [
+                <span id="qnPoints">0</span> points]
                 <span id="question"></span>
             </div>
             <div id="timekeeper" class="text-center" style="color: white; font-size:x-large; display:none">
@@ -113,7 +114,7 @@
             </div>
             <div id="youranswer" class="text-center" style="color: white; display: none;">
             </div>
-            <div id="optionsBox" gameType="survey" class="row">
+            <div id="optionsBox" gameType="quiz" class="row">
                 <button id="option1" class="col-6 question d-flex align-items-center justify-content-center bg-blue text-white" disabled="disabled">
                     <h1 class="font-large">A</h1>
                 </button>
@@ -130,6 +131,11 @@
             <div id="timeoutBox" class="row mt-4 my-card bg-white py-4" style="color: red; display: none;">
                 <div class="col-md-6 offset-md-3 col-sm-2 offset-sm-8 text-center mt-3">
                     <h1 class="mt-4">Your time is up!</h1>
+                    <h3> Correct Answer:
+                        <b>
+                            <span id="theAns"></span>
+                        </b>
+                    </h3>
                 </div>
             </div>
             <div class="text-center" style="color: white">
@@ -147,6 +153,7 @@
             <div class="container mt-5">
                 <div class="text-center" style="color: white">
                     <h1 id="feedbackText" class="font-weight-light text-brand-light">Welldone! Wait for the Next question to be announced</h1>
+
                     <div class="text-center">
                         <button onclick="reloadPage()" class="btn btn-default font-small">Play another game</button>
                         <a href="/" role="button" class="btn btn-danger font-small">Exit</a>
@@ -166,8 +173,17 @@
     </div>
     <script src="../general.player.js"></script>
     <script src="../general.js"></script>
-    <script src="./surveyplayer.js"></script>
+    <script src="./quizplayer.ui.js"></script>
+    <script src="./quizplayer.js"></script>
+    <script>
+    </script>
+    <script src="../assets/js/app.js"></script>
+    <!-- <script src="../assets/js/player.js"></script> -->
+
+    <!-- Popper JS -->
     <script src="/js/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
     <script src="/js/bootstrap.min.js"></script>
 </body>
 

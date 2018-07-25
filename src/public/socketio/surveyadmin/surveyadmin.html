@@ -5,12 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>LHGengage</title>
+    <title>Game App</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link href="/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/styles.css" type="text/css">
-    <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="/js/jquery.min.js"></script>
 </head>
 
@@ -19,19 +18,19 @@
         <div id="myNavBar"> </div>
         <div id='step1'>
             <div class="container mt-2">
-                <h1 class="font-weight-light text-center text-secondary">Select Quiz</h1>
+                <h1 class="font-weight-light text-center text-secondary">Select Vote</h1>
                 <div class="row mt-2">
                     <div class="col-md-8 offset-md-2 my-card p-5">
                         <div id="result" class="alert alert-danger" style="display: none"></div>
                         <form>
                             <div class="form-group">
-                                <label>Select Quiz</label>
-                                <select type="se" id="gamelist" class="form-control">
+                                <label>Select Vote</label>
+                                <select id="gamelist" class="form-control">
 
                                 </select>
                             </div>
 
-                            <button class="btn btn-brand-light px-4 mt-2" onclick="startGameAdmin(event, 'quiz');">Start Quiz</button>
+                            <button class="btn btn-brand-light px-4 mt-2" onclick="startGameAdmin(event, 'survey');">Start Vote</button>
                             <a role="button" href='javascript:history.go(-1);' class="btn mt-2">Cancel</a>
                         </form>
                     </div>
@@ -54,7 +53,7 @@
                     <div class="row mt-4">
                         <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1">
                             <div class="alert alert-warning text-center font-weight-bold">Visit
-                                <a href="../quizplayer-pusher/quizplayer.html">
+                                <a href="../surveyplayer/surveyplayer.html">
                                     <span id="playGameUrl" style="font-weight: bold;"></span>
                                 </a> to join the game and insert the code below
                                 <h1 class="font-weight-bold pt-3 text-dark" id="pin"></h1>
@@ -135,8 +134,8 @@
                                     <div id="scoreboard" style="display:none"></div>
                                     <div class="row mt-4">
                                         <div class="col-12">
-                                            <button id="loadQuestion" onclick="loadNextQuestion(event, 'quiz')" class="btn btn-lg btn-brand">Go to next question</button>
-                                            <button onclick="showAdminEndView('quiz')" class="btn btn-lg btn-danger">End game</button>
+                                            <button id="loadQuestion" onclick="loadNextQuestion(event, 'survey')" class="btn btn-lg btn-brand">Go to next question</button>
+                                            <button onclick="showAdminEndView('survey')" class="btn btn-lg btn-danger">End Vote</button>
                                         </div>
                                     </div>
                                 </div>
@@ -150,26 +149,26 @@
         <div id="end" style="display:none">
             <div class="container mt-2">
                 <div class="text-center" style="margin-top: 70px;">
-                    <h2 class="font-weight-light text-brand-light">That's all! Thank you for participating.</h2>
-                    <div id="topscores" style="display:none"></div>
+                    <h1 class="font-weight-light text-brand-light">That's all! Thank you for participating.</h1>
                     <div class="text-center">
-                        <button onclick="reloadPage()" style="margin: 10px;" class="btn btn-lg btn-brand">Play another game</button>
-                        <button onclick="getTopScores()" style="margin: 10px;" class="btn btn-lg btn-success">Show top scores</button>
-                        <button onclick="endGame('quiz')" style="margin: 10px;" class="btn btn-lg btn-danger">End game</button>
+                        <button onclick="reloadPage()" style="margin: 10px;" class="btn btn-lg btn-brand">Call for another vote</button>
+                        <button onclick="endGame('survey')" style="margin: 10px;" class="btn btn-lg btn-danger">End Vote</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <script src="../js/app.js"></script>
-    <script src="../pusher-init.js"></script>
     <script src="../general.js"></script>
+    <script src="../../general.admin.js"></script>
     <script src="../general.admin.js"></script>
-    <script src="./quizadmin.ui.js"></script>
-    <script src="./quizadmin.js"></script>
+    <script src="./surveyadmin.ui.js"></script>
+    <script src="./surveyadmin.js"></script>
     <script src="/js/popper.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
     <script src="/js/Chart.min.js"></script>
+    <script>
+    </script>
 </body>
 
 </html>

@@ -48,7 +48,7 @@ function loadGameDetailsPageData(recordType) {
       if (data.published) {
         const quizOrSurvey = isQuiz ? "quiz" : "survey";
         $("#actionDiv").html(`
-                          <a role="button" href='/${quizOrSurvey}admin/${quizOrSurvey}admin.html?id=${
+                          <a role="button" href='/moderate${quizOrSurvey}?id=${
           data.id
         }' style="float: center;" class="btn btn-success btn-inline">Launch ${quizOrVote}</a>
                           <a role="button" href='' style="float: center;" onclick="setupGame('unpublish', '${recordType}');" class="btn btn-brand-light btn-inline">Unpublish ${quizOrVote}</a>
