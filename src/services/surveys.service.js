@@ -182,9 +182,6 @@ export default class SurveyService extends BaseEntityService {
         "creditResources"
       );
     if (surveys) {
-      log.debug("surveys from db");
-      log.debug(surveys);
-
       if (doNotGetQuestions) {
         return surveys;
       }
@@ -218,8 +215,6 @@ export default class SurveyService extends BaseEntityService {
       for (const qn in surveysDict) {
         surveys.push(surveysDict[qn]);
       }
-      log.debug("surveys with their questions");
-      log.debug(surveys);
       return surveys;
     }
 

@@ -34,35 +34,6 @@ function onGetPlayPin(playerInfo) {
 }
 
 /**
- * Submit answer to a quiz question via socket.
- * TODO: package the answerInfo object and pass it to this method. Do this when client clicks on an answer button.
- * answerInfo should be a JSON with these keys:
- * { timeCount: 2, choice: 1 }
- * @param {*} answerInfo
- */
-function submitAnswer(answerInfo) {
-  const quizPlayerInfo = GamePlayerData["quizPlayerInfo"];
-  const quizquestion = GamePlayerData["quizquestion"];
-  const isCorrect = quizquestion.correctOptions.indexOf(answerInfo.choice) >= 0;
-  const answerToSubmit = {
-    userId: quizPlayerInfo.i,
-    pin: quizPlayerInfo.pin,
-    quizId: quizquestion.quizId,
-    quizQuestionId: quizquestion.id,
-    points: quizquestion.points,
-    choice: answerInfo.choice,
-    correct: isCorrect
-  };
-  answerToSubmit.bonus = getBonus(
-    quizquestion.maxBonus,
-    quizquestion.timeLimit,
-    answerInfo.timeCount,
-    isCorrect
-  );
-  socket.emit("submit-answer", answerToSubmit, callbackOnGamePlayerError);
-}
-
-/**
  * Calculate the bonus score to award player when answer is correct.
  * @param {*} maxBonus Max bonus to be awarded a player for answering correctly.
  * @param {*} maxTimeCount Max time count alloted to question. It's usually in seconds.
@@ -91,9 +62,11 @@ function getBonus(maxBonus, maxTimeCount, timeCount, answeredCorrectly) {
   return Math.ceil(bonus);
 }
 
-socket.on("receive-next-question", onPlayerReceiveNextQuestion);
-
-socket.on("answer-submitted", onAnswerSubmitted);
+// DO NOT change the signature of this method. It needs to be in sync with
+// what is called in /general.player.js | 256 or thereabout
+function submitAnswer(answerToSubmit, game) {
+  socket.emit("submit-answer", answerToSubmit, callbackOnGamePlayerError);
+}
 
 socket.on("get-quizrun-info", onGetPlayerGameRunInfo);
 
@@ -104,5 +77,9 @@ socket.on("disconnect", function(reason) {
 });
 
 socket.on("auth-success", function(gameInfo) {
+  socket.on("receive-next-question", onPlayerReceiveNextQuestion);
+
+  socket.on("answer-submitted", onAnswerSubmitted);
+
   onAuthSuccess(gameInfo, "quiz");
 });

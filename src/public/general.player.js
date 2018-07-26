@@ -91,7 +91,7 @@ function onPlayerReceiveNextQuestion(question) {
   // This is a question object as defined in the API doc.
   // Render fields on a page as you would like it. Depending, you may,
   // want to only render the answers. Whatever!
-  console.log("onPlayerReceiveNextQuestion. " + game + "question = ");
+  console.log(`onPlayerReceiveNextQuestion. ${game}question = `);
   console.log(question);
   if (question) {
     try {
@@ -228,8 +228,32 @@ function submitAmswerChoice(event) {
   };
 
   const game = $("#optionsBox").attr("gameType");
+
+  const gamePlayerInfo = GamePlayerData[`${game}PlayerInfo`];
+  const gamequestion = GamePlayerData[`${game}question`];
+  const answerToSubmit = {
+    userId: gamePlayerInfo.i,
+    pin: gamePlayerInfo.pin,
+    points: gamequestion.points,
+    choice: answerInfo.choice,
+    correct: true
+  };
+  answerToSubmit[`${game}QuestionId`] = gamequestion.id;
+  answerToSubmit[`${game}Id`] = gamequestion[`${game}Id`];
+  if (game === "quiz") {
+    answerToSubmit.correct = gamequestion.correctOptions.indexOf(answerInfo.choice) >= 0;
+  }
+
   // This method has different implementations, depending on whether we're using pusher or socket.io
-  submitAnswer(answerInfo, game);
+  answerToSubmit.bonus = getBonus(
+    gamequestion.maxBonus,
+    gamequestion.timeLimit,
+    answerInfo.timeCount,
+    answerToSubmit.correct
+  );
+
+  // This method has different implementations, depending on whether we're using pusher or socket.io
+  submitAnswer(answerToSubmit, game);
 }
 
 /**

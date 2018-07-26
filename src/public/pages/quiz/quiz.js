@@ -159,7 +159,7 @@ function loadData(page = 1) {
         const sno = data.pagination.from + key;
 
         let btnLink = val.published
-          ? `<a href="/quizadmin/quizadmin.html?id=${
+          ? `<a href="/moderatequiz?id=${
               val.id
             }" class="btn btn-success btn-block btn-sm">Play game</a>`
           : `<a href="details.html?id=${

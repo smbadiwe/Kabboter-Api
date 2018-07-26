@@ -2,6 +2,7 @@ import { validateInteger, RequestError } from "../../utils/ValidationErrors";
 import log from "../../utils/log";
 import { UserService, QuizRunService, SurveyRunService } from "../";
 import { sign } from "jsonwebtoken";
+import pusher from "./pusher-setup";
 
 log.setNamespace("socketutils");
 
@@ -80,11 +81,10 @@ function leaveRoom(socket, recordType) {
 
 /**
  *
- * @param {*} pusher
  * @param {*} userInfo { pin: pin, ...userInfo }
  * @param {*} recordType
  */
-function tellAdminThatSomeoneJustJoined(pusher, userInfo, recordType) {
+function tellAdminThatSomeoneJustJoined(userInfo, recordType) {
   // query players channel
   const playerChannel = `${recordType}player-${userInfo.pin}`;
   log.debug("Querying pusher for num of subscriptions in %s", playerChannel);
@@ -124,20 +124,6 @@ export function validateAnswerProps(data, recordType) {
   }
 }
 
-export function validateQuizAnswerProps(data) {
-  validateInteger(data.quizId, "quizId", true);
-  validateInteger(data.quizQuestionId, "quizQuestionId", true);
-  validateInteger(data.userId, "userId", true);
-  validateInteger(data.points, "points");
-  validateInteger(data.bonus, "bonus");
-}
-
-export function validateSurveyAnswerProps(data) {
-  validateInteger(data.surveyId, "surveyId", true);
-  validateInteger(data.surveyQuestionId, "surveyQuestionId", true);
-  validateInteger(data.userId, "userId", true);
-}
-
 /**
  *
  * @param {*} pin
@@ -150,10 +136,9 @@ export function getRoomNo(pin, recordType) {
 /**
  *
  * @param {*} data  data = { pin: pin, totalQuestions: totalQuestions, userInfo: userInfo }; // userInfo as provided during login
- * @param {*} pusher
  * @param {*} recordType 'quiz' or 'survey'
  */
-export async function authenticateGameAdmin(data, pusher, recordType) {
+export async function authenticateGameAdmin(data, recordType) {
   // data.userInfo eg. = {i: 1, u: "djt", f: "Donald", l: "Trump", r: "Super Admin"}
   if (!data || !data.userInfo || !data.userInfo.i)
     throw new RequestError(
@@ -191,7 +176,7 @@ export async function authenticateGameAdmin(data, pusher, recordType) {
  * @param {*} recordType 'quiz' or 'survey'
  * @param {*} onError callback from client on error occurring
  */
-export async function authenticateGamePlayer(pusher, data, recordType) {
+export async function authenticateGamePlayer(data, recordType) {
   if (!data.pin) throw new RequestError("No game code received.");
   let gameRunInfo =
     recordType === "quiz"
@@ -239,7 +224,7 @@ export async function authenticateGamePlayer(pusher, data, recordType) {
   // socket.authenticated = true;
 
   // Tell admin someone just connected
-  tellAdminThatSomeoneJustJoined(pusher, userInfo, recordType);
+  tellAdminThatSomeoneJustJoined(userInfo, recordType);
   log.debug(
     "authenticated OK for player socket - ID %s. Admin informed of new arrival",
     "[socket-id]"
@@ -267,7 +252,7 @@ export async function authenticateGamePlayer(pusher, data, recordType) {
   };
 }
 
-export async function onPlayerSubmitAnswer(pusher, data, answerService, recordType) {
+export async function onPlayerSubmitAnswer(data, answerService, recordType) {
   validateAnswerProps(data, recordType);
   await answerService.save(data);
   // Tell admin that someone just submitted answer
@@ -279,20 +264,18 @@ export async function onPlayerSubmitAnswer(pusher, data, answerService, recordTy
 }
 
 export function onPlayerDisconnect(socket, adminIO, recordType) {
-  if (socket.roomNo) leaveRoom(socket, recordType);
-
-  adminIO.emit("someone-just-left", socket.user);
-  log.debug("user %s: $o disconnected", socket.id, socket.user);
+  // if (socket.roomNo) leaveRoom(socket, recordType);
+  // adminIO.emit("someone-just-left", socket.user);
+  // log.debug("user %s: $o disconnected", socket.id, socket.user);
 }
 
 /**
  *
- * @param {*} pusher
  * @param {*} data
  * @param {*} questionService
  * @param {*} recordType 'quiz' or 'survey'
  */
-export async function getQuestion(pusher, data, questionService, recordType) {
+export async function getQuestion(data, questionService, recordType) {
   // data: {
   //   gameRunInfo: gameRunInfo,
   //   answeredQuestionIds: answeredQuestionIds
@@ -305,13 +288,14 @@ export async function getQuestion(pusher, data, questionService, recordType) {
   );
   if (question) {
     question.Number = !answeredQuestionIds ? 1 : answeredQuestionIds.length + 1;
+    question.recordType = recordType;
   }
   // send question to both moderators and players
   //NB: We could have sent to players by socket and to this admin as HTTP POST result;
   // but since we can't guarantee they will arrive at (about) the same time, we send everything
   // through sockets.
   log.debug(`send %s question to both moderators and players. data = %o`, recordType, question);
-  question.recordType = recordType;
+
   pusher.trigger(
     [`${recordType}admin-${data.gameRunInfo.pin}`, `${recordType}player-${data.gameRunInfo.pin}`],
     "receive-next-question",

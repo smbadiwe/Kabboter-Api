@@ -1,12 +1,11 @@
 import compose from "koa-compose";
-import helmet from "../../../../Users/SuperUser/AppData/Local/Microsoft/TypeScript/2.9/node_modules/@types/koa-helmet";
-import logger from "../../../../Users/SuperUser/AppData/Local/Microsoft/TypeScript/2.9/node_modules/@types/koa-logger";
+import helmet from "koa-helmet";
+import logger from "koa-logger";
 import cors from "koa-cors";
 import convert from "koa-convert";
-import bodyParser from "../../../../Users/SuperUser/AppData/Local/Microsoft/TypeScript/2.9/node_modules/@types/koa-bodyparser";
+import bodyParser from "koa-bodyparser";
 import log from "./utils/log";
-import { verify } from "../../../../Users/SuperUser/AppData/Local/Microsoft/TypeScript/2.9/node_modules/@types/jsonwebtoken";
-import { decode } from "punycode";
+import { verify } from "jsonwebtoken";
 
 function corsConfig() {
   const accessControlMaxAge = "1200";

@@ -1,6 +1,14 @@
 import { validateInteger, RequestError } from "../../utils/ValidationErrors";
 import log from "../../utils/log";
-import { UserService, QuizRunService, SurveyRunService } from "../";
+import {
+  UserService,
+  QuizRunService,
+  QuizQuestionService,
+  QuizAnswerService,
+  SurveyRunService,
+  SurveyQuestionService,
+  SurveyAnswerService
+} from "../";
 
 log.setNamespace("socketutils");
 
@@ -142,18 +150,17 @@ export function tellAdminThatSomeoneJustJoined(adminIO, playerIO, userInfo, room
   }
 }
 
-export function validateQuizAnswerProps(data) {
-  validateInteger(data.quizId, "quizId", true);
-  validateInteger(data.quizQuestionId, "quizQuestionId", true);
-  validateInteger(data.points, "points");
+export function validateAnswerProps(data, recordType) {
+  const id = `${recordType}Id`;
+  validateInteger(data[id], id, true);
+  const qnid = `${recordType}QuestionId`;
+  validateInteger(data[qnid], qnid, true);
   validateInteger(data.userId, "userId", true);
-  validateInteger(data.bonus, "bonus");
-}
-
-export function validateSurveyAnswerProps(data) {
-  validateInteger(data.surveyId, "surveyId", true);
-  validateInteger(data.surveyQuestionId, "surveyQuestionId", true);
-  validateInteger(data.userId, "userId", true);
+  if (recordType === "quiz") {
+    validateInteger(data.points, "points");
+    validateInteger(data.bonus, "bonus");
+    data.correct = data.correct === "true";
+  }
 }
 
 /**
@@ -202,6 +209,27 @@ export async function authenticateGameAdmin(data, socket, playerIO, recordType, 
     );
     // Send player the PIN [pin]
     playerIO.emit(`get-${recordType}run-info`, { pin: data.pin });
+
+    // data = { quizRunId: 2, pin: pin, quizId: 3 }
+    socket.on("get-next-question", async (data2, answeredQuestionIds, onError2) => {
+      await getQuestion(
+        socket,
+        data2,
+        answeredQuestionIds,
+        playerIO,
+        recordType === "quiz" ? new QuizQuestionService() : new SurveyQuestionService(),
+        recordType,
+        onError2
+      );
+    });
+
+    socket.on("end-game", () => {
+      try {
+        // Object.keys(quizPlayerIO.sockets.sockets).forEach(function(s) {
+        //   quizPlayerIO.sockets.sockets[s].disconnect(true);
+        // });
+      } catch (e) {}
+    });
   } catch (e) {
     log.error(
       "Server Socket: Error on %s 'authenticate' for socket %s: %s",
@@ -209,6 +237,31 @@ export async function authenticateGameAdmin(data, socket, playerIO, recordType, 
       socket.id,
       e.message
     );
+    if (onError) {
+      onError(e.message);
+    }
+  }
+}
+
+export async function onPlayerSubmitAnswer(
+  socket,
+  data,
+  answerService,
+  adminIO,
+  recordType,
+  onError
+) {
+  try {
+    log.debug("Player submit-answer being called");
+    validateAnswerProps(data, recordType);
+    await answerService.save(data);
+    adminIO.emit("player-sumbitted-answer", {
+      questionId: data[`${recordType}QuestionId`],
+      choice: data.choice
+    });
+    socket.emit("answer-submitted", "Submitted");
+  } catch (e) {
+    log.error("Server Socket: Error on 'submit-answer' for socket %s: %s", socket.id, e.message);
     if (onError) {
       onError(e.message);
     }
@@ -318,6 +371,18 @@ export async function authenticateGamePlayer(data, socket, playerIO, adminIO, re
         "authenticated OK for player socket - ID %s. Admin informed of new arrival",
         socket.id
       );
+
+      // { pin: 'w323', userId: 3, quizQuestionId: 2, choice: 1, correct: true, bonus: 4, points: 12 }
+      socket.on("submit-answer", async (data2, onError2) => {
+        await onPlayerSubmitAnswer(
+          socket,
+          data2,
+          recordType === "quiz" ? new QuizAnswerService() : new SurveyAnswerService(),
+          adminIO,
+          recordType,
+          onError2
+        );
+      });
     } else {
       log.debug(
         "Auth failure - invalid game code from player socket - ID %s. Disconnecting socket...",
@@ -374,14 +439,15 @@ export async function getQuestion(
     );
     if (question) {
       question.Number = !answeredQuestionIds ? 1 : answeredQuestionIds.length + 1;
+      question.recordType = recordType;
     }
     // send question to both moderators and players
     log.debug(`send %s question to both moderators and players. data = %o`, recordType, question);
-    socket.emit("receive-next-question", question, recordType);
+    socket.emit("receive-next-question", question);
     // TODO: Look into this issue of not broadcasting to room.
     // const roomNo = getRoomNo(data.pin, recordType);
     // playerIO.in(roomNo).emit("receive-next-question", question, recordType);
-    playerIO.emit("receive-next-question", question, recordType);
+    playerIO.emit("receive-next-question", question);
   } catch (e) {
     log.error(
       "Server Socket: %s Error on 'get-next-question' for socket %s: %s",

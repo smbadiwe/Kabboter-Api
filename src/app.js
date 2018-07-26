@@ -3,7 +3,7 @@ import KeyGrip from "keygrip";
 import log from "./utils/log";
 import middleware from "./middleware";
 import routes from "./routes";
-import serve from "../../../../Users/SuperUser/AppData/Local/Microsoft/TypeScript/2.9/node_modules/@types/koa-static";
+import serve from "koa-static";
 
 const app = new Koa();
 

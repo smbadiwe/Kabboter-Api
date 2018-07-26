@@ -5,17 +5,17 @@ const app = require("./app");
 const http = require("http");
 
 const server = http.createServer(app.callback());
-
 if (process.env.USE_SOCKET_IO === "true") {
-  const socketio = require("socket.io");
-  const io = socketio(server);
+  // init socket
+  const SocketServer = require("socket.io");
+  //import Server from "socket.io";
+  const io = SocketServer(server);
 
-  const socketSetup = require("./services/socketio/socketsetup");
-  socketSetup.setupQuizSockets(io);
-  socketSetup.setupSurveySockets(io);
+  const setupSocketIO = require("./services/socketio/socketio-setup");
+  setupSocketIO(io, "quiz");
+  setupSocketIO(io, "survey");
 }
-
-const PORT = process.env.PORT || 3000;
+const PORT = +process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Server running on ${PORT}`);
 });

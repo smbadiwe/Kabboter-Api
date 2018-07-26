@@ -34,28 +34,6 @@ function onGetPlayPin(playerInfo) {
 }
 
 /**
- * Submit answer to a survey question via socket.
- * TODO: package the answerInfo object and pass it to this method. Do this when client clicks on an answer button.
- * answerInfo should be a JSON with these keys:
- * { timeCount: 2, choice: 1 }
- * @param {*} answerInfo
- */
-function submitAnswer(answerInfo) {
-  const surveyPlayerInfo = GamePlayerData["surveyPlayerInfo"];
-  const surveyquestion = GamePlayerData["surveyquestion"];
-
-  const answerToSubmit = {
-    userId: surveyPlayerInfo.i,
-    pin: surveyPlayerInfo.pin,
-    surveyId: surveyquestion.surveyId,
-    surveyQuestionId: surveyquestion.id,
-    choice: answerInfo.choice
-  };
-  answerToSubmit.bonus = getBonus(0, surveyquestion.timeLimit, answerInfo.timeCount, true);
-  socket.emit("submit-answer", answerToSubmit, callbackOnGamePlayerError);
-}
-
-/**
  * Calculate the bonus score to award player when answer is correct.
  * @param {*} maxBonus Max bonus to be awarded a player for answering correctly.
  * @param {*} maxTimeCount Max time count alloted to question. It's usually in seconds.
@@ -84,9 +62,11 @@ function getBonus(maxBonus, maxTimeCount, timeCount, answeredCorrectly = true) {
   return Math.ceil(bonus);
 }
 
-socket.on("receive-next-question", onPlayerReceiveNextQuestion);
-
-socket.on("answer-submitted", onAnswerSubmitted);
+// DO NOT change the signature of this method. It needs to be in sync with
+// what is called in /general.player.js | 256 or thereabout
+function submitAnswer(answerToSubmit, game) {
+  socket.emit("submit-answer", answerToSubmit, callbackOnGamePlayerError);
+}
 
 socket.on("get-surveyrun-info", onGetPlayerGameRunInfo);
 
@@ -97,5 +77,9 @@ socket.on("disconnect", function(reason) {
 });
 
 socket.on("auth-success", function(gameInfo) {
+  socket.on("receive-next-question", onPlayerReceiveNextQuestion);
+
+  socket.on("answer-submitted", onAnswerSubmitted);
+
   onAuthSuccess(gameInfo, "survey");
 });

@@ -137,7 +137,7 @@ function loadData(page = 1) {
       var rows = "";
       $.each(data.data, function(key, val) {
         let btnLink = val.published
-          ? `<a href="/surveyadmin/surveyadmin.html?id=${
+          ? `<a href="/moderatevote?id=${
               val.id
             }" class="btn btn-success btn-block btn-sm">Play game</a>`
           : `<a href="details.html?id=${

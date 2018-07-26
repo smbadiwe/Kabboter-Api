@@ -2,7 +2,6 @@ import Router from "koa-router";
 import { SurveyRunService, SurveyAnswerService, SurveyQuestionService } from "../../services";
 import { validateSurveyRunProps } from "./surveyruns.validate";
 import * as pusherServices from "../../services/pusher/socketutils.pusher";
-import pusher from "../../services/pusher/pusher-setup";
 
 const router = new Router({ prefix: "/api/user/surveyruns" });
 

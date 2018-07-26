@@ -66,27 +66,7 @@ function onPlayerDisconnect(reason, recordType) {
  * { timeCount: 2, choice: 1 }
  * @param {*} answerInfo
  */
-function submitAnswer(answerInfo, game) {
-  const gamePlayerInfo = GamePlayerData[`${game}PlayerInfo`];
-  const gamequestion = GamePlayerData[`${game}question`];
-  const answerToSubmit = {
-    userId: gamePlayerInfo.i,
-    pin: gamePlayerInfo.pin,
-    points: gamequestion.points,
-    choice: answerInfo.choice,
-    correct: true
-  };
-  answerToSubmit[`${game}QuestionId`] = gamequestion.id;
-  answerToSubmit[`${game}Id`] = gamequestion[`${game}Id`];
-  if (game === "quiz") {
-    answerToSubmit.correct = gamequestion.correctOptions.indexOf(answerInfo.choice) >= 0;
-  }
-  answerToSubmit.bonus = getBonus(
-    gamequestion.maxBonus,
-    gamequestion.timeLimit,
-    answerInfo.timeCount,
-    answerToSubmit.correct
-  );
+function submitAnswer(answerToSubmit, game) {
   $.ajax({
     type: "POST",
     url: `/api/user/${game}runs/submitanswer`,

@@ -193,9 +193,6 @@ export default class QuizService extends BaseEntityService {
         "creditResources"
       );
     if (quizzes && quizzes.length > 0) {
-      log.debug("quizzes from db");
-      log.debug(quizzes);
-
       if (doNotGetQuestions) {
         return quizzes;
       }
@@ -229,8 +226,7 @@ export default class QuizService extends BaseEntityService {
       for (const qn in quizzesDict) {
         quizzes.push(quizzesDict[qn]);
       }
-      log.debug("quizzes with their questions");
-      log.debug(quizzes);
+
       return quizzes;
     }
 
