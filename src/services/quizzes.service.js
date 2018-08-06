@@ -111,7 +111,7 @@ export default class QuizService extends BaseEntityService {
 
         await new QuizQuestionService().saveList(questionList, requestObject);
       } catch (e) {
-        log.error("Error creating quiz questiond. %o", e);
+        log.error("Error creating quiz questions. %o", e);
         throw new RequestError(
           `We SUCCESSFULLY created quiz with the title ${
             payload.title

@@ -1,49 +1,77 @@
+export async function onLogin(eventData) {
+  if (eventData) {
+    const auditEntry = {
+      eventType: EventType.SuccessfulLogin
+    };
+    await commit(auditEntry, eventData);
+  }
+}
+
+export async function onFailedLogin(eventData) {
+  if (eventData) {
+    const auditEntry = {
+      eventType: EventType.FailedLogin,
+      newRecord: JSON.stringify(eventData.requestData.body) // 'newRecord' will store the request data that failed
+    };
+    await commit(auditEntry, eventData);
+  }
+}
+
 export async function onEntityAdded(eventData) {
-  if (eventData && eventData.requestData) {
+  if (eventData) {
     const rec = eventData.record;
-    rec.id = eventData.id;
+    rec.id = eventData.ids;
     const auditEntry = {
       eventType: EventType.Create,
       newRecord: JSON.stringify(rec)
     };
-    setExtraAuditEntryFields(auditEntry, eventData);
-    await eventData.knex.table("auditlogs").insert(auditEntry);
+    await commit(auditEntry, eventData);
   }
 }
 
 export async function onEntityListAdded(eventData) {
-  if (eventData && eventData.requestData) {
+  if (eventData) {
     const auditEntry = {
       eventType: EventType.BatchCreate
     };
-    setExtraAuditEntryFields(auditEntry, eventData);
-    await eventData.knex.table("auditlogs").insert(auditEntry);
+    await commit(auditEntry, eventData);
   }
 }
 
 export async function onEntityModified(eventType, eventData) {
-  if (eventData && eventData.requestData) {
+  if (eventData) {
     const auditEntry = {
       eventType: eventType,
       oldRecord: JSON.stringify(eventData.oldRecord),
       newRecord: JSON.stringify(eventData.newRecord)
     };
 
-    setExtraAuditEntryFields(auditEntry, eventData);
-    await eventData.knex.table("auditlogs").insert(auditEntry);
+    await commit(auditEntry, eventData);
   }
+}
+
+async function commit(auditEntry, eventData) {
+  setExtraAuditEntryFields(auditEntry, eventData);
+  await eventData.knex.table("auditlogs").insert(auditEntry);
 }
 
 function setExtraAuditEntryFields(auditEntry, eventData) {
   auditEntry.entityName = eventData.entityName;
-  auditEntry.entityIds = JSON.stringify(eventData.ids);
-  auditEntry.userId = eventData.requestData.user.id;
-  auditEntry.username = eventData.requestData.user.username;
-  auditEntry.requestType = eventData.requestData.method;
-  auditEntry.requestUrl = eventData.requestData.url;
-  auditEntry.requestBody = JSON.stringify(
-    eventData.requestData.body || eventData.requestData.query
-  );
+  if (eventData.ids) {
+    auditEntry.entityIds = JSON.stringify(eventData.ids);
+  }
+  //  eventData.requestData [Optional] the request; will usually be ctx.request
+  if (eventData.requestData) {
+    auditEntry.requestType = eventData.requestData.method;
+    auditEntry.requestUrl = eventData.requestData.url;
+    auditEntry.requestBody = JSON.stringify(
+      eventData.requestData.body || eventData.requestData.query
+    );
+    if (eventData.requestData.user) {
+      auditEntry.userId = eventData.requestData.user.id;
+      auditEntry.username = eventData.requestData.user.username;
+    }
+  }
 }
 
 export async function onEntityUpdated(eventData) {

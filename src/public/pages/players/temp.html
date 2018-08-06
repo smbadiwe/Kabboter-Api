@@ -1,146 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>LHGengage</title>
-        <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="/css/bootstrap.min.css">
-        <link rel="stylesheet" href="../../css/styles.css" type="text/css">
-    </head>
-    <body>
-        <div class="players">
-            <div class="bg-white py-4 text-center">
-                <img src="./../../../assets/img/logo.png" width="200" alt="">
-            </div>
-            
-            <div class="row mt-5">
-                <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 my-card p-5">
-                    <span id="success" class="success"></span>
-                    <span id="error" class="error"></span>
-                    <span id="feedback" class="warning"></span>
-                    <!--<span id="success" class="success"></span>-->
-                </div>
-            </div>
-            <div class="container mt-5">
-                <div id="login">
-                    <div class="container mt-5">
-                        <div class="row">
-                            <div class="col-lg-8 offset-lg-2 my-card bg-white pt-5 px-5">
-                                <h3 class="font-bold text-center text-secondary">Player Login</h3>
-                                <div class="alert alert-info mt-3 text-center">Please provide your phone number</div>
-                                <form class="mt-4">
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="player_name" placeholder="Enter phone number">
-                                    </div>
-                                    <div class="mt-4 row text-center">
-                                        <div class="col-md-6">
-                                            <a role="button" href="game.html" class="btn btn-brand px-5 py-2 btn-block">Play Game</a>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <a role="button" href="create.html" class="btn btn-light px-5 py-2 btn-block">I'm a new player</a>
-                                        </div>
-                                    </div>
-                                </form>
-                                <p class="pt-5 text-center text-secondary">Powered by
-                                    <a href="">Raoatech</a>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="create">
-                    <div class="container mt-5">
-                        <div class="row">
-                            <div class="col-lg-8 offset-lg-2 my-card bg-white pt-5 px-5">
-                                <h3 class="font-bold text-center text-secondary">Register as a new player</h3>
-                                <hr>
-                                <form class="mt-4">
-                                    <div class="form-group">
-                                        <label for="player_name">Player Name</label>
-                                        <br>
-                                        <input type="text" class="form-control" id="player_name" placeholder="Enter your name">
-                                    </div>
-                                    <div class="form-group pt-3">
-                                        <label for="player_email">Email Address</label>
-                                        <br>
-                                        <input type="email" class="form-control" id="player_email" placeholder="Enter your email address">
-                                    </div>
-                                    <div class="form-group pt-3">
-                                        <label for="player_phone">Phone Number</label>
-                                        <br>
-                                        <input type="email" class="form-control" id="player_phone" placeholder="Enter your phone number">
-                                    </div>
-                                    <div class="mt-4 row text-center">
-                                        <div class="col-md-6">
-                                            <a role="button" href="game.html" class="btn btn-brand px-5 py-2 btn-block">Play Game</a>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <a role="button" href="login.html" class="btn btn-light px-5 py-2 btn-block text-center">I'm an existing player</a>
-                                        </div>
-                                    </div>
-                                </form>
-                                <p class="pt-5 text-center text-secondary">Powered by
-                                    <a href="http://www.raoatech.com">Raoatech</a>
-                                </p>
-                            </div>
-                        </div> </div> 
-                </div>
-                <div id="game">
-                    <div class="container mt-5">
-                        <div class="game" >
 
-                            <div class="row">
-                                <div class="col-6 question d-flex align-items-center justify-content-center bg-blue text-white">
-                                    <h1 class="font-large">A</h1>
-                                </div>
-                                <div class="col-6 question d-flex align-items-center justify-content-center bg-red text-white">
-                                    <h1 class="font-large">B</h1>
-                                </div>
-                                <div class="col-6 question d-flex align-items-center justify-content-center bg-pink text-white">
-                                    <h1 class="font-large">C</h1>
-                                </div>
-                                <div class="col-6 question d-flex align-items-center justify-content-center bg-yellow">
-                                    <h1 class="font-large">D</h1>
-                                </div>
-                            </div></div>
-                    </div>
-                </div>
-                <div id="index">
-                    <div class="container mt-5">
-                        <div class="row">
-                            <div class="col-lg-8 offset-lg-2 my-card bg-white pt-5 px-5">
-                                <h3 class="font-bold text-center text-secondary">Verify Code</h3>
-                                <div class="alert alert-info mt-3 text-center">Enter the code displayed on the screen</div>
-                                <form class="mt-4">
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="player_name" placeholder="Enter game code">
-                                    </div>
-                                    <div class="mt-4 row text-center">
-                                        <div class="col-md-12">
-                                            <a role="button" href="create.html" class="btn btn-brand px-5 py-2 btn-block">Submit Code</a>
-                                        </div>
-                                    </div>
-                                </form>
-                                <p class="pt-5 text-center text-secondary">Powered by
-                                    <a href="http://www.raoatech.com">Raoatech</a>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="py-4 text-center player-footer">
-                <img src="./../../../assets/img/footer.png" alt="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LHGengage</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/styles.css" type="text/css">
+</head>
+
+<body>
+    <div class="players">
+        <div class="bg-white py-4 text-center">
+            <img src="./../../../assets/img/logo.png" width="200" alt="">
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 my-card p-5">
+                <span id="success" class="success"></span>
+                <span id="error" class="error"></span>
+                <span id="feedback" class="warning"></span>
+                <!--<span id="success" class="success"></span>-->
             </div>
         </div>
-        <script src="js/app.js"></script>
-        <!-- jQuery library -->
-        <script src="/js/jquery.min.js"></script>
-        <script src="/js/popper.min.js"></script>
-        <script src="/js/bootstrap.min.js"></script>
-    </body>
+        <div class="container mt-5">
+            <div id="login">
+                <div class="container mt-5">
+                    <div class="row">
+                        <div class="col-lg-8 offset-lg-2 my-card bg-white pt-5 px-5">
+                            <h3 class="font-bold text-center text-secondary">Player Login</h3>
+                            <div class="alert alert-info mt-3 text-center">Please provide your phone number</div>
+                            <form class="mt-4">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="player_name" placeholder="Enter phone number">
+                                </div>
+                                <div class="mt-4 row text-center">
+                                    <div class="col-md-6">
+                                        <a role="button" href="game.html" class="btn btn-brand px-5 py-2 btn-block">Play Game</a>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <a role="button" href="create.html" class="btn btn-light px-5 py-2 btn-block">I'm a new player</a>
+                                    </div>
+                                </div>
+                            </form>
+                            <p class="pt-5 text-center text-secondary">Powered by
+                                <a href="">Raoatech</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="create">
+                <div class="container mt-5">
+                    <div class="row">
+                        <div class="col-lg-8 offset-lg-2 my-card bg-white pt-5 px-5">
+                            <h3 class="font-bold text-center text-secondary">Register as a new player</h3>
+                            <hr>
+                            <form class="mt-4">
+                                <div class="form-group">
+                                    <label for="player_name">Player Name</label>
+                                    <br>
+                                    <input type="text" class="form-control" id="player_name" placeholder="Enter your name">
+                                </div>
+                                <div class="form-group pt-3">
+                                    <label for="player_email">Email Address</label>
+                                    <br>
+                                    <input type="email" class="form-control" id="player_email" placeholder="Enter your email address">
+                                </div>
+                                <div class="form-group pt-3">
+                                    <label for="player_phone">Phone Number</label>
+                                    <br>
+                                    <input type="email" class="form-control" id="player_phone" placeholder="Enter your phone number">
+                                </div>
+                                <div class="mt-4 row text-center">
+                                    <div class="col-md-6">
+                                        <a role="button" href="game.html" class="btn btn-brand px-5 py-2 btn-block">Play Game</a>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <a role="button" href="login.html" class="btn btn-light px-5 py-2 btn-block text-center">I'm an existing player</a>
+                                    </div>
+                                </div>
+                            </form>
+                            <p class="pt-5 text-center text-secondary">Powered by
+                                <a href="http://www.raoatech.com">Raoatech</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="game">
+                <div class="container mt-5">
+                    <div class="game">
+
+                        <div class="row">
+                            <div class="col-6 question d-flex align-items-center justify-content-center bg-blue text-white">
+                                <h1 class="font-large">A</h1>
+                            </div>
+                            <div class="col-6 question d-flex align-items-center justify-content-center bg-red text-white">
+                                <h1 class="font-large">B</h1>
+                            </div>
+                            <div class="col-6 question d-flex align-items-center justify-content-center bg-pink text-white">
+                                <h1 class="font-large">C</h1>
+                            </div>
+                            <div class="col-6 question d-flex align-items-center justify-content-center bg-yellow">
+                                <h1 class="font-large">D</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="index">
+                <div class="container mt-5">
+                    <div class="row">
+                        <div class="col-lg-8 offset-lg-2 my-card bg-white pt-5 px-5">
+                            <h3 class="font-bold text-center text-secondary">Verify Code</h3>
+                            <div class="alert alert-info mt-3 text-center">Enter the code displayed on the screen</div>
+                            <form class="mt-4">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="player_name" placeholder="Enter game code">
+                                </div>
+                                <div class="mt-4 row text-center">
+                                    <div class="col-md-12">
+                                        <a role="button" href="create.html" class="btn btn-brand px-5 py-2 btn-block">Submit Code</a>
+                                    </div>
+                                </div>
+                            </form>
+                            <p class="pt-5 text-center text-secondary">Powered by
+                                <a href="http://www.raoatech.com">Raoatech</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="py-4 text-center player-footer">
+            <img src="./../../../assets/img/footer.png" alt="">
+        </div>
+    </div>
+    <script src="js/app.js"></script>
+    <!-- jQuery library -->
+    <script src="/js/jquery.min.js"></script>
+    <!-- <script src="/js/popper.min.js"></script> -->
+    <script src="/js/bootstrap.min.js"></script>
+</body>
+
 </html>
 <!-- <div class="players">
     <div class="bg-white py-4 text-center">

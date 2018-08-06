@@ -22,6 +22,7 @@
     "koa-router": "^7.4.0",
     "koa-session": "^5.8.1",
     "koa-static": "^4.0.3",
+    "moment": "^2.22.2",
     "mustache": "^2.3.0",
     "mysql": "^2.15.0",
     "nodemailer": "^4.6.7",
@@ -39,7 +40,7 @@
   },
   "scripts": {
     "start": "npm run build && npm run serve",
-    "start-dev": "set DEBUG=LHGengage:* && nodemon src/index.js --exec babel-node",
+    "start-dev": "set DEBUG=LHGengage:*,knex:tx && nodemon src/index.js --exec babel-node",
     "start-debug": "set DEBUG=LHGengage:* && npm start",
     "copy-files": "powershell -ExecutionPolicy ByPass -File copy-files-and-azure-configs.ps1",
     "copy-files-a2h": "powershell -ExecutionPolicy ByPass -File copy-files-and-a2h-configs.ps1",

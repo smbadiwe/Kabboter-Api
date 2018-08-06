@@ -55,7 +55,7 @@ router.post("/resetpassword", async ctx => {
 router.post("/register", async ctx => {
   try {
     validateUserRegistration(ctx.request.body);
-    const respBody = await new UserService().processUserRegistration(ctx.request.body);
+    const respBody = await new UserService().processUserRegistration(ctx.request);
     ctx.body = respBody;
   } catch (e) {
     ctx.throw(e.status || 500, e);
@@ -66,7 +66,7 @@ router.post("/register", async ctx => {
 router.post("/login", async ctx => {
   try {
     validateLogin(ctx.request.body);
-    const respBody = await new UserService().processLogin(ctx.request.body);
+    const respBody = await new UserService().processLogin(ctx.request);
     ctx.body = respBody;
   } catch (e) {
     ctx.throw(e.status || 500, e);

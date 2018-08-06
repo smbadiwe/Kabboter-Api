@@ -8,6 +8,7 @@ import { generatePin } from "../utils";
 import { sendWelcomeEmailToPlayer, sendWelcomeEmailToModerator } from "./sendemails";
 import Enums from "./enums";
 import log from "../utils/log";
+import { onLogin, onFailedLogin } from "./AuditLogListener";
 
 export default class UserService extends BaseEntityService {
   constructor() {
@@ -189,9 +190,10 @@ export default class UserService extends BaseEntityService {
 
   /**
    * This is for admin users
-   * @param {*} userRegInfo
+   * @param {*} requestData [Optional] the request; will usually be ctx.request
    */
-  async processUserRegistration(userRegInfo, requestData) {
+  async processUserRegistration(requestData) {
+    const userRegInfo = requestData.body;
     let user = await this.getByEmailOrPhone(userRegInfo.email, userRegInfo.phone);
     if (user) {
       throw new RequestError(
@@ -218,12 +220,7 @@ export default class UserService extends BaseEntityService {
 
     sendWelcomeEmailToModerator(user);
     // automatically log the user in.
-    return this.setJwtAuth(user);
-    // return {
-    //   email: userRegInfo.email,
-    //   phone: userRegInfo.phone,
-    //   username: username
-    // };
+    return await this.setJwtAuth(user, requestData);
   }
 
   /**
@@ -345,7 +342,7 @@ export default class UserService extends BaseEntityService {
     return user;
   }
 
-  setJwtAuth(user) {
+  async setJwtAuth(user, requestData) {
     // jwt sign
     //TODO: Figure out a way to expire tokens. For some ideas, visit
     // https://stackoverflow.com/questions/26739167/jwt-json-web-token-automatic-prolongation-of-expiration
@@ -362,32 +359,59 @@ export default class UserService extends BaseEntityService {
     userInfo.f = user.firstname;
     userInfo.l = user.lastname;
 
+    // audit log
+    try {
+      await onLogin({
+        requestData: requestData,
+        entityName: this.tableName,
+        knex: this.connector,
+        userId: user.id,
+        username: user.username
+      });
+    } catch (e) {
+      log.error("Swallowed Error recording onLogin audit event: %O", e);
+    }
     return {
       token: token,
       user: userInfo
     };
   }
 
-  async processLogin(payload) {
-    const { username, password, rememberme } = payload;
+  async processLogin(requestData) {
+    const { username, password, rememberme } = requestData.body;
     const user = await this.getByUsernameOrEmailOrPhone(username);
 
-    if (!user) {
-      throw new RequestError("User detail is incorrect.");
-    }
-    if (user.deleted && user.roles !== Enums.UserRoleOptions.SuperAdmin) {
-      throw new RequestError("User has been suspended.");
-    }
-    if (user.disabled && user.roles !== Enums.UserRoleOptions.Moderator) {
-      // In this app, 'disabled' for moderators means they can login but cannot create quiz or vote.
-      throw new RequestError("You account has been disabled. Contact admin.");
-    }
+    try {
+      if (!user) {
+        throw new RequestError("User detail is incorrect.");
+      }
+      if (user.deleted && user.roles !== Enums.UserRoleOptions.SuperAdmin) {
+        throw new RequestError("User has been suspended.");
+      }
+      if (user.disabled && user.roles !== Enums.UserRoleOptions.Moderator) {
+        // In this app, 'disabled' for moderators means they can login but cannot create quiz or vote.
+        throw new RequestError("You account has been disabled. Contact admin.");
+      }
 
-    const isValid = await compare(password, user.passwordHash);
-    if (isValid) {
-      return this.setJwtAuth(user);
-    } else {
-      throw new RequestError("Wrong password");
+      const isValid = await compare(password, user.passwordHash);
+      if (isValid) {
+        return await this.setJwtAuth(user, requestData);
+      } else {
+        throw new RequestError("Wrong password");
+      }
+    } catch (e) {
+      // audit log
+      try {
+        await onFailedLogin({
+          requestData: requestData,
+          entityName: this.tableName,
+          knex: this.connector,
+          username: username
+        });
+      } catch (e2) {
+        log.error("Swallowed Error recording onFailedLogin audit event: %O", e2);
+      }
+      throw e;
     }
   }
 }
