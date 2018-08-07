@@ -34,7 +34,7 @@
     "start": "set DEBUG=LHGengage:* && node index.js"
   },
   "engines": {
-    "node": ">=8.9.4"
+    "node": ">=10.6.0"
   },
   "author": "Soma Mbadiwe",
   "license": "ISC"

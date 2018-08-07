@@ -130,12 +130,13 @@ function loadData(page = 1) {
     data: queryData,
     error: function(data) {
       console.log(data);
-      $("#result").append("Error fetching surveys");
+      $("#result").append("Error fetching votes");
     },
     success: function(data) {
-      const sno = data.pagination.from + key;
       var rows = "";
       $.each(data.data, function(key, val) {
+        const sno = data.pagination.from + key;
+
         let btnLink = val.published
           ? `<a href="/surveyadmin/surveyadmin.html?id=${
               val.id
