@@ -3,11 +3,18 @@ import { join, relative } from "path";
 import upath from "upath";
 
 /**
- * Generate a 7-digit number as PIN
+ * Generate a [nDigits]-digit number as PIN (default is 7 digits)
+ *
+ * @param nDigits The number of digits to generate. Default is 7.
  */
-export function generatePin() {
-  return Math.floor(Math.random() * 9000000) + 1000000;
+export function generatePin(nDigits = 7) {
+  if (nDigits < 1) throw new Error("nDigits: should be an integer with value at least 1");
+
+  let offset = Math.pow(10, nDigits - 1);
+  let factor = 9 * offset;
+  return Math.floor(Math.random() * factor) + offset;
 }
+
 export function listFilesInFolderRecursively(dir, filesToExclude = [], filelist = []) {
   const files = readdirSync(dir);
   files.forEach(function(file) {

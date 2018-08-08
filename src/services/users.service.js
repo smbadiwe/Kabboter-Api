@@ -271,7 +271,7 @@ export default class UserService extends BaseEntityService {
     let username;
     let user;
     do {
-      username = lastname.substring(0, 2) + firstname.substring(0, 2) + generatePin();
+      username = lastname.substring(0, 2) + firstname.substring(0, 2) + generatePin(2);
 
       user = await this.getByUsername(username);
     } while (user);

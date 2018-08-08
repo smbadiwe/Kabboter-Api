@@ -59,6 +59,30 @@ module.exports = {
       directory: path.join(BASE_PATH, "seeds")
     }
   },
+  productionOnAzure: {
+    client: "mysql",
+    connection: {
+      host: `${process.env.APP_DB_HOST}`,
+      database: process.env.APP_DB_NAME,
+      user: `${process.env.APP_DB_USR}`,
+      password: process.env.APP_DB_PWD,
+      //port: 3306,
+      ssl: {
+        ca: fs.readFileSync(path.resolve(__dirname, "../kabooter.crt.pem"))
+      }
+    },
+    pool: {
+      min: 2,
+      max: 10
+    },
+    migrations: {
+      tableName: "knex_migrations",
+      directory: path.join(BASE_PATH, "migrations")
+    },
+    seeds: {
+      directory: path.join(BASE_PATH, "seeds")
+    }
+  },
   productionOnGoogleCloud: {
     client: "mysql",
     connection: {

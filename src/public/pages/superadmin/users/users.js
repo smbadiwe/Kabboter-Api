@@ -231,7 +231,9 @@ function getOneUserRow(sno, user) {
   return `<tr id="${user.id}">
               <td scope="row">${sno}</td>
               <td>${user.username}</td>
-              <td><a href="details.html?id=${user.id}">${user.firstname} ${user.lastname}</a></td>
+              <td><a hreflater="users/details.html?id=${user.id}">${user.firstname} ${
+    user.lastname
+  }</a></td>
               <td id="${sno}-role">${user.roles}</td>
               <td id="${sno}-txt">${
     user.disabled

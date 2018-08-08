@@ -3,9 +3,10 @@
   // Enable pusher logging - don't include this in production
   Pusher.logToConsole = true;
 
-  var pusher = new Pusher("c1f6afcaf469b5a11a41", {
-    cluster: "us2",
-    encrypted: true
+  var pusher = new Pusher("9201e06ea35f8585b87d", {
+    cluster: "eu",
+    encrypted: true,
+    forceTLS: true
   });
   pusher.connection.bind("connected", function() {
     console.log("Pusher connection successful");
