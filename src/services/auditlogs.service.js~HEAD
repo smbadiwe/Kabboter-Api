@@ -1,24 +1,21 @@
 import { BaseEntityService } from "./baseentity.service";
-<<<<<<< HEAD:src/services/audittrails.service.js
-=======
 import { getKeyByValue } from "../utils";
 import { EventType } from "./AuditLogListener";
 import moment from "moment";
->>>>>>> Sundry changes. Audit trail UI almost there:src/services/auditlogs.service.js
 
 export default class AuditLogService extends BaseEntityService {
   constructor() {
     super("auditlogs");
   }
-<<<<<<< HEAD:src/services/audittrails.service.js
-=======
 
   async getRecordsPaged(queryParams) {
+    console.log("queryParams = ");
+    console.log(queryParams);
     const query = this.connector
       .table(this.tableName)
       .modify(queryBuilder => {
         if (queryParams.username) {
-          queryBuilder.where("username", queryParams.username);
+          queryBuilder.where("username", "like", `${queryParams.username}%`);
         }
         if (queryParams.eventType) {
           queryBuilder.where("eventType", queryParams.eventType);
@@ -52,6 +49,7 @@ export default class AuditLogService extends BaseEntityService {
       .orderBy("created_at", "desc");
 
     let res = await this.dbPaging(query, { page: queryParams.page, perPage: queryParams.perPage });
+    console.log(res);
     if (res && res.data) {
       res.data.forEach(val => {
         val.eventType = getKeyByValue(EventType, val.eventType);
@@ -61,5 +59,4 @@ export default class AuditLogService extends BaseEntityService {
 
     return res;
   }
->>>>>>> Sundry changes. Audit trail UI almost there:src/services/auditlogs.service.js
 }

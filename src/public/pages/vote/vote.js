@@ -23,6 +23,30 @@ function initVote(apiEndPoint) {
   });
 }
 
+<<<<<<< HEAD
+=======
+// vote.html
+function initPage() {
+  loadNavBar();
+  initVote("/api/user/surveys/my");
+}
+
+function initVote(apiEndPoint) {
+  loadGridFooter();
+  loadData(1, apiEndPoint);
+  $("#search").on("input", function() {
+    loadData(1, apiEndPoint);
+  });
+  $("#perPage").on("change", function() {
+    loadData(1, apiEndPoint);
+  });
+  $("#gridFooter").on("click", "li.paginate_button", function() {
+    const li = $(this);
+    if (!li.hasClass("disabled")) loadData(parseInt(li.attr("pgInd")), apiEndPoint);
+  });
+}
+
+>>>>>>> Sundry changes. Audit trail UI almost there
 function loadData(page, apiEndPoint) {
   console.log("loadData: apiEndPoint = " + apiEndPoint);
   const token = localStorage.getItem("token");
@@ -68,7 +92,11 @@ function getOneUserRow(sno, val) {
   let row = `<tr>
                 <td scope="row">${sno}</td>
                 <td><a href="/pages/vote/details.html?id=${val.id}">${val.title}</a></td>
+<<<<<<< HEAD
                 <td>${val.description || ""}</td>
+=======
+                <td>${val.description}</td>
+>>>>>>> Sundry changes. Audit trail UI almost there
                 <td>${val.nQuestions}</td>
                 <td>${
                   val.published

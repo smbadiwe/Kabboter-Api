@@ -59,6 +59,8 @@ function clearAdminGameStorages(game) {
 }
 
 function setPagingInfo(paging) {
+  console.log("setPagingInfo: paging = ");
+  console.log(paging);
   $("#pg_info").html(
     `Showing ${paging.total ? paging.from : 0} to ${paging.to} of ${paging.total} entries`
   );

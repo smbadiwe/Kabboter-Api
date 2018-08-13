@@ -38,8 +38,13 @@ function loadData(page = 1) {
         // <td><a href="details.html?id=${val.id}">${val.eventType}</a></td>
         rows += `<tr>
                     <td scope="row">${sno}</td>
+<<<<<<< HEAD
                     <td><a href>${val.eventType}</a></td>
                     <td>${val.username || ""}</td>
+=======
+                    <td><a href="details.html?id=${val.id}">${val.eventType}</a></td>
+                    <td>${val.username}</td>
+>>>>>>> Sundry changes. Audit trail UI almost there
                     <td>${val.entityName}</td>
                     <td>${val.created_at}</td>
                 </tr>`;
@@ -65,7 +70,11 @@ function init() {
     type: "GET",
     error: function(data) {},
     success: function(data) {
+<<<<<<< HEAD
       var options = "<option value selected>Select event...</option>";
+=======
+      var options = "`<option value selected disabled>Select event...</option>`";
+>>>>>>> Sundry changes. Audit trail UI almost there
       for (var val in data) {
         options += `<option value='${data[val]}'>${val}</option>`;
       }
@@ -75,6 +84,7 @@ function init() {
 
   loadGridFooter();
   loadData();
+<<<<<<< HEAD
   var reloadData = function() {
     loadData();
   };
@@ -83,6 +93,12 @@ function init() {
   $("#dateFrom").on("change", reloadData);
   $("#dateTo").on("change", reloadData);
   $("#perPage").on("change", reloadData);
+=======
+  $("#username").on("input", loadData);
+  $("#dateFrom").on("change", loadData);
+  $("#dateTo").on("change", loadData);
+  $("#perPage").on("change", loadData);
+>>>>>>> Sundry changes. Audit trail UI almost there
   $("#gridFooter").on("click", "li.paginate_button", function() {
     const li = $(this);
     if (!li.hasClass("disabled")) loadData(parseInt(li.attr("pgInd")));
