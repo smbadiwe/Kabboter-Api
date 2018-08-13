@@ -14,6 +14,8 @@ export default class AuditLogService extends BaseEntityService {
 =======
 
   async getRecordsPaged(queryParams) {
+    console.log("queryParams = ");
+    console.log(queryParams);
     const query = this.connector
       .table(this.tableName)
       .modify(queryBuilder => {
@@ -52,6 +54,7 @@ export default class AuditLogService extends BaseEntityService {
       .orderBy("created_at", "desc");
 
     let res = await this.dbPaging(query, { page: queryParams.page, perPage: queryParams.perPage });
+    console.log(res);
     if (res && res.data) {
       res.data.forEach(val => {
         val.eventType = getKeyByValue(EventType, val.eventType);
