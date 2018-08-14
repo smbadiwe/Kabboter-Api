@@ -76,6 +76,7 @@ function init() {
     success: function(data) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       var options = "<option value selected>Select event...</option>";
 =======
       var options = "`<option value selected disabled>Select event...</option>`";
@@ -83,6 +84,9 @@ function init() {
 =======
       var options = "`<option value selected>Select event...</option>`";
 >>>>>>> Fixed issue with deleting questions
+=======
+      var options = "<option value selected>Select event...</option>";
+>>>>>>> Fixed latest list of issues from Tope yesterday.
       for (var val in data) {
         options += `<option value='${data[val]}'>${val}</option>`;
       }

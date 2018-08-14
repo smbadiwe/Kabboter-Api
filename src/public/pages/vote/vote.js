@@ -1,5 +1,6 @@
 function editId(val) {
   window.location = `addedit.html?id=${val}`;
+<<<<<<< HEAD
 }
 
 // vote.html
@@ -21,6 +22,8 @@ function initVote(apiEndPoint) {
     const li = $(this);
     if (!li.hasClass("disabled")) loadData(parseInt(li.attr("pgInd")), apiEndPoint);
   });
+=======
+>>>>>>> Fixed latest list of issues from Tope yesterday.
 }
 
 <<<<<<< HEAD

@@ -89,14 +89,24 @@ function saveQuestion(e, game, refreshPage) {
   var option3 = $("#option3").val();
   var option4 = $("#option4").val();
   const postData = {
+<<<<<<< HEAD
     question: title,
     timeLimit: time,
+=======
+    id: questionId,
+    question: title,
+    timeLimit: time,
+    surveyId: gameId,
+>>>>>>> Fixed latest list of issues from Tope yesterday.
     option1: option1,
     option2: option2,
     option3: option3,
     option4: option4
   };
+<<<<<<< HEAD
   postData[game + "Id"] = gameId;
+=======
+>>>>>>> Fixed latest list of issues from Tope yesterday.
   const isQuiz = game === "quiz";
   if (isQuiz) {
     var correct = $("input[name=inlineRadioOptions]:checked").val();
@@ -115,6 +125,7 @@ function saveQuestion(e, game, refreshPage) {
   const token = localStorage.getItem("token");
 
   const questionId = getUrlParameter("questionId");
+<<<<<<< HEAD
 
   let myUrl;
   if (questionId) {
@@ -123,6 +134,10 @@ function saveQuestion(e, game, refreshPage) {
   } else {
     myUrl = window.location.origin + `/api/user/${game}questions/create`;
   }
+=======
+  const myUrl =
+    window.location.origin + `/api/user/${game}questions/${questionId ? "update" : "create"}`;
+>>>>>>> Fixed latest list of issues from Tope yesterday.
 
   $.ajax({
     headers: {
