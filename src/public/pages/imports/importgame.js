@@ -1,6 +1,5 @@
 $(function() {
   loadNavBar();
-
   var dragAndDropAvailable = isModernBrowser();
   $("#proceed").click(function(e) {
     e.preventDefault();

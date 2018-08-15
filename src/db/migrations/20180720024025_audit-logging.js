@@ -1,7 +1,7 @@
 export async function up(knex) {
   return await knex.schema.createTable("auditlogs", t => {
     t.increments(); //id: unsigned, primary
-    t.timestamp("created_at");
+    t.timestamp("created_at").defaultTo(knex.fn.now());
     t.integer("eventType");
     t.string("entityName");
     t.json("entityIds");

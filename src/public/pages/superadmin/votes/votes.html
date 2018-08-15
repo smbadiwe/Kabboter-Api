@@ -1,0 +1,60 @@
+<link href="/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+<div class="card">
+    <div class="card-header">
+        <h2>All Votes</h2>
+    </div>
+    <div class="card-body">
+        <div id="result" class="alert alert-danger" style="display: none">
+        </div>
+        <div class="dataTables_wrapper dt-bootstrap4">
+            <div class="row">
+                <div class="col-sm-12 col-md-6">
+                    <div class="dataTables_length">
+                        <label>Show
+                            <select id="perPage" name="perPage" aria-controls="example" class="custom-select custom-select-sm form-control form-control-sm">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select> entries</label>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                    <div id="example_filter" class="dataTables_filter">
+                        <label>Search:
+                            <input id="search" type="search" class="form-control form-control-sm" placeholder="" aria-controls="example">
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <table id="example" class="table table-hover table-borderless table-striped dataTable" style="width: 100%;" role="grid" aria-describedby="example_info">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col" class="font-bold">#</th>
+                                <th scope="col" class="font-bold">Title</th>
+                                <th scope="col" class="font-bold">Description</th>
+                                <th scope="col" class="font-bold"># Questions</th>
+                                <th scope="col" class="font-bold">Published</th>
+                                <!-- <th scope="col" class="font-bold">Date Created</th>
+                                <th scope="col" class="font-bold">Created By</th> -->
+                                <th scope="col" class="font-bold"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="gridFooter"></div>
+        </div>
+    </div>
+</div>
+<!-- Since this page is usually loaded into other pages, use the full url for the scripts and links-->
+<script src="/pages/superadmin/votes/votes.js"></script>
+<script>
+    $(function () {
+        init();
+    });
+</script>

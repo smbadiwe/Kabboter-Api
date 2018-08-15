@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Quiz Player</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/styles.css" type="text/css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="players">
+        <div class="bg-white py-4 text-center">
+            <img src="/assets/img/logo.png" width="200" alt="">
+        </div>
+
+        <!-- Step 1 -->
+        <div id="login">
+            <div class="container mt-2">
+                <div class="row">
+                    <div class="col-lg-8 offset-lg-2 my-card bg-white pt-2 px-5">
+                        <h3 class="font-bold text-center text-secondary">Answer Quiz</h3>
+                        <div class="mt-4">
+                            <div class="mt-4 row text-center">
+                                <div class="col-md-6">
+                                    <a role="button" id="newplayer" href="" class="btn btn-light px-5 py-2 btn-block">New user</a>
+                                    <br />
+                                </div>
+                                <div class="col-md-6">
+                                    <a role="button" id="existingplayer" href="" class="btn btn-brand px-5 py-2 btn-block">Existing user</a>
+                                    <br />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="display: none;" id="enterusername">
+                    <div class="col-lg-8 offset-lg-2 my-card bg-white pt-2 px-5">
+                        <div class="mt-4">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="username" placeholder="Enter username, email or phone number" style="text-align:center;"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="display: none;" id="register">
+                    <div class="col-lg-8 offset-lg-2 my-card bg-white pt-2 px-5">
+                        <h3 class="font-bold text-center text-secondary">Register as a new player</h3>
+                        <hr>
+                        <div class="mt-4">
+                            <div class="form-group pt-3">
+                                <input type="text" class="form-control" id="firstname" placeholder="Enter your first name (required)" required="required"
+                                    style="text-align:center;" />
+                            </div>
+                            <div class="form-group pt-3">
+                                <input type="text" class="form-control" id="lastname" placeholder="Enter your last name (required)" required="required" style="text-align:center;"
+                                />
+                            </div>
+                            <div class="form-group pt-3">
+                                <input type="email" class="form-control" id="email" placeholder="Enter your email address (if you have one)" style="text-align:center;"
+                                />
+                            </div>
+                            <div class="form-group pt-3">
+                                <input type="text" class="form-control" id="phone" placeholder="Enter your phone number (if you have one)" style="text-align:center;"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="display: none;" id="startgamebtn">
+                    <div class="col-lg-8 offset-lg-2 my-card bg-white pt-2 px-5">
+                        <h3 class="font-bold text-center text-secondary">Game Code</h3>
+                        <label style="text-align: center">Game code will appear in the box when the moderator starts a new game. If the moderator has already
+                            started the game, you can get the Code and enter it manually.
+                            <br />When all fields is set, click on Play Game and wait for questions.</label>
+                        <div class="mt-4">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="pin" placeholder="Game Code here..." style="text-align:center; font-size:x-large"
+                                />
+                            </div>
+                            <div class="col-md-12">
+                                <a role="button" id="" onclick="startGamePlay(event);" href class="btn btn-brand px-5 py-2 btn-block">Play Game</a>
+                                <br />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="game" id="game" style="display:none">
+            <div class="text-center" style="color: white; font-size:x-large;">
+                <strong>Question
+                    <span id="gamenum">0</span>
+                </strong> of
+                <span id="gametotal"></span>:&nbsp; [
+                <span id="qnPoints">0</span> points ]
+                <span id="question"></span>
+            </div>
+            <div id="timekeeper" class="text-center" style="color: white; font-size:x-large; display:none">
+                <div>Time alloted (sec):
+                    <span id="maxTimeCount"></span>
+                </div>
+                <div>Time remaining (sec):
+                    <span id="timer" style="font-size:x-large; font-weight: bold"></span>
+                </div>
+            </div>
+            <div id="youranswer" class="text-center" style="color: white; display: none;">
+            </div>
+            <div id="optionsBox" gameType="quiz" class="row">
+                <button id="option1" class="col-6 question d-flex align-items-center justify-content-center bg-blue text-white" disabled="disabled">
+                    <h1 class="font-large">A</h1>
+                </button>
+                <button id="option2" class="col-6 question d-flex align-items-center justify-content-center bg-red text-white" disabled="disabled">
+                    <h1 class="font-large">B</h1>
+                </button>
+                <button id="option3" class="col-6 question d-flex align-items-center justify-content-center bg-pink text-white" disabled="disabled">
+                    <h1 class="font-large">C</h1>
+                </button>
+                <button id="option4" class="col-6 question d-flex align-items-center justify-content-center bg-yellow" disabled="disabled">
+                    <h1 class="font-large">D</h1>
+                </button>
+            </div>
+            <div id="timeoutBox" class="row mt-4 my-card bg-white py-4" style="color: red; display: none;">
+                <div class="col-md-6 offset-md-3 col-sm-2 offset-sm-8 text-center mt-3">
+                    <h1 class="mt-4">Your time is up!</h1>
+                    <h3> Correct Answer:
+                        <b>
+                            <span id="theAns"></span>
+                        </b>
+                    </h3>
+                </div>
+            </div>
+            <div class="text-center" style="color: white">
+                <b>Game Code: </b>
+                <span id="pin"></span>
+            </div>
+            <div class="text-center" style="color: white">
+                <b>Game Player: </b>
+                <span id="gameplayer"></span>
+            </div>
+        </div>
+
+        <!-- Feedback view - the actual text will be set from JavaScript-->
+        <div id="feedback" style="display:none">
+            <div class="container mt-5">
+                <div class="text-center" style="color: white">
+                    <h1 id="feedbackText" class="font-weight-light text-brand-light">Welldone! Wait for the Next question to be announced</h1>
+
+                    <div class="text-center">
+                        <button onclick="reloadPage()" class="btn btn-default font-small">Play another game</button>
+                        <a href="/" role="button" class="btn btn-danger font-small">Exit</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="py-4 text-center player-footer">
+            <img src="/assets/img/footer.png" alt="">
+        </div>
+        <div>
+            <p class="pt-5 text-center text-secondary">
+                Powered by
+                <a href="http://www.raoatech.com">Raoatech</a>
+            </p>
+        </div>
+    </div>
+    <script src="/js/app.js"></script>
+    <script src="/general.js"></script>
+    <script src="/general.player.js"></script>
+    <script src="../general.player.js"></script>
+    <script src="./quizplayer.ui.js"></script>
+    <script src="./quizplayer.js"></script>
+    <!-- <script src="/js/popper.min.js"></script> -->
+    <script src="/js/bootstrap.min.js"></script>
+</body>
+
+</html>

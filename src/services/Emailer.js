@@ -3,7 +3,7 @@ import { apiSuccess } from "../utils";
 import mustache from "mustache";
 import fs from "fs";
 import path from "path";
-import { EmailAccountService } from "./";
+import { EmailAccountService } from ".";
 import { RequestError } from "../utils/ValidationErrors";
 
 export default class Emailer {

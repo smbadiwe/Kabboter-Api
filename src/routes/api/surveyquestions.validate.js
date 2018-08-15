@@ -15,6 +15,9 @@ export function validateSurveyQuestionProps(payload, updating = false) {
   payload.surveyId = +payload.surveyId;
   if (!payload.points) payload.points = 0;
   if (!payload.maxBonus) payload.maxBonus = 0;
+  if (!payload.timeLimit) throw new Required("timeLimit");
+  validateInteger(payload.timeLimit, "timeLimit", true);
+  payload.timeLimit = +payload.timeLimit;
   validateInteger(payload.points, "points");
   payload.points = +payload.points;
   validateInteger(payload.maxBonus, "maxBonus");

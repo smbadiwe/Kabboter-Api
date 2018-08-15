@@ -7,8 +7,8 @@ export function validateSurveyRunProps(payload, updating = false) {
     validateInteger(payload.id, "id");
     payload.id = +payload.id;
   }
-  validateInteger(payload.surveyId, "surveyId");
-  payload.surveyId = +payload.surveyId;
+  validateInteger(payload.gameId, "gameId");
+  payload.gameId = +payload.gameId;
 }
 
 export function validateSurveyAnswerProps(payload) {

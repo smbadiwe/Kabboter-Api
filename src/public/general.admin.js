@@ -9,13 +9,17 @@ function onPlayerSubmittedAnswer(data, game) {
   // }
   // We use this info to update dashboard. That dashboard where you show
   // chart of the different options and how many players chose each.
+  data.choice = +data.choice;
+  data.questionId = +data.questionId;
   console.log("From " + game + " onPlayerSubmittedAnswer fn. data:");
-  // console.log(data);
-  if (data && data.choice && +data.choice) {
+  console.log(data);
+  if (data && data.choice) {
     const tally = GameAdminData[game + "question"];
+    console.log(tally);
     if (tally.id === data.questionId) {
       tally["answer" + data.choice] = tally["answer" + data.choice] + 1;
       GameAdminData[game + "question"] = tally;
+      console.log(GameAdminData[game + "question"]);
     }
   }
 }
@@ -30,10 +34,11 @@ function scoreboard(game) {
     $("#scoreboard").show();
 
     const data = GameAdminData[game + "question"];
-
+    console.log("scoreboard: data for chart = ");
+    console.log(data);
     /*
-        Appends our questions and options to our views on the SCOREBOARD.HTML file
-      */
+          Appends our questions and options to our views on the SCOREBOARD.HTML file
+        */
     $("#scoreboard #option1").html(data.option1);
     $("#scoreboard #option2").html(data.option2);
     $("#scoreboard #option3").html(data.option3);
@@ -46,10 +51,10 @@ function scoreboard(game) {
       );
     }
     /*
-        Displays graph of selected questions or surveys on the users top screen
-        ANSWERS ON THE Y-AXIS
-        OPTIONS ON THE X-AXIS
-    */
+          Displays graph of selected questions or surveys on the users top screen
+          ANSWERS ON THE Y-AXIS
+          OPTIONS ON THE X-AXIS
+      */
 
     // if(data == null){
     //   alert('data is null')
@@ -88,15 +93,6 @@ function scoreboard(game) {
   });
 }
 
-function loadNextQuestion(e) {
-  e.preventDefault();
-  getNextQuestion();
-  // $("#disquest").hide();
-  // $("populate").show();
-
-  // timeOut();
-}
-
 function showquest(e) {
   e.preventDefault();
   $("#showpin").hide();
@@ -108,11 +104,11 @@ function showquest(e) {
 /**
  *
  * @param {*} gamequestion
- * @param {*} game 'quiz' or 'survey'
  */
-function onReceiveNextQuestion(gamequestion, game) {
+function onReceiveNextQuestion(gamequestion) {
+  const game = gamequestion.recordType; //'quiz' or 'survey'
   if (gamequestion) {
-    // Use this value to tally how players answered
+    // Use these 'answerX' values to tally how players answered
     gamequestion.answer1 = 0;
     gamequestion.answer2 = 0;
     gamequestion.answer3 = 0;
@@ -144,12 +140,10 @@ function updateAnsweredQuestionsList(newQuestionId) {
  */
 function setGameQuestionPropsOnPage(gamequestion, game) {
   // This is a question object as defined in the API doc.
-  //TODO: Render fields as you would like it.
+  // Render fields as you would like it.
   console.log("setGameQuestionPropsOnPage. gamequestion = ");
   console.log(gamequestion);
   if (gamequestion) {
-    $("#timeout").hide();
-    $("#disquest").show();
     // quizRunInfo = { id: <the quizRun id>, quizId: quizId, pin: pin, totalQuestions: totalQuestions };
     let currentQuestionCount = 1 + (parseInt($("#gamenum").html()) || 0);
     $("#gamenum").html(currentQuestionCount);
@@ -159,6 +153,9 @@ function setGameQuestionPropsOnPage(gamequestion, game) {
     $("#opt2").html(gamequestion.option2);
     $("#opt3").html(gamequestion.option3);
     $("#opt4").html(gamequestion.option4);
+
+    $("#timeout").hide();
+    $("#disquest").show();
     startAdminCountDown(game, gamequestion.timeLimit);
   } else {
     showAdminEndView(game);
@@ -349,26 +346,6 @@ function renderPlayerListRows(lastXPlayers, limit) {
   $("#members").html(rows);
 }
 
-/* Socket Stuffs */
-
-/**
- *
- * @param {*} socket
- * @param {*} reason
- * @param {*} game 'quiz' or 'survey'
- */
-function onAdminDisconnected(socket, reason, game) {
-  clearAdminGameStorages(game);
-  if (reason === "io server disconnect") {
-    // the disconnection was initiated by the server, you need to reconnect manually
-    alert(
-      "Server disconnected you do to authentication failure. We'll try reconnecting. If you're not reconnected, refresh the page to start over."
-    );
-    socket.connect();
-  }
-  // else the socket will automatically try to reconnect
-}
-
 /**
  *
  * @param {*} info The data
@@ -398,17 +375,17 @@ function SetGameRunInfoOnPage(info, game) {
 }
 
 /**
- * return data: {
-      gameRunId: res,
-      gameId: record.quizId,
-      gametitle: quiz.title,
-      gamedescription: quiz.description,
-      pin: pin,
-      totalQuestions: totalQuestions
-    }
-
- * @param {*} game 'quiz' or 'survey'
- */
+   * return data: {
+        gameRunId: res,
+        gameId: record.quizId,
+        gametitle: quiz.title,
+        gamedescription: quiz.description,
+        pin: pin,
+        totalQuestions: totalQuestions
+      }
+  
+   * @param {*} game 'quiz' or 'survey'
+   */
 function getGameRunInfo(game) {
   const info = GameAdminData[game + "runinfo"];
   if (!info) throw new Error(game + "runinfo not yet created");
@@ -426,11 +403,35 @@ function callbackOnGameAdminError(errorMessage) {
 }
 
 /**
- * @param {*} socket
- * @param {*} game 'quiz' or 'survey'
+ * Called when a game is selected and button clicked.
+ * @param {*} e
  */
-function emitGetNextQuestionEvent(socket, game) {
-  const gameRunInfo = getGameRunInfo(game);
-  const answeredQuestionIds = GameAdminData["answeredquestionlist"];
-  socket.emit("get-next-question", gameRunInfo, answeredQuestionIds, callbackOnGameAdminError);
+function startGameAdmin(e, game) {
+  e.preventDefault();
+  const data = { gameId: $("#gamelist").val() };
+  if (!data.gameId) {
+    $("#result").show();
+    $("#result").html(`Select ${game === "quiz" ? "quiz" : "vote"}`);
+    return false;
+  }
+  console.log(`calling startGameAdmin for ${game} with data: `);
+  console.log(data);
+  const baseUrl = window.location.origin;
+  $.ajax({
+    type: "POST",
+    url: baseUrl + `/api/user/${game}runs/create`,
+    data: data,
+    beforeSend: setAuthToken,
+    success: function(info) {
+      //TODO: We don't need a 2nd POST in authenticateQuizAdmin(...) since this is called after quizrun creation. Review
+      authenticateGameAdmin(info.pin, info.totalQuestions, game);
+
+      // info = { id: <the quizRun id>, quizId: quizId, pin: pin, totalQuestions: totalQuestions,quiztitle: quiztitle, quizdescription: quizdescription };
+      SetGameRunInfoOnPage(info, game);
+    },
+    error: function(error) {
+      console.log("Status: " + error.status + " Message: " + error.statusText);
+      console.log(error);
+    }
+  });
 }

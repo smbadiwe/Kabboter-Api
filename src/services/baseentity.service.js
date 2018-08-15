@@ -183,30 +183,21 @@ export class BaseEntityService {
       });
 
       const tblName = this.tableName;
-      const ids = await this.connector.transaction(async function(trx) {
-        //NB: Here, I'm using trx as a transaction object. We'll explicitly call commit or rollback:
-        try {
-          const idss = await this.connector
-            .transacting(trx)
-            .batchInsert(tblName, records)
-            .returning("id");
-          await audit.onEntityListAdded({
-            requestData: requestData,
-            entityName: tblName,
-            ids: idss,
-            knex: trx
-          });
-          trx.commit();
-          return idss;
-        } catch (e) {
-          console.log(e);
-          trx.rollback();
-        }
+      //try {
+      await this.connector.transaction(async function(trx) {
+        const idss = await trx.batchInsert(tblName, records).returning("id");
+        await audit.onEntityListAdded({
+          requestData: requestData,
+          entityName: tblName,
+          ids: idss,
+          knex: trx
+        });
       });
-
-      console.log("saveList(): ids = ");
-      console.log(ids);
-      return ids;
+      // } catch (e) {
+      //   console.log("saveList(...): Catching error at outer e: ");
+      //   console.log(e);
+      //   throw e;
+      // }
     }
   }
 
@@ -241,10 +232,10 @@ export class BaseEntityService {
             await audit.onEntityModified(updateType, {
               requestData: requestData,
               entityName: tblName,
+              knex: trx,
               oldRecord: oldRecord[0],
               newRecord: record,
-              ids: id,
-              knex: trx
+              ids: id
             });
           }
         });
@@ -274,7 +265,7 @@ export class BaseEntityService {
         oldRecord = await this.connector
           .table(this.tableName)
           .where(equalityConditions)
-          .select(Object.keys(record));
+          .select(Object.keys(equalityConditions));
       }
 
       // ADD transaction

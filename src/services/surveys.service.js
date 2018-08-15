@@ -1,5 +1,5 @@
 import { BaseEntityService } from "./baseentity.service";
-import { SurveyQuestionService, SurveyRunService } from "./";
+import { SurveyQuestionService, SurveyRunService } from ".";
 import Enums from "./enums";
 import log from "../utils/log";
 import { RequestError } from "../utils/ValidationErrors";
@@ -17,21 +17,28 @@ export default class SurveyService extends BaseEntityService {
    */
   async getRecordsPaged(queryParams) {
     const query = this.connector
-      .table(this.tableName)
+      .table(this.tableName + " as q")
+      .join("surveyquestions as qq", "q.id", "=", "qq.surveyId")
+      .groupBy("qq.surveyId")
       .modify(queryBuilder => {
         if (queryParams.userId) {
           queryBuilder.where("userId", queryParams.userId);
         }
         if (queryParams.title) {
-          queryBuilder.where("title", "like", `%${queryParams.title}%`);
+          queryBuilder.where("q.title", "like", `%${queryParams.title}%`);
         }
       })
-      .select();
-
-    return await this.dbPaging(query, {
-      page: queryParams.page,
-      perPage: queryParams.perPage
-    });
+      .select([
+        "q.id",
+        "q.created_at",
+        "q.title",
+        "q.description",
+        this.connector.raw("COUNT(qq.surveyId) as nQuestions"),
+        "q.published",
+        "q.disabled",
+        "q.visibleTo"
+      ]);
+    return await this.dbPaging(query, { page: queryParams.page, perPage: queryParams.perPage });
   }
 
   async deleteRecord(id, requestObject) {
@@ -182,9 +189,6 @@ export default class SurveyService extends BaseEntityService {
         "creditResources"
       );
     if (surveys) {
-      log.debug("surveys from db");
-      log.debug(surveys);
-
       if (doNotGetQuestions) {
         return surveys;
       }
@@ -218,8 +222,6 @@ export default class SurveyService extends BaseEntityService {
       for (const qn in surveysDict) {
         surveys.push(surveysDict[qn]);
       }
-      log.debug("surveys with their questions");
-      log.debug(surveys);
       return surveys;
     }
 

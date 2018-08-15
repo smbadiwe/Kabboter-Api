@@ -1,5 +1,5 @@
 import { BaseEntityService } from "./baseentity.service";
-import { QuizQuestionService, QuizRunService } from "./";
+import { QuizQuestionService, QuizRunService } from ".";
 import Enums from "./enums";
 import log from "../utils/log";
 import { RequestError } from "../utils/ValidationErrors";
@@ -17,17 +17,27 @@ export default class QuizService extends BaseEntityService {
    */
   async getRecordsPaged(queryParams) {
     const query = this.connector
-      .table(this.tableName)
+      .table(this.tableName + " as q")
+      .join("quizquestions as qq", "q.id", "=", "qq.quizId")
+      .groupBy("qq.quizId")
       .modify(queryBuilder => {
         if (queryParams.userId) {
           queryBuilder.where("userId", queryParams.userId);
         }
         if (queryParams.title) {
-          queryBuilder.where("title", "like", `%${queryParams.title}%`);
+          queryBuilder.where("q.title", "like", `%${queryParams.title}%`);
         }
       })
-      .select();
-
+      .select([
+        "q.id",
+        "q.created_at",
+        "q.title",
+        "q.description",
+        this.connector.raw("COUNT(qq.quizId) as nQuestions"),
+        "q.published",
+        "q.disabled",
+        "q.visibleTo"
+      ]);
     return await this.dbPaging(query, { page: queryParams.page, perPage: queryParams.perPage });
   }
 
@@ -111,7 +121,7 @@ export default class QuizService extends BaseEntityService {
 
         await new QuizQuestionService().saveList(questionList, requestObject);
       } catch (e) {
-        log.error("Error creating quiz questiond. %o", e);
+        log.error("Error creating quiz questions. %o", e);
         throw new RequestError(
           `We SUCCESSFULLY created quiz with the title ${
             payload.title
@@ -193,9 +203,6 @@ export default class QuizService extends BaseEntityService {
         "creditResources"
       );
     if (quizzes && quizzes.length > 0) {
-      log.debug("quizzes from db");
-      log.debug(quizzes);
-
       if (doNotGetQuestions) {
         return quizzes;
       }
@@ -229,8 +236,7 @@ export default class QuizService extends BaseEntityService {
       for (const qn in quizzesDict) {
         quizzes.push(quizzesDict[qn]);
       }
-      log.debug("quizzes with their questions");
-      log.debug(quizzes);
+
       return quizzes;
     }
 

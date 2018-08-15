@@ -55,7 +55,7 @@ router.post("/resetpassword", async ctx => {
 router.post("/register", async ctx => {
   try {
     validateUserRegistration(ctx.request.body);
-    const respBody = await new UserService().processUserRegistration(ctx.request.body);
+    const respBody = await new UserService().processUserRegistration(ctx.request);
     ctx.body = respBody;
   } catch (e) {
     ctx.throw(e.status || 500, e);
@@ -66,14 +66,15 @@ router.post("/register", async ctx => {
 router.post("/login", async ctx => {
   try {
     validateLogin(ctx.request.body);
-    const respBody = await new UserService().processLogin(ctx.request.body);
+    const respBody = await new UserService().processLogin(ctx.request);
     ctx.body = respBody;
   } catch (e) {
     ctx.throw(e.status || 500, e);
   }
 });
 
-router.get("/logout", ctx => {
+router.get("/logout", async ctx => {
+  await new UserService().processLogout(ctx.request);
   ctx.body = apiSuccess();
 });
 
@@ -87,8 +88,12 @@ router.get("/initdb", async ctx => {
     console.log("from /initdb: config.knexfile = " + config.knexfile);
     console.log(config);
     await knex.migrate.latest(config);
-    await knex.seed.run(config);
-    ctx.body = apiSuccess("knex migrate and seed ran successfully");
+
+    const seeddb = ctx.request.query.seeddb;
+    if (seeddb) {
+      await knex.seed.run(config);
+    }
+    ctx.body = apiSuccess(`knex migrate ${seeddb ? "and seed" : ""} ran successfully`);
   } catch (e) {
     console.log(e);
     ctx.throw(e.status || 400, e);

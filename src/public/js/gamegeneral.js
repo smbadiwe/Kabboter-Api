@@ -1,3 +1,148 @@
+// in addeditquestions.html
+// game is 'quiz' or 'survey'
+function initAddEditQuestions(game) {
+  var gameId = getUrlParameter("id");
+  if (!gameId) {
+    window.location = "/pages/dashboard.html";
+  } else {
+    loadNavBar();
+    $("#game-title").html(getUrlParameter("title"));
+    $("#game-description").html(getUrlParameter("desc"));
+
+    const questionId = getUrlParameter("questionId");
+    if (questionId) {
+      // means'we're editing question
+      $("#actionType").html("Edit");
+      const token = localStorage.getItem("token");
+      $.ajax({
+        headers: {
+          Authorization: "Bearer " + token
+        },
+        url: window.location.origin + `/api/user/${game}questions/${questionId}`,
+        type: "GET",
+        error: function(data) {
+          console.log(data);
+          alert(data.statusText);
+          window.location = `details.html?id=${gameId}`;
+        },
+        success: function(data) {
+          //START HERE: set fields. Code below is VERY buggy
+          console.log(data);
+          $("#question-title").val(data.question);
+          $("#time").val(data.timeLimit);
+          $("#option1").val(data.option1);
+          $("#option2").val(data.option2);
+          $("#option3").val(data.option3);
+          $("#option4").val(data.option4);
+          if (isQuiz) {
+            $("#basepoint").val(data.points);
+            $("#maxbonus").val(data.maxBonus);
+            if (data.correctOptions) {
+              $(`input[name=inlineRadioOptions][value=${data.correctOptions}]`).prop(
+                "checked",
+                true
+              );
+            }
+          }
+        }
+      });
+    } else {
+      $("#actionType").html("Create");
+      $("#saveAndAdd").show();
+    }
+  }
+}
+
+// in addeditquestions.html
+// game is 'quiz' or 'survey'
+function saveQuestion(e, game, refreshPage) {
+  e.preventDefault();
+  var gameId = getUrlParameter("id");
+  if (!gameId) {
+    window.location = "/pages/dashboard.html";
+    return false;
+  }
+  var title = $("#question-title").val();
+  if (!title) {
+    $("#result").show();
+    $("#result").html("Question is required");
+    return false;
+  }
+  var time = $("#time").val();
+  if (!time) {
+    $("#result").show();
+    $("#result").html("Time limit is required");
+    return false;
+  }
+  var option1 = $("#option1").val();
+  if (!option1) {
+    $("#result").show();
+    $("#result").html("Option 1 is required");
+    return false;
+  }
+  var option2 = $("#option2").val();
+  if (!option2) {
+    $("#result").show();
+    $("#result").html("Option 2 is required");
+    return false;
+  }
+  var option3 = $("#option3").val();
+  var option4 = $("#option4").val();
+  const postData = {
+    id: questionId,
+    question: title,
+    timeLimit: time,
+    option1: option1,
+    option2: option2,
+    option3: option3,
+    option4: option4
+  };
+  postData[game + "Id"] = gameId;
+  const isQuiz = game === "quiz";
+  if (isQuiz) {
+    var correct = $("input[name=inlineRadioOptions]:checked").val();
+    if (!correct) {
+      $("#result").show();
+      $("#result").html("Select correct option");
+      return false;
+    }
+    var basepoint = $("#basepoint").val() || 0;
+    var maxpoint = $("#maxbonus").val() || 0;
+
+    postData.correctOptions = correct;
+    postData.points = basepoint;
+    postData.maxBonus = maxpoint;
+  }
+  const token = localStorage.getItem("token");
+
+  const questionId = getUrlParameter("questionId");
+  const myUrl =
+    window.location.origin + `/api/user/${game}questions/${questionId ? "update" : "create"}`;
+
+  $.ajax({
+    headers: {
+      Authorization: "Bearer " + token
+    },
+    url: myUrl,
+    type: "post",
+    data: postData,
+    error: function(data) {
+      console.log(data);
+      $("#result").show();
+      $("#result").html(data.statusText);
+    },
+    success: function(data) {
+      if (refreshPage) {
+        setTimeout(function() {
+          window.location.reload(true);
+        });
+      } else {
+        window.location = "details.html?id=" + gameId;
+      }
+    }
+  });
+}
+
 /**
  * Used on quiz and vote details page
  * @param {*} recordType 'quiz' or 'vote'
@@ -46,9 +191,9 @@ function loadGameDetailsPageData(recordType) {
       );
 
       if (data.published) {
-        const quizOrSurvey = isQuiz ? "quiz" : "survey";
+        const quizOrSurvey = isQuiz ? "quiz" : "vote";
         $("#actionDiv").html(`
-                          <a role="button" href='/${quizOrSurvey}admin/${quizOrSurvey}admin.html?id=${
+                          <a role="button" href='/moderate${quizOrSurvey}?id=${
           data.id
         }' style="float: center;" class="btn btn-success btn-inline">Launch ${quizOrVote}</a>
                           <a role="button" href='' style="float: center;" onclick="setupGame('unpublish', '${recordType}');" class="btn btn-brand-light btn-inline">Unpublish ${quizOrVote}</a>

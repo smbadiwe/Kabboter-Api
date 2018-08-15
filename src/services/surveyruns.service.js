@@ -1,5 +1,5 @@
 import { BaseEntityService } from "./baseentity.service";
-import { SurveyService, SurveyQuestionService } from "./";
+import { SurveyService, SurveyQuestionService } from ".";
 import { generatePin } from "../utils";
 
 export default class SurveyRunService extends BaseEntityService {
@@ -13,7 +13,7 @@ export default class SurveyRunService extends BaseEntityService {
    */
   async save(requestData) {
     const record = requestData.body;
-    const survey = await new SurveyService().getById(record.surveyId);
+    const survey = await new SurveyService().getById(record.gameId);
     if (!survey) throw new RequestError("Invalid survey id");
 
     let pin;
@@ -23,11 +23,9 @@ export default class SurveyRunService extends BaseEntityService {
       exist = await this.getFirst({ pin: pin });
     } while (exist);
 
-    const totalQuestions = await new SurveyQuestionService().getTotalSurveyQuestions(
-      record.surveyId
-    );
+    const totalQuestions = await new SurveyQuestionService().getTotalSurveyQuestions(record.gameId);
     const surveyRun = {
-      surveyId: record.surveyId,
+      surveyId: record.gameId,
       surveytitle: survey.title,
       surveydescription: survey.description,
       pin: pin,
@@ -42,7 +40,7 @@ export default class SurveyRunService extends BaseEntityService {
 
     return {
       gameRunId: res,
-      gameId: record.surveyId,
+      gameId: record.gameId,
       gametitle: survey.title,
       gamedescription: survey.description,
       pin: pin,

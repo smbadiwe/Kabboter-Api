@@ -1,4 +1,3 @@
-import { getRoutesRequiringAuthorization } from "../../routes";
 import Enums from "../../services/enums";
 import { hashSync, genSaltSync } from "bcrypt";
 

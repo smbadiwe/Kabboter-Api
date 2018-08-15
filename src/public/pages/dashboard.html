@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>LHGengage</title>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../css/styles.css" type="text/css">
+    <link rel="stylesheet" href="/css/styles.css" type="text/css">
 </head>
 
 <body>
@@ -64,12 +64,12 @@
                         <div class="col-md-6 p-4 text-center">
                             <img src="../assets/img/svg/exam.svg" width="80" alt="">
                             <p class="pt-3 text-secondary">Launch a quiz as the moderator so others can join and play.</p>
-                            <a role="button" href="../quizadmin/quizadmin.html" class="btn btn-brand text-white btn-block">Play Quiz</a>
+                            <a role="button" href="/moderatequiz" class="btn btn-brand text-white btn-block">Play Quiz</a>
                         </div>
                         <div class="col-md-6 p-4 text-center">
                             <img src="../assets/img/svg/science.svg" width="80" alt="">
                             <p class="pt-3 text-secondary">Launch a poll as the moderator so others can join and play.</p>
-                            <a href="../surveyadmin/surveyadmin.html" class="btn btn-brand text-white btn-block">Play Polls</a>
+                            <a href="/moderatevote" class="btn btn-brand text-white btn-block">Play Polls</a>
                         </div>
                     </div>
                 </div>
@@ -98,42 +98,47 @@
         </div>
     </div>
     <script src="/js/jquery.min.js"></script>
-    <script src="../js/app.js"></script>
+    <script src="/js/app.js"></script>
+    <script src="../general.js"></script>
     <script>
         $(function () {
-            loadNavBar();
+            try {
+                loadNavBar();
 
-            var userInfo = JSON.parse(localStorage.getItem("userInfo"));
-            if (userInfo.d && userInfo.r === UserRoleOptions.Moderator) { // if moderator is not yet enabled
-                $("#selectKahoot").hide();
-                $("#notEnabled").show();
-            } else {
-                var token = localStorage.getItem("token");
-                var myUrl = window.location.origin + '/api/user/profile';
+                var userInfo = getUserInfo();
+                if (userInfo.d && userInfo.r === UserRoleOptions.Moderator) { // if moderator is not yet enabled
+                    $("#selectKahoot").hide();
+                    $("#notEnabled").show();
+                } else {
+                    var token = localStorage.getItem("token");
+                    var myUrl = window.location.origin + '/api/user/profile';
 
-                $.ajax({
-                    headers: {
-                        Authorization: 'Bearer ' + token
-                    },
-                    url: myUrl,
-                    type: 'get',
-                    error: function (data) {
-                        console.log("Error fetching dashboard data: ");
-                        console.log(data);
-                        alert('Error fetching data. Logout and login again');
-                    },
-                    success: function (data) {
-                        $('#nquiz').html(data.nQuizzes);
-                        $('#npoll').html(data.nSurveys);
-                        $('#aquiz').html(data.nQuizAnswered);
-                        $('#apoll').html(data.nSurveyAnswered);
-                    }
-                });
+                    $.ajax({
+                        headers: {
+                            Authorization: 'Bearer ' + token
+                        },
+                        url: myUrl,
+                        type: 'get',
+                        error: function (data) {
+                            console.log("We'll log user out because of error fetching dashboard data: ");
+                            console.log(data);
+                            logout();
+                        },
+                        success: function (data) {
+                            $('#nquiz').html(data.nQuizzes);
+                            $('#npoll').html(data.nSurveys);
+                            $('#aquiz').html(data.nQuizAnswered);
+                            $('#apoll').html(data.nSurveyAnswered);
+                        }
+                    });
 
+                }
+            } catch (e) {
+                logout();
             }
         });
     </script>
-    <script src="/js/popper.min.js"></script>
+    <!-- <script src="/js/popper.min.js"></script> -->
     <script src="/js/bootstrap.min.js"></script>
 </body>
 

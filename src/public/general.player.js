@@ -1,11 +1,22 @@
 (function(glob) {
   glob.GamePlayerData = {};
 })(this); // 'this' will be 'window' or 'module' or ... depending on the client
+
+/**
+ * Sample callback function to pass to socket. Socket will call it if anything goes wrong with our .emit request.
+ * @param {*} errorMessage A string describing the error
+ */
+function callbackOnGamePlayerError(errorMessage) {
+  if (errorMessage === "Error: websocket error") errorMessage = "Player disconnected.";
+  alert(errorMessage);
+}
+
 /**
  * The method runs when a quiz or survey player clicks Start Game button after PIN is gotten.
  * @param {*} e The button event
+ * @param {*} game 'quiz' or 'survey'
  */
-function startGamePlay(e) {
+function startGamePlay(e, game) {
   e.preventDefault();
 
   const pin = $("#pin")
@@ -57,7 +68,7 @@ function startGamePlay(e) {
     phone: phone
   };
   console.log(playerInfo);
-  onGetPlayPin(playerInfo);
+  onGetPlayPin(playerInfo, game);
 }
 
 //  data = { pin: pin }
@@ -70,32 +81,17 @@ function onGetPlayerGameRunInfo(data) {
   }
 }
 
-function onPlayerDisconnect(socket, reason, recordType) {
-  console.log(recordType + " onPlayerDisconnect: reason - " + reason);
-  GamePlayerData[recordType + "PlayerInfo"] = undefined;
-  GamePlayerData[recordType + "question"] = undefined;
-  GamePlayerData["moderator"] = undefined;
-  // See https://github.com/socketio/socket.io-client/blob/HEAD/docs/API.md#socketdisconnect
-  if (reason === "io server disconnect") {
-    // the disconnection was initiated by the server. If you need to reconnect manually, call
-    // socket.connect();
-    alert("Disconnected from server. Refresh page to start afresh and reconnect.");
-  }
-  // else the socket will automatically try to reconnect
-  //TODO: Tell admin that someone just disconnected
-}
-
 let answered = false;
 /**
  *
  * @param {*} question The question
- * @param {*} game Values: 'quiz' or 'survey'
  */
-function onPlayerReceiveNextQuestion(question, game) {
+function onPlayerReceiveNextQuestion(question) {
+  const game = question.recordType; //Values: 'quiz' or 'survey'
   // This is a question object as defined in the API doc.
   // Render fields on a page as you would like it. Depending, you may,
   // want to only render the answers. Whatever!
-  console.log("onPlayerReceiveNextQuestion. " + game + "question = ");
+  console.log(`onPlayerReceiveNextQuestion. ${game}question = `);
   console.log(question);
   if (question) {
     try {
@@ -230,7 +226,34 @@ function submitAmswerChoice(event) {
     timeCount: timeCount,
     choice: choice
   };
-  submitAnswer(answerInfo);
+
+  const game = $("#optionsBox").attr("gameType");
+
+  const gamePlayerInfo = GamePlayerData[`${game}PlayerInfo`];
+  const gamequestion = GamePlayerData[`${game}question`];
+  const answerToSubmit = {
+    userId: gamePlayerInfo.i,
+    pin: gamePlayerInfo.pin,
+    points: gamequestion.points,
+    choice: answerInfo.choice,
+    correct: true
+  };
+  answerToSubmit[`${game}QuestionId`] = gamequestion.id;
+  answerToSubmit[`${game}Id`] = gamequestion[`${game}Id`];
+  if (game === "quiz") {
+    answerToSubmit.correct = gamequestion.correctOptions.indexOf(answerInfo.choice) >= 0;
+  }
+
+  // This method has different implementations, depending on whether we're using pusher or socket.io
+  answerToSubmit.bonus = getBonus(
+    gamequestion.maxBonus,
+    gamequestion.timeLimit,
+    answerInfo.timeCount,
+    answerToSubmit.correct
+  );
+
+  // This method has different implementations, depending on whether we're using pusher or socket.io
+  submitAnswer(answerToSubmit, game);
 }
 
 /**
@@ -251,6 +274,7 @@ function onAuthSuccess(gameInfo, game) {
 
   GamePlayerData[game + "PlayerInfo"] = gameInfo.userInfo;
   GamePlayerData["moderator"] = gameInfo.moderator;
+
   showAnswerViewOnAuthSuccess(gameInfo);
 }
 
@@ -277,15 +301,6 @@ function showAnswerViewOnAuthSuccess(data) {
   $("#gametotal").html(data.totalQuestions);
   $("span#pin").html(playerInfo.pin);
   $("span#gameplayer").html(playerInfo.u + " - " + playerInfo.f + " " + playerInfo.l);
-}
-
-/**
- * Sample callback function to pass to socket. Socket will call it if anything goes wrong with our .emit request.
- * @param {*} errorMessage A string describing the error
- */
-function callbackOnGamePlayerError(errorMessage) {
-  if (errorMessage === "Error: websocket error") errorMessage = "Player disconnected.";
-  alert(errorMessage);
 }
 
 $(function() {

@@ -35,6 +35,7 @@ function loadUserDetailsAndSetOnPage() {
 
 // in users.html
 function loadData(page = 1) {
+  console.log("loadData: page = " + page);
   const token = localStorage.getItem("token");
   const myUrl = window.location.origin + "/api/members/admins";
 
@@ -109,8 +110,9 @@ function initUsers() {
   $("#perPage").on("change", function() {
     loadData();
   });
-  $("li.paginate_button").on("click", function() {
-    if (!$(this).hasClass("disabled")) loadData(parseInt($(this).attr("pgInd")));
+  $("#gridFooter").on("click", "li.paginate_button", function() {
+    const li = $(this);
+    if (!li.hasClass("disabled")) loadData(parseInt(li.attr("pgInd")));
   });
 }
 

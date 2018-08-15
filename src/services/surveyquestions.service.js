@@ -1,5 +1,5 @@
 import { BaseEntityService } from "./baseentity.service";
-import { SurveyService, SurveyAnswerService } from "./";
+import { SurveyService, SurveyAnswerService } from ".";
 import { RequestError, Required } from "../utils/ValidationErrors";
 
 export default class SurveyQuestionService extends BaseEntityService {

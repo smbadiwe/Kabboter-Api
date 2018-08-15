@@ -7,8 +7,8 @@ export function validateQuizRunProps(payload, updating = false) {
     validateInteger(payload.id, "id");
     payload.id = +payload.id;
   }
-  validateInteger(payload.quizId, "quizId");
-  payload.quizId = +payload.quizId;
+  validateInteger(payload.gameId, "gameId");
+  payload.gameId = +payload.gameId;
 }
 
 export function validateQuizAnswerProps(payload) {
