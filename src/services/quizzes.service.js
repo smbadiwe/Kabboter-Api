@@ -18,7 +18,7 @@ export default class QuizService extends BaseEntityService {
   async getRecordsPaged(queryParams) {
     const query = this.connector
       .table(this.tableName + " as q")
-      .join("quizquestions as qq", "q.id", "=", "qq.quizId")
+      .leftJoin("quizquestions as qq", "q.id", "=", "qq.quizId")
       .groupBy("qq.quizId")
       .modify(queryBuilder => {
         if (queryParams.userId) {

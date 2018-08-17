@@ -68,7 +68,7 @@ function getOneUserRow(sno, val) {
   let row = `<tr>
                 <td scope="row">${sno}</td>
                 <td><a href="/pages/vote/details.html?id=${val.id}">${val.title}</a></td>
-                <td>${val.description}</td>
+                <td>${val.description || ""}</td>
                 <td>${val.nQuestions}</td>
                 <td>${
                   val.published
