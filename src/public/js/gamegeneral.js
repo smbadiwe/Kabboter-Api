@@ -89,7 +89,6 @@ function saveQuestion(e, game, refreshPage) {
   var option3 = $("#option3").val();
   var option4 = $("#option4").val();
   const postData = {
-    id: questionId,
     question: title,
     timeLimit: time,
     option1: option1,
@@ -116,8 +115,14 @@ function saveQuestion(e, game, refreshPage) {
   const token = localStorage.getItem("token");
 
   const questionId = getUrlParameter("questionId");
-  const myUrl =
-    window.location.origin + `/api/user/${game}questions/${questionId ? "update" : "create"}`;
+
+  let myUrl;
+  if (questionId) {
+    postData.id = questionId;
+    myUrl = window.location.origin + `/api/user/${game}questions/update`;
+  } else {
+    myUrl = window.location.origin + `/api/user/${game}questions/create`;
+  }
 
   $.ajax({
     headers: {
