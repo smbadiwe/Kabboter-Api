@@ -39,7 +39,7 @@ function loadData(page = 1) {
         rows += `<tr>
                     <td scope="row">${sno}</td>
                     <td><a href>${val.eventType}</a></td>
-                    <td>${val.username}</td>
+                    <td>${val.username || ""}</td>
                     <td>${val.entityName}</td>
                     <td>${val.created_at}</td>
                 </tr>`;
@@ -78,7 +78,7 @@ function init() {
   var reloadData = function() {
     loadData();
   };
-  $("#username").on("change", reloadData);
+  $("#username").on("input", reloadData);
   $("#ddEvent").on("change", reloadData);
   $("#dateFrom").on("change", reloadData);
   $("#dateTo").on("change", reloadData);

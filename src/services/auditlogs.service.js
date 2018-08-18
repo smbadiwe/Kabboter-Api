@@ -15,7 +15,7 @@ export default class AuditLogService extends BaseEntityService {
       .table(this.tableName)
       .modify(queryBuilder => {
         if (queryParams.username) {
-          queryBuilder.where("username", queryParams.username);
+          queryBuilder.where("username", "like", `${queryParams.username}%`);
         }
         if (queryParams.eventType) {
           queryBuilder.where("eventType", queryParams.eventType);
