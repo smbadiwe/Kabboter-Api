@@ -8,7 +8,7 @@
     <title>LHGengage</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../../css/styles.css" type="text/css">
+    <link rel="stylesheet" href="/css/styles.css" type="text/css">
 </head>
 
 <body>
@@ -68,8 +68,10 @@
                             <input type="number" class="form-control" min="0" id="time" required />
                         </div>
                         <div class="form-group">
-                            <button id='saveAndAdd' onclick="saveQuestion(event, 'survey', true);" class="btn btn-brand-light px-4 mt-3" style="display: none">Save and add another question</button>
-                            <button id='save' onclick="saveQuestion(event, 'survey');" class="btn btn-primary px-4 mt-3">Save and Continue</button>
+                            <button id='saveAndAdd' onclick="saveQuestion(event, 'survey', true);" class="btn btn-brand-light px-4 mt-3"
+                                style="display: none">Save and add another question</button>
+                            <button id='save' onclick="saveQuestion(event, 'survey');" class="btn btn-primary px-4 mt-3">Save
+                                and Continue</button>
                             <a role="button" href="javascript:history.go(-1);" class="btn btn-default px-4 mt-3">Back</a>
                         </div>
                     </form>
@@ -79,8 +81,8 @@
     </div>
 
     <script src="/js/jquery.min.js"></script>
-    <script src="../../js/app.js"></script>
-    <script src="../../js/gamegeneral.js"></script>
+    <script src="/js/app.js"></script>
+    <script src="/js/gamegeneral.js"></script>
     <script src="./vote.js"></script>
     <script>
         $(function () {

@@ -8,7 +8,7 @@
     <title>Game App</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../css/styles.css" type="text/css">
+    <link rel="stylesheet" href="/css/styles.css" type="text/css">
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/jquery.min.js"></script>
 </head>
@@ -30,7 +30,8 @@
                                 </select>
                             </div>
 
-                            <button class="btn btn-brand-light px-4 mt-2" onclick="startGameAdmin(event, 'survey');">Start Vote</button>
+                            <button class="btn btn-brand-light px-4 mt-2" onclick="startGameAdmin(event, 'survey');">Start
+                                Vote</button>
                             <a role="button" href='javascript:history.go(-1);' class="btn mt-2">Cancel</a>
                         </form>
                     </div>
@@ -134,8 +135,10 @@
                                     <div id="scoreboard" style="display:none"></div>
                                     <div class="row mt-4">
                                         <div class="col-12">
-                                            <button id="loadQuestion" onclick="loadNextQuestion(event, 'survey')" class="btn btn-lg btn-brand">Go to next question</button>
-                                            <button onclick="showAdminEndView('survey')" class="btn btn-lg btn-danger">End Vote</button>
+                                            <button id="loadQuestion" onclick="loadNextQuestion(event, 'survey')" class="btn btn-lg btn-brand">Go
+                                                to next question</button>
+                                            <button onclick="showAdminEndView('survey')" class="btn btn-lg btn-danger">End
+                                                Vote</button>
                                         </div>
                                     </div>
                                 </div>
@@ -151,8 +154,10 @@
                 <div class="text-center" style="margin-top: 70px;">
                     <h1 class="font-weight-light text-brand-light">That's all! Thank you for participating.</h1>
                     <div class="text-center">
-                        <button onclick="reloadPage()" style="margin: 10px;" class="btn btn-lg btn-brand">Call for another vote</button>
-                        <button onclick="endGame('survey')" style="margin: 10px;" class="btn btn-lg btn-danger">End Vote</button>
+                        <button onclick="reloadPage()" style="margin: 10px;" class="btn btn-lg btn-brand">Call for
+                            another vote</button>
+                        <button onclick="endGame('survey')" style="margin: 10px;" class="btn btn-lg btn-danger">End
+                            Vote</button>
                     </div>
                 </div>
             </div>
