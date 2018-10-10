@@ -69,11 +69,7 @@ function getOneUserRow(sno, val) {
   let row = `<tr>
                 <td scope="row">${sno}</td>
                 <td><a href="/pages/quiz/details.html?id=${val.id}">${val.title}</a></td>
-<<<<<<< HEAD
                 <td>${val.description || ""}</td>
-=======
-                <td>${val.description}</td>
->>>>>>> Sundry changes. Audit trail UI almost there
                 <td>${val.nQuestions}</td>
                 <td>${
                   val.published

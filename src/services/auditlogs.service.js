@@ -1,17 +1,12 @@
 import { BaseEntityService } from "./baseentity.service";
-<<<<<<< HEAD:src/services/audittrails.service.js
-=======
 import { getKeyByValue } from "../utils";
 import { EventType } from "./AuditLogListener";
 import moment from "moment";
->>>>>>> Sundry changes. Audit trail UI almost there:src/services/auditlogs.service.js
 
 export default class AuditLogService extends BaseEntityService {
   constructor() {
     super("auditlogs");
   }
-<<<<<<< HEAD:src/services/audittrails.service.js
-=======
 
   async getRecordsPaged(queryParams) {
     console.log("queryParams = ");
@@ -64,5 +59,4 @@ export default class AuditLogService extends BaseEntityService {
 
     return res;
   }
->>>>>>> Sundry changes. Audit trail UI almost there:src/services/auditlogs.service.js
 }
