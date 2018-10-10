@@ -19,7 +19,7 @@
         <div id="myNavBar"> </div>
         <div id='step1'>
             <div class="container mt-2">
-                <h1 class="font-weight-light text-center text-secondary">Select Quiz</h1>
+                <h1><span class="text-brand">Select Quiz</span></h1>
                 <div class="row mt-2">
                     <div class="col-md-8 offset-md-2 my-card p-5">
                         <div id="result" class="alert alert-danger" style="display: none"></div>
@@ -31,7 +31,8 @@
                                 </select>
                             </div>
 
-                            <button class="btn btn-brand-light px-4 mt-2" onclick="startGameAdmin(event, 'quiz');">Start Quiz</button>
+                            <button class="btn btn-brand-light px-4 mt-2" onclick="startGameAdmin(event, 'quiz');">Start
+                                Quiz</button>
                             <a role="button" href='javascript:history.go(-1);' class="btn mt-2">Cancel</a>
                         </form>
                     </div>
@@ -102,7 +103,7 @@
                                         <span id="gametotal"></span>
                                     </h4>
                                     <h1 class="mt-4">
-                                        <span id='quest'></span>
+                                        <span class="text-brand" id='quest'></span>
                                     </h1>
                                     <div class="row">
                                         <div class="col-md-6 my-2">
@@ -132,11 +133,13 @@
                         <div id="timeout" style="display:none">
                             <div class="container mt-2">
                                 <div class="text-center">
-                                    <div id="scoreboard" style="display:none"></div>
+                                    <div id="scoreboard" class="text-brand" style="display:none"></div>
                                     <div class="row mt-4">
                                         <div class="col-12">
-                                            <button id="loadQuestion" onclick="loadNextQuestion(event, 'quiz')" class="btn btn-lg btn-brand">Go to next question</button>
-                                            <button onclick="showAdminEndView('quiz')" class="btn btn-lg btn-danger">End game</button>
+                                            <button id="loadQuestion" onclick="loadNextQuestion(event, 'quiz')" class="btn btn-lg btn-brand">Go
+                                                to next question</button>
+                                            <button onclick="showAdminEndView('quiz')" class="btn btn-lg btn-danger">End
+                                                game</button>
                                         </div>
                                     </div>
                                 </div>
@@ -150,11 +153,13 @@
         <div id="end" style="display:none">
             <div class="container mt-2">
                 <div class="text-center" style="margin-top: 70px;">
-                    <h2 class="font-weight-light text-brand-light">That's all! Thank you for participating.</h2>
-                    <div id="topscores" style="display:none"></div>
+                    <h2><span class="text-brand">That's all! Thank you for participating.</span></h2>
+                    <div id="topscores" class="text-brand" style="display:none"></div>
                     <div class="text-center">
-                        <button onclick="reloadPage()" style="margin: 10px;" class="btn btn-lg btn-brand">Play another game</button>
-                        <button onclick="getTopScores()" style="margin: 10px;" class="btn btn-lg btn-success">Show top scores</button>
+                        <button onclick="reloadPage()" style="margin: 10px;" class="btn btn-lg btn-brand">Play another
+                            game</button>
+                        <button onclick="getTopScores()" style="margin: 10px;" class="btn btn-lg btn-success">Show top
+                            scores</button>
                         <button onclick="endGame('quiz')" style="margin: 10px;" class="btn btn-lg btn-danger">End game</button>
                     </div>
                 </div>
