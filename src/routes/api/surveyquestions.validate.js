@@ -16,11 +16,7 @@ export function validateSurveyQuestionProps(payload, updating = false) {
   if (!payload.points) payload.points = 0;
   if (!payload.maxBonus) payload.maxBonus = 0;
   if (!payload.timeLimit) throw new Required("timeLimit");
-<<<<<<< HEAD
   validateInteger(payload.timeLimit, "timeLimit", true);
-=======
-  validateInteger(payload.timeLimit, "timeLimit");
->>>>>>> Fixed latest list of issues from Tope yesterday.
   payload.timeLimit = +payload.timeLimit;
   validateInteger(payload.points, "points");
   payload.points = +payload.points;

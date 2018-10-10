@@ -18,11 +18,7 @@ export default class QuizService extends BaseEntityService {
   async getRecordsPaged(queryParams) {
     const query = this.connector
       .table(this.tableName + " as q")
-<<<<<<< HEAD
       .leftJoin("quizquestions as qq", "q.id", "=", "qq.quizId")
-=======
-      .join("quizquestions as qq", "q.id", "=", "qq.quizId")
->>>>>>> Sundry changes. Audit trail UI almost there
       .groupBy("qq.quizId")
       .modify(queryBuilder => {
         if (queryParams.userId) {

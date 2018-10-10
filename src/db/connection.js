@@ -7,7 +7,7 @@ log.debug("NODE_ENV: " + environment);
 let knexConfiguration;
 switch (environment) {
   case "production":
-    knexConfiguration = knexfile.production;
+    knexConfiguration = knexfile[process.env.KNEX_PROD_CONFIG] || knexfile.production;
     break;
   case "staging":
     knexConfiguration = knexfile.staging;
