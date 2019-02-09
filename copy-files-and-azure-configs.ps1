@@ -1,18 +1,18 @@
-echo "Copying the UI files for game plays"
+Write-Output "Copying the UI files for game plays"
 Copy-Item -Path ./src/public -Recurse -Destination ./dist/public/ -Container
 
-echo "Copying config files for Azure"
+Write-Output "Copying config files for Azure"
 
-copy ./package.azure.json ./dist/package.json
-copy ./web.azure.config ./dist/web.config
-copy ./.azure.env ./dist/.env
-copy ./iisnode.yml ./dist/iisnode.yml
-copy ./process.json ./dist/process.json
+Copy-Item ./package.azure.json ./dist/package.json
+Copy-Item ./web.azure.config ./dist/web.config
+Copy-Item ./.azure.env ./dist/.env
+Copy-Item ./iisnode.yml ./dist/iisnode.yml
+Copy-Item ./process.json ./dist/process.json
 
-echo "Zipping the distros"
+Write-Output "Zipping the distros"
 Compress-Archive -Path ./dist/* -DestinationPath ./dist.zip -Force
 
-echo "Deleting generated dist folder"
+Write-Output "Deleting generated dist folder"
 Remove-Item .\dist -Force -Recurse
 
-echo "Done."
+Write-Output "Done."

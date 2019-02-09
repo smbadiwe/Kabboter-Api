@@ -19,10 +19,10 @@ export default class QuizService extends BaseEntityService {
     const query = this.connector
       .table(this.tableName + " as q")
       .leftJoin("quizquestions as qq", "q.id", "=", "qq.quizId")
-      .groupBy("qq.quizId")
+      .groupBy("q.id")
       .modify(queryBuilder => {
         if (queryParams.userId) {
-          queryBuilder.where("userId", queryParams.userId);
+          queryBuilder.where("q.userId", queryParams.userId);
         }
         if (queryParams.title) {
           queryBuilder.where("q.title", "like", `%${queryParams.title}%`);

@@ -8,11 +8,11 @@ import {
 export function validateQuizQuestionProps(payload, updating = false) {
   if (!payload) throw new NoDataReceived();
   if (updating) {
-    validateInteger(payload.id, "id");
-    payload.id = +payload.id;
+    validateInteger(payload.questionId, "questionId");
+    payload.questionId = +payload.questionId;
   }
-  validateInteger(payload.quizId, "quizId");
-  payload.quizId = +payload.quizId;
+  validateInteger(payload.gameId, "gameId");
+  payload.gameId = +payload.gameId;
   if (!payload.points) payload.points = 0;
   if (!payload.maxBonus) payload.maxBonus = 0;
   if (!payload.maxBonus) payload.maxBonus = 0;

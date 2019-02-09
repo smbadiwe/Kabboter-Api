@@ -19,7 +19,7 @@ export default class SurveyService extends BaseEntityService {
     const query = this.connector
       .table(this.tableName + " as q")
       .leftJoin("surveyquestions as qq", "q.id", "=", "qq.surveyId")
-      .groupBy("qq.surveyId")
+      .groupBy("q.id")
       .modify(queryBuilder => {
         if (queryParams.userId) {
           queryBuilder.where("userId", queryParams.userId);

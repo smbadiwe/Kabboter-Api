@@ -19,13 +19,13 @@ export default class QuizQuestionService extends BaseEntityService {
    */
   async save(requestObject) {
     const payload = requestObject.body;
-    const quiz = await new QuizService().getById(payload.quizId);
+    const quiz = await new QuizService().getById(payload.gameId);
     if (!quiz) throw new RequestError("Invalid quiz id");
 
     const quizQn = {
       question: payload.question,
       timeLimit: payload.timeLimit,
-      quizId: payload.quizId,
+      quizId: payload.gameId,
       option1: payload.option1,
       option2: payload.option2,
       option3: payload.option3,
@@ -56,14 +56,14 @@ export default class QuizQuestionService extends BaseEntityService {
    */
   async update(requestObject) {
     const record = requestObject.body;
-    const quiz = await new QuizService().getById(record.quizId);
+    const quiz = await new QuizService().getById(record.gameId);
     if (!quiz) throw new RequestError("Invalid quiz id");
 
     const quizQn = {
-      id: record.id,
+      id: record.questionId,
       question: record.question,
       timeLimit: record.timeLimit,
-      quizId: record.quizId,
+      quizId: record.gameId,
       option1: record.option1,
       option2: record.option2,
       option3: record.option3,

@@ -13,13 +13,13 @@ export default class SurveyQuestionService extends BaseEntityService {
    */
   async save(requestObject) {
     const payload = requestObject.body;
-    const survey = await new SurveyService().getById(payload.surveyId);
+    const survey = await new SurveyService().getById(payload.gameId);
     if (!survey) throw new RequestError("Invalid survey id");
 
     const surveyQn = {
       question: payload.question,
       timeLimit: payload.timeLimit,
-      surveyId: payload.surveyId,
+      surveyId: payload.gameId,
       option1: payload.option1,
       option2: payload.option2,
       option3: payload.option3,
@@ -38,14 +38,14 @@ export default class SurveyQuestionService extends BaseEntityService {
   async update(requestObject) {
     const record = requestObject.body;
 
-    const survey = await new SurveyService().getById(record.surveyId);
+    const survey = await new SurveyService().getById(record.gameId);
     if (!survey) throw new RequestError("Invalid survey id");
 
     const surveyQn = {
-      id: record.id,
+      id: record.questionId,
       question: record.question,
       timeLimit: record.timeLimit,
-      surveyId: record.surveyId,
+      surveyId: record.gameId,
       option1: record.option1,
       option2: record.option2,
       option3: record.option3,

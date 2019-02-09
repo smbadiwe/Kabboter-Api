@@ -1,7 +1,7 @@
 // in addeditquestions.html
 // game is 'quiz' or 'survey'
 function initAddEditQuestions(game) {
-  var gameId = getUrlParameter("id");
+  var gameId = getUrlParameter("gameId");
   if (!gameId) {
     window.location = "/pages/dashboard.html";
   } else {
@@ -34,7 +34,7 @@ function initAddEditQuestions(game) {
           $("#option2").val(data.option2);
           $("#option3").val(data.option3);
           $("#option4").val(data.option4);
-          if (isQuiz) {
+          if (game === "quiz") {
             $("#basepoint").val(data.points);
             $("#maxbonus").val(data.maxBonus);
             if (data.correctOptions) {
@@ -57,7 +57,7 @@ function initAddEditQuestions(game) {
 // game is 'quiz' or 'survey'
 function saveQuestion(e, game, refreshPage) {
   e.preventDefault();
-  var gameId = getUrlParameter("id");
+  var gameId = getUrlParameter("gameId");
   if (!gameId) {
     window.location = "/pages/dashboard.html";
     return false;
@@ -89,24 +89,14 @@ function saveQuestion(e, game, refreshPage) {
   var option3 = $("#option3").val();
   var option4 = $("#option4").val();
   const postData = {
-<<<<<<< HEAD
+    gameId: gameId,
     question: title,
     timeLimit: time,
-=======
-    id: questionId,
-    question: title,
-    timeLimit: time,
-    surveyId: gameId,
->>>>>>> Fixed latest list of issues from Tope yesterday.
     option1: option1,
     option2: option2,
     option3: option3,
     option4: option4
   };
-<<<<<<< HEAD
-  postData[game + "Id"] = gameId;
-=======
->>>>>>> Fixed latest list of issues from Tope yesterday.
   const isQuiz = game === "quiz";
   if (isQuiz) {
     var correct = $("input[name=inlineRadioOptions]:checked").val();
@@ -125,20 +115,13 @@ function saveQuestion(e, game, refreshPage) {
   const token = localStorage.getItem("token");
 
   const questionId = getUrlParameter("questionId");
-<<<<<<< HEAD
-
   let myUrl;
   if (questionId) {
-    postData.id = questionId;
     myUrl = window.location.origin + `/api/user/${game}questions/update`;
+    postData.questionId = questionId;
   } else {
     myUrl = window.location.origin + `/api/user/${game}questions/create`;
   }
-=======
-  const myUrl =
-    window.location.origin + `/api/user/${game}questions/${questionId ? "update" : "create"}`;
->>>>>>> Fixed latest list of issues from Tope yesterday.
-
   $.ajax({
     headers: {
       Authorization: "Bearer " + token
@@ -170,9 +153,9 @@ function saveQuestion(e, game, refreshPage) {
 function loadGameDetailsPageData(recordType) {
   loadNavBar();
 
-  const isQuiz = recordType === "quiz";
+  const isQuiz = recordType === "quiz"; // game type
   var token = localStorage.getItem("token");
-  var id = getUrlParameter("id");
+  var id = getUrlParameter("id"); // game id
   var myUrl = window.location.origin + `/api/user/${isQuiz ? "quizzes" : "surveys"}/${id}?wq=y`;
 
   $.ajax({
@@ -205,7 +188,7 @@ function loadGameDetailsPageData(recordType) {
 
       const quizOrVote = isQuiz ? "Quiz" : "Vote";
       $("#add-questions").html(
-        `<a href="addeditquestions.html?id=${data.id}&title=${data.title}&desc=${
+        `<a href="addeditquestions.html?gameId=${data.id}&title=${data.title}&desc=${
           data.description
         }" id="add-questions" role="button" class="btn btn-dark px-4">Add Question to ${quizOrVote}</a>`
       );
@@ -280,9 +263,7 @@ function getVoteRows(data) {
                             }, 'vote');">Delete</button>
                         </div>
                         <div class="col-2">
-                            <a role="button" class="btn btn-info btn-sm btn-block" href="addeditquestions.html?questionId=${
-                              val.id
-                            }&title=${data.title}&desc=${data.description}&id=${data.id}">Edit</a>
+                            <a role="button" class="btn btn-info btn-sm btn-block" href="addeditquestions.html?title=${data.title}&desc=${data.description}&questionId=${val.id}&gameId=${data.id}">Edit</a>
                         </div>
                     </div>
                 </div>
@@ -349,9 +330,7 @@ function getQuizRows(data) {
                             }, 'quiz');">Delete</button>
                         </div>
                         <div class="col-2">
-                            <a role="button" class="btn btn-info btn-sm btn-block" href="addeditquestions.html?questionId=${
-                              val.id
-                            }&title=${data.title}&desc=${data.description}&id=${data.id}">Edit</a>
+                            <a role="button" class="btn btn-info btn-sm btn-block" href="addeditquestions.html?title=${data.title}&desc=${data.description}&questionId=${val.id}&gameId=${data.id}">Edit</a>
                         </div>
                     </div>
                 </div>
